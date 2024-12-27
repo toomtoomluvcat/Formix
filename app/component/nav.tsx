@@ -5,7 +5,7 @@ function NavBarInForm() {
   return (
     <div>
       <nav>
-        <div className="flex justify-between w-[1280px] mx-auto mt-6">
+        <div className="flex justify-between max-w-[1280px] mx-auto mt-6">
           <Image
             src="/Logo/FORMIX.png"
             alt="logo"
@@ -51,14 +51,14 @@ function NavBarInForm() {
               </div>
               <div className="flex gap-[6px] font-medium items-center">
                 <Image
-                  src="/Icon-form/1.png"
+                  src="/Icon-form/5.png"
                   width={20}
                   height={20}
                   quality={100}
                   alt="question"
                   className="h-[20px] w-[20px]"
                 ></Image>
-                <p>Quesion</p>
+                <p>Public</p>
               </div>
             </div>
           </div>

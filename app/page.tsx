@@ -5,7 +5,11 @@ import NavBarInForm from "./component/nav";
 import Image from "next/image";
 
 function page() {
+  interface Color{
+    color1:string;
+  }
   const [status, setStatus] = useState<number>(0);
+  const [color,setColor] =useState<Color>({color1:"999999"});
   return (
     <div className="font-Kanit flex justify-center mt-12">
       <div className="flex-col text-center ">
@@ -55,7 +59,6 @@ function page() {
             ></Image>
             <button
               className="text-white bg-black rounded-[7px] px-[15px] py-[10px] mt-[20px]"
-              
             >
               <a href="https://www.youtube.com/watch?v=DrGZEO7Sy_I">กดอีกๆๆ</a>
             </button>

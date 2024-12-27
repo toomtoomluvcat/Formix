@@ -18,7 +18,22 @@
 }
 
 body {
-  font-family: 'Kanit', sans-serif;
+  font-family: 'roboto', sans-serif;
   color: var(--foreground);
   background: var(--background);
+}
+
+div[contenteditable].placeholder::before {
+  content: attr(data-placeholder);
+  color: #888; 
+  pointer-events: none;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
