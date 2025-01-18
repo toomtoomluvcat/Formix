@@ -14,7 +14,10 @@ interface Color {
   color3: string;
 }
 interface InputProp {
-  deleteFromById:()=>void
+  requiredQuestion:boolean
+  typeQuestion:string;
+  titleQuestion: string;
+  deleteFromById: () => void;
   updateRequired: () => void;
   updateLimit: (optionIndex: number, limit: number) => void;
   updateLabel: (optionIndex: number, newLabel: string) => void;
@@ -27,6 +30,9 @@ interface InputProp {
 }
 
 function Text({
+  requiredQuestion,
+  typeQuestion,
+  titleQuestion,
   deleteFromById,
   updateRequired,
   deleteChoiceById,
@@ -43,7 +49,37 @@ function Text({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const divRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => { 
+    setType(typeQuestion);
+    setNameQuestion(titleQuestion);
+    setIsChecked(requiredQuestion);
+  }, [titleQuestion, typeQuestion,requiredQuestion]);
+
+  useEffect(() => { 
+    setType(typeQuestion);
+    setNameQuestion(titleQuestion);
+    
+    if (divRef.current) {
+      divRef.current.textContent = titleQuestion;
+    }
+  }, [titleQuestion, typeQuestion]);
+
+  const handleInputChange = (e: React.FormEvent<HTMLDivElement>): void => {
+    const newTitle: string = e.currentTarget.textContent || "";
+    setNameQuestion(newTitle);
+    addChangeTitle(newTitle);
+  };
+
+  useEffect(() => {
+    const handleDeletion = () => {
+      if (divRef.current) {
+        divRef.current.textContent = titleQuestion;
+      }
+    };
+    handleDeletion();
+  }, [titleQuestion]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -57,12 +93,6 @@ function Text({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const handleInputChange = (e: React.FormEvent<HTMLDivElement>): void => {
-    const newTitle: string = e.currentTarget.textContent || "";
-    setNameQuestion(newTitle);
-    addChangeTitle(newTitle);
-  };
 
   const handleTypeChange = (newType: string) => {
     setType(newType);
@@ -125,6 +155,7 @@ function Text({
           <div className="flex justify-between flex-wrap">
             <div className="max-w-[215px] sm:max-w-[300px]">
               <div
+                ref={divRef}
                 onInput={handleInputChange}
                 contentEditable="true"
                 suppressContentEditableWarning={true}
@@ -141,9 +172,8 @@ function Text({
                 onBlur={(e) => {
                   e.target.style.backgroundColor = "transparent";
                 }}
-              ></div>
+              />
             </div>
-
             <div className="relative" ref={dropdownRef}>
               <div
                 className="py-[5px] px-[10px] border rounded-[5px] w-[140px] cursor-pointer"
@@ -242,28 +272,25 @@ function Text({
                       className="sr-only"
                     />
                     <div className="translate-y-[1px]">
-                    <div
-                      className={`box block h-[16px] w-8 rounded-full transition-all duration-300 ease-in-out`}
-                      style={{
-                        backgroundColor: isChecked
-                          ? `${color.color1}`
-                          : `${color.color3}`,
-                      }}
-                    ></div>
-                    <div
-                      className={`absolute left-1 top-1 flex h-[10px] translate-y-[-1px] w-[10px] items-center justify-center rounded-full bg-white transition-all duration-300 ease-in-out ${
-                        isChecked ? "translate-x-[15px]" : ""
-                      }`}
-                    ></div>
+                      <div
+                        className={`box block h-[16px] w-8 rounded-full transition-all duration-300 ease-in-out`}
+                        style={{
+                          backgroundColor: isChecked
+                            ? `${color.color1}`
+                            : `${color.color3}`,
+                        }}
+                      ></div>
+                      <div
+                        className={`absolute left-1 top-1 flex h-[10px] translate-y-[-1px] w-[10px] items-center justify-center rounded-full bg-white transition-all duration-300 ease-in-out ${
+                          isChecked ? "translate-x-[15px]" : ""
+                        }`}
+                      ></div>
                     </div>
                   </div>
                 </label>
-                <div
-                  className="w-[1px] bg-black"
-                  
-                ></div>
+                <div className="w-[1px] bg-black"></div>
                 <svg
-                  onClick={()=>deleteFromById()}
+                  onClick={() => deleteFromById()}
                   xmlns="http://www.w3.org/2000/svg"
                   height="24px"
                   viewBox="0 -960 960 960"

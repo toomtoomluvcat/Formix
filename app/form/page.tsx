@@ -43,7 +43,7 @@ function Form() {
   const onActice = (id: number): void => {
     setActive(id);
   };
-
+  const [removingId, setRemovingId] = useState<number | null>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
 
@@ -117,6 +117,7 @@ function Form() {
         options: [{ label: "options 1", limit: null }],
       },
     ]);
+    setActive(questions.length + 1);
   };
 
   const addChangeType = (id: number, newType: string): void => {
@@ -128,18 +129,26 @@ function Form() {
   };
 
   const deleteFromById = (idToDel: number): void => {
-    setQuestions(
-      questions
-        .filter((items) => items.id != idToDel)
-        .map((item) =>
-          item.id > idToDel ? { ...item, id: item.id - 1 } : item
-        )
-    );
+    setRemovingId(idToDel); // กำหนดคำถามที่กำลังลบ
+    setTimeout(() => {
+      setQuestions((prevQuestions) => {
+        const updatedQuestions = prevQuestions
+          .filter((item) => item.id !== idToDel)
+          .map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+        return updatedQuestions;
+      });
+      setRemovingId(null); 
+    }, 400); 
   };
 
   const addChangeTitle = (id: number, newTitle: string): void => {
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === id ? { ...q, title: newTitle } : q))
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((question) =>
+        question.id === id ? { ...question, title: newTitle } : question
+      )
     );
   };
   const deleteChoiceById = (idToDel: number, ChoiceToDel: number) => {
@@ -220,34 +229,40 @@ function Form() {
               data-placeholder="Enter details or instructions for the form."
             />
           </div>
-          {questions.map((items) => (
+          {questions.map((item) => (
             <div
-              key={items.id}
-              onClick={() => onActice(items.id)}
+              key={item.id}
+              onClick={() => onActice(item.id)}
+              className={`question-item ${
+                active === item.id ? "question-animate" : ""
+              } ${removingId === item.id ? "question-remove" : ""}`}
               style={{
-                zIndex: active === items.id ? 9999 : 0,
+                zIndex: active === item.id ? 9999 : 0,
                 position: "relative",
               }}
             >
               <Text
-                deleteFromById={() => deleteFromById(items.id)}
-                updateRequired={() => updateRequired(items.id)}
+                requiredQuestion={item.required}
+                typeQuestion={item.type}
+                titleQuestion={item.title}
+                deleteFromById={() => deleteFromById(item.id)}
+                updateRequired={() => updateRequired(item.id)}
                 deleteChoiceById={(ChoiceToDel: number) =>
-                  deleteChoiceById(items.id, ChoiceToDel)
+                  deleteChoiceById(item.id, ChoiceToDel)
                 }
                 updateLimit={(optionsIndex: number, limit: number) =>
-                  updateLimit(items.id, optionsIndex, limit)
+                  updateLimit(item.id, optionsIndex, limit)
                 }
                 updateLabel={(optionIndex: number, newLabel: string) =>
-                  updateLabel(items.id, optionIndex, newLabel)
+                  updateLabel(item.id, optionIndex, newLabel)
                 }
-                addLabel={() => addLabel(items.id)}
-                optionsValue={items.options}
+                addLabel={() => addLabel(item.id)}
+                optionsValue={item.options}
                 addChangeType={(newType: string) =>
-                  addChangeType(items.id, newType)
+                  addChangeType(item.id, newType)
                 }
                 addChangeTitle={(newTitle: string) =>
-                  addChangeTitle(items.id, newTitle)
+                  addChangeTitle(item.id, newTitle)
                 }
                 color={color}
               />
@@ -273,8 +288,8 @@ function Form() {
             />
             <p>Add question</p>
           </div>
-          {/* 
-          <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
+
+          {/* <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
             {JSON.stringify(questions, null, 2)}
           </div> */}
         </div>
@@ -335,7 +350,7 @@ function Form() {
           </button>
           <button
             style={{
-              backgroundColor: "#32CD32", // สีเขียวมรกต
+              backgroundColor: "#32CD32", // สี
               color: "#fff",
               padding: "10px 20px",
               border: "none",
