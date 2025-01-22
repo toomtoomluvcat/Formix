@@ -1,11 +1,12 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 function NavBarInForm() {
   return (
     <div>
       <nav>
-        <div className="flex justify-between max-w-[1280px] mx-auto mt-6">
+        <div className="flex justify-between max-w-[1280px] mx-auto mt-6 px-[30px]">
           <Image
             src="/Logo/FORMIX.png"
             alt="logo"
@@ -14,30 +15,35 @@ function NavBarInForm() {
             quality={100}
             className="h-[22px] w-[70px]"
           ></Image>
+
           <div>
             <div className="flex text-[13px] gap-[35px] items-center">
-              <div className="flex gap-[6px] font-medium items-center">
-                <Image
-                  src="/Icon-form/1.png"
-                  width={20}
-                  height={20}
-                  quality={100}
-                  alt="question"
-                  className="h-[20px] w-[20px]"
-                ></Image>
-                <p>Quesion</p>
-              </div>
-              <div className="flex gap-[6px] font-medium items-center">
-                <Image
-                  src="/Icon-form/2.png"
-                  width={20}
-                  height={20}
-                  quality={100}
-                  alt="question"
-                  className="h-[20px] w-[20px]"
-                ></Image>
-                <p>Respone</p>
-              </div>
+              <Link href="/form">
+                <div className="flex gap-[6px] font-medium items-center">
+                  <Image
+                    src="/Icon-form/1.png"
+                    width={20}
+                    height={20}
+                    quality={100}
+                    alt="question"
+                    className="h-[20px] w-[20px]"
+                  ></Image>
+                  <p className="md:block hidden">Quesion</p>
+                </div>
+              </Link>
+              <Link href="/formrespone">
+                <div className="flex gap-[6px] font-medium items-center">
+                  <Image
+                    src="/Icon-form/2.png"
+                    width={20}
+                    height={20}
+                    quality={100}
+                    alt="question"
+                    className="h-[20px] w-[20px]"
+                  ></Image>
+                  <p className="md:block hidden">Respone</p>
+                </div>
+              </Link>
               <div className="flex gap-[6px] font-medium items-center">
                 <Image
                   src="/Icon-form/3.png"
@@ -47,7 +53,7 @@ function NavBarInForm() {
                   alt="question"
                   className="h-[20px] w-[20px]"
                 ></Image>
-                <p>View</p>
+                <p className="md:block hidden">View</p>
               </div>
               <div className="flex gap-[6px] font-medium items-center">
                 <Image
@@ -58,7 +64,7 @@ function NavBarInForm() {
                   alt="question"
                   className="h-[20px] w-[20px]"
                 ></Image>
-                <p>Public</p>
+                <p className="md:block hidden">Public</p>
               </div>
             </div>
           </div>

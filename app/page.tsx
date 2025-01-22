@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import NavBarInForm from "./component/nav";
 import Image from "next/image";
 import Link from "next/link";
-import { stat } from "fs";
 
 function page() {
   const [showQuestion, setShowQuestion] = useState<boolean[]>([
@@ -45,7 +44,7 @@ function page() {
 
             <ul className=" font-roboto text-[13px]  flex justify-between w-[120px] md:w-[450px] mx-auto">
               <li className="hidden md:block">
-                <Link href="/form">workspace</Link>
+                <Link href="/workspace">workspace</Link>
               </li>
               <li className="hidden md:block">How is works</li>
               <li className="hidden sm:block">Market</li>
@@ -314,7 +313,7 @@ function page() {
                           Create form
                         </h2>
                       </div>
-                      <div
+                      <Link href={'/workspace'}><div
                         className="grow drop-shadow-xl border-2 
                       justify-center items-center px-[5px] md:px-[15px] py-[10px] 
                       mt-[15px] flex gap-x-[15px] rounded-[10px]"
@@ -330,7 +329,7 @@ function page() {
                         <h2 className="text-[8px] text-center font-medium whitespace-nowrap md:text-[12px]">
                           Visit website workspace
                         </h2>
-                      </div>
+                      </div></Link>
                     </div>
                   </div>
                 </div>
@@ -338,7 +337,7 @@ function page() {
             </div>
           </section>
           <section className="mt-[170px] flex justify-between max-w-[1200px] gap-x-[45px]  mx-auto px-[30px]">
-            <div className="flex flex-col grow translate-y-[20px]">
+            <div className="flex  text-start flex-col grow translate-y-[20px]">
               <div className="">
                 <div
                   className="flex items-center gap-x-4"
@@ -358,7 +357,7 @@ function page() {
                 </div>
                 <div className="max-w-[550px]">
                   <div
-                    className={`text-[#6C6C6C] mt-[15px] transition-all duration-700 overflow-hidden ${
+                    className={`text-[#6C6C6C] t mt-[15px] transition-all duration-700 overflow-hidden ${
                       showQuestion[0]
                         ? "max-h-[500px] opacity-100"
                         : "max-h-0 opacity-0"
@@ -400,7 +399,7 @@ function page() {
                 </div>
                 <div className="max-w-[550px]">
                   <div
-                    className={`text-[#6C6C6C] mt-[15px] transition-all duration-700 overflow-hidden ${
+                    className={`text-[#6C6C6C]  mt-[15px] transition-all duration-700 overflow-hidden ${
                       showQuestion[1]
                         ? "max-h-[500px] opacity-100"
                         : "max-h-0 opacity-0"

@@ -129,7 +129,7 @@ function Form() {
   };
 
   const deleteFromById = (idToDel: number): void => {
-    setRemovingId(idToDel); // กำหนดคำถามที่กำลังลบ
+    setRemovingId(idToDel);
     setTimeout(() => {
       setQuestions((prevQuestions) => {
         const updatedQuestions = prevQuestions
@@ -289,9 +289,9 @@ function Form() {
             <p>Add question</p>
           </div>
 
-          {/* <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
+           <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
             {JSON.stringify(questions, null, 2)}
-          </div> */}
+          </div> 
         </div>
       </form>
       <div>
