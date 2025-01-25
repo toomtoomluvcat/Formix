@@ -84,7 +84,7 @@ function formrespone() {
     if (isDel === "delete my form") {
       setLetDel(true);
     } else {
-      setLetDel(false); // เพิ่มกรณีที่ isDel ไม่ตรงเงื่อนไข
+      setLetDel(false); 
     }
   }, [isDel]);
 
@@ -243,7 +243,7 @@ function formrespone() {
                 }}
                 className="text-[9px] sm:text-[13px] px-[12px] py-[5px] rounded-[7px] "
               >
-                cancle
+                cancel
               </p>
               <p
                 style={{

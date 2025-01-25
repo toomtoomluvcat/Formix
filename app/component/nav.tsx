@@ -7,14 +7,16 @@ function NavBarInForm() {
     <div>
       <nav>
         <div className="flex justify-between max-w-[1280px] mx-auto mt-6 px-[30px]">
-          <Image
-            src="/Logo/FORMIX.png"
-            alt="logo"
-            width={150}
-            height={150}
-            quality={100}
-            className="h-[22px] w-[70px]"
-          ></Image>
+          <Link href={"/"}>
+            <Image
+              src="/Icon-form/FORMIX LOGO.png"
+              width={1000}
+              height={1000}
+              quality={100}
+              alt="question"
+              className="h-[23px]  w-[70px]"
+            />
+          </Link>
 
           <div>
             <div className="flex text-[13px] gap-[35px] items-center">

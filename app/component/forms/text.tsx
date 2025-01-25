@@ -14,8 +14,8 @@ interface Color {
   color3: string;
 }
 interface InputProp {
-  requiredQuestion:boolean
-  typeQuestion:string;
+  requiredQuestion: boolean;
+  typeQuestion: string;
   titleQuestion: string;
   deleteFromById: () => void;
   updateRequired: () => void;
@@ -51,16 +51,16 @@ function Text({
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const divRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { 
+  useEffect(() => {
     setType(typeQuestion);
     setNameQuestion(titleQuestion);
     setIsChecked(requiredQuestion);
-  }, [titleQuestion, typeQuestion,requiredQuestion]);
+  }, [titleQuestion, typeQuestion, requiredQuestion]);
 
-  useEffect(() => { 
+  useEffect(() => {
     setType(typeQuestion);
     setNameQuestion(titleQuestion);
-    
+
     if (divRef.current) {
       divRef.current.textContent = titleQuestion;
     }
@@ -240,9 +240,9 @@ function Text({
             </div>
           </div>
           <div className="">
-            {type === "number" ? <InputNumber></InputNumber> : <div></div>}
-            {type === "text" ? <Inputtext /> : <div></div>}
-            {type === "mutiple" ? (
+            {type === "number" && <InputNumber></InputNumber>}
+            {type === "text" && <Inputtext />}
+            {type === "mutiple" && (
               <InputMutiple
                 color={color}
                 deleteChoiceById={(ChoiceById: number) =>
@@ -257,8 +257,38 @@ function Text({
                 optionsValue={optionsValue}
                 addLabel={() => addLabel()}
               ></InputMutiple>
-            ) : (
-              <></>
+            )}
+            {type === "check" && (
+              <InputMutiple
+                color={color}
+                deleteChoiceById={(ChoiceById: number) =>
+                  deleteChoiceById(ChoiceById)
+                }
+                updateLimit={(optionsIndex: number, limit: number) =>
+                  updateLimit(optionsIndex, limit)
+                }
+                updateLabel={(optionIndex: number, newLabel: string) =>
+                  updateLabel(optionIndex, newLabel)
+                }
+                optionsValue={optionsValue}
+                addLabel={() => addLabel()}
+              ></InputMutiple>
+            )}
+            {type === "dropdown" && (
+              <InputMutiple
+                color={color}
+                deleteChoiceById={(ChoiceById: number) =>
+                  deleteChoiceById(ChoiceById)
+                }
+                updateLimit={(optionsIndex: number, limit: number) =>
+                  updateLimit(optionsIndex, limit)
+                }
+                updateLabel={(optionIndex: number, newLabel: string) =>
+                  updateLabel(optionIndex, newLabel)
+                }
+                optionsValue={optionsValue}
+                addLabel={() => addLabel()}
+              ></InputMutiple>
             )}
             <div>
               <div className="flex mt-4 justify-end pt-2 gap-x-[15px] ites-center">

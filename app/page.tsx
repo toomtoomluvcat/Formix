@@ -1,11 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import NavBarInForm from "./component/nav";
 import Image from "next/image";
 import Link from "next/link";
 
 function page() {
+  const howIsWork = useRef<HTMLDivElement | null>(null);
+  const focushowIswork = () => {
+    if (howIsWork.current) {
+      updateShowQuestion(0);
+      const rect = howIsWork.current.getBoundingClientRect();
+      const offset = -70; 
+      window.scrollTo({
+        top: window.scrollY + rect.top + offset,
+        behavior: "smooth",
+      });
+      howIsWork.current.focus();
+     
+    }
+  };
+  const focushowDev = () => {
+    if (howIsWork.current) {
+      updateShowQuestion(3);
+      const rect = howIsWork.current.getBoundingClientRect();
+      const offset = -150; 
+      window.scrollTo({
+        top: window.scrollY + rect.top + offset,
+        behavior: "smooth",
+      });
+      howIsWork.current.focus();
+      
+    }
+  };
   const [showQuestion, setShowQuestion] = useState<boolean[]>([
     false,
     false,
@@ -46,15 +73,18 @@ function page() {
               <li className="hidden md:block">
                 <Link href="/workspace">workspace</Link>
               </li>
-              <li className="hidden md:block">How is works</li>
-              <li className="hidden sm:block">Market</li>
-              <li className="hidden sm:block">About us</li>
+              <li onClick={()=>focushowIswork()} className="hidden md:block">How is works</li>
+              <li className="hidden sm:block">
+                {" "}
+                <Link href="/workspace?isMarket=true">Market</Link>
+              </li>
+              <li onClick={()=>focushowDev()} className="hidden sm:block">About us</li>
             </ul>
             <div className="flex text-[13px] gap-x-[15px] items-center">
-              <h3>SignIn</h3>
-              <h3 className="text-white bg-black rounded-[5px] py-[8px]  px-[10px]">
+            <Link href={'/signin'}> <h3>SignIn</h3></Link>
+              <Link href={'/signup'}><h3 className="text-white bg-black hover:bg-[#262626] transition-all duration-[500ms] rounded-[5px] py-[8px]  px-[10px]">
                 SignUp
-              </h3>
+              </h3></Link>
             </div>
           </nav>
           <div className="max-w-[400px] mt-[100px] mb-[50px] mx-auto text-center">
@@ -65,7 +95,7 @@ function page() {
               Effortlessly create forms with just a few clicks, perfect for any
               skill level
             </h2>
-            <Link href="/">
+            <Link href="/workspace">
               <div className="mt-[30px] mx-auto w-[100px] text-[13px] text-center bg-black text-white p-[10px] rounded">
                 Get started
               </div>
@@ -313,23 +343,26 @@ function page() {
                           Create form
                         </h2>
                       </div>
-                      <Link href={'/workspace'}><div
-                        className="grow drop-shadow-xl border-2 
+                      <button className="grow">
+                        <Link
+                          className=" drop-shadow-xl border-2 
                       justify-center items-center px-[5px] md:px-[15px] py-[10px] 
                       mt-[15px] flex gap-x-[15px] rounded-[10px]"
-                      >
-                        <Image
-                          src="/Icon-form/12.png"
-                          width={384}
-                          height={214}
-                          quality={100}
-                          alt="bg-workspace"
-                          className="w-[15px] md:block hidden  md:w-[25px]"
-                        />
-                        <h2 className="text-[8px] text-center font-medium whitespace-nowrap md:text-[12px]">
-                          Visit website workspace
-                        </h2>
-                      </div></Link>
+                          href={"/workspace"}
+                        >
+                          <Image
+                            src="/Icon-form/12.png"
+                            width={384}
+                            height={214}
+                            quality={100}
+                            alt="bg-workspace"
+                            className="w-[15px] md:block hidden  md:w-[25px]"
+                          />
+                          <h2 className="text-[8px] text-center font-medium whitespace-nowrap md:text-[12px]">
+                            Visit website workspace
+                          </h2>
+                        </Link>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -351,7 +384,7 @@ function page() {
                     alt="bg-workspace"
                     className="w-[25px]"
                   />
-                  <h2 className="text-[17px] md:text-[23px] font-medium">
+                  <h2 ref={howIsWork} className="text-[17px] md:text-[23px] font-medium">
                     How formix work?
                   </h2>
                 </div>
