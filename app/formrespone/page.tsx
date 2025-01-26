@@ -114,7 +114,6 @@ function formrespone() {
 
   const getChartOptions = () => {
     if (chart === 0) {
-      // Pie Chart options
       return {
         series: [52.8, 26.8, 20.4],
         colors: ["#001F3F", "#3A6D8C", "#EAD8B1"],
@@ -481,9 +480,9 @@ function formrespone() {
               className="bg-[8px]  px-[30px] md:px-[45px] py-[25px] rounded-[8px] flex justify-between gap-x-[15px] bg-white translate-y-[-10px]"
             >
               <div>
-                <p className="font-medium">Archive forms</p>
+                <p className="font-medium">limiting forms </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  limiting forms You can limit the number of responses to your
+                  You can limit the number of responses to your
                   form.
                 </p>
               </div>
@@ -555,9 +554,9 @@ function formrespone() {
               className="bg-[8px] px-[30px] md:px-[45px] py-[25px] rounded-[8px] gap-x-[15px] bg-white translate-y-[-10px]"
             >
               <div className="mb-[40px]">
-                <p className="font-medium">form colour </p>
+                <p className="font-medium">form color </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  choose you colour style for display
+                  choose you color style for display
                 </p>
               </div>
               <div className="flex flex-col mb-[15px] gap-y-[5px] px-[40px] sm:px-[70px]">
@@ -605,7 +604,7 @@ function formrespone() {
               <div className="mb-[10px]">
                 <p className="font-medium">form colour </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  choose you colour style for display
+                Export forms to google sheet
                 </p>
               </div>
 
@@ -637,7 +636,7 @@ function formrespone() {
               <div className="mb-[10px]">
                 <p className="font-medium">Deleate forms </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  Export forms to google sheet
+                 
                 </p>
               </div>
               <button

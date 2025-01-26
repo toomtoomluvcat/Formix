@@ -7,9 +7,9 @@ interface Option {
 }
 
 interface Color {
-  color1: string;
-  color2: string;
-  color3: string;
+  color1: string |null;
+  color2: string |null;
+  color3: string | null;
 }
 interface InputMutipleProps {
   color: Color;
@@ -51,8 +51,8 @@ const InputMutiple = ({
                   updateLabel(index, e.target.value)
                 }
                 onFocus={(e) => {
-                  e.target.style.borderColor = color.color1;
-                  e.target.style.backgroundColor = color.color3;
+                  e.target.style.borderColor = color.color1 ?? "";
+                  e.target.style.backgroundColor = color.color2?? "";
                   if (
                     isLastOption &&
                     !optionsValue.some((opt) => opt.label === "")
@@ -73,8 +73,8 @@ const InputMutiple = ({
               <div className="flex gap-x-[15px] items-center ">
                 <input
                   onFocus={(e) => {
-                    e.target.style.borderColor = color.color1;
-                    e.target.style.backgroundColor = color.color3;
+                    e.target.style.borderColor = color.color1?? "";
+                    e.target.style.backgroundColor = color.color2?? "";
                   }}
                   onBlur={(e) => {
                     e.target.style.backgroundColor = "transparent";
@@ -109,7 +109,7 @@ const InputMutiple = ({
                     height="24px"
                     viewBox="0 -960 960 960"
                     width="24px"
-                    fill={color.color1}
+                    fill={color.color1?? ""}
                   >
                     <path d="M200-440v-80h560v80H200Z" />
                   </svg>

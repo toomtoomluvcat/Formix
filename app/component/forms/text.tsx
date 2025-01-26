@@ -9,9 +9,10 @@ interface Option {
   limit: number | null;
 }
 interface Color {
-  color1: string;
-  color2: string;
-  color3: string;
+  color1: string | null;
+  color2: string | null;
+  color3: string | null;
+  color10?: string | null;
 }
 interface InputProp {
   requiredQuestion: boolean;
@@ -147,10 +148,7 @@ function Text({
 
   return (
     <div className="relative">
-      <div
-        className="rounded-[20px] mb-4  "
-        style={{ backgroundColor: `${color.color1}` }}
-      >
+      <div className="bg-black mb-[20px]  rounded-[20px]">
         <div className="translate-x-[10px] py-[20px]  rounded-[20px] px-[30px] bg-white shadow-[0px_0px_3px_0px_rgba(0,0,0,0.34)]">
           <div className="flex justify-between flex-wrap">
             <div className="max-w-[215px] sm:max-w-[300px]">
@@ -166,7 +164,7 @@ function Text({
                 } p-[4px] focus:outline-none 
                 focus:border-b-2 border-[#E5e5e5] focus:border-black transition-border duration-500 mb-4`}
                 onFocus={(e) => {
-                  e.target.style.backgroundColor = color.color3;
+                  e.target.style.backgroundColor = color.color2 ?? "";
                 }}
                 style={{ transition: "all 0.3s ease" }}
                 onBlur={(e) => {
@@ -222,7 +220,7 @@ function Text({
                     <div key={optionIndex}>
                       <div
                         onClick={() => handleTypeChange(option.value)}
-                        className="py-[2px] px-[5px] text-[0.85rem]  hover:bg-[#E5e5e5] items-center rounded-[4px] my-[2px] w-[140px] flex gap-x-[8px]"
+                        className="py-[2px] px-[5px] text-[0.85rem]  hover:bg-[#E5e5e5] items-center  rounded-[4px] my-[2px] w-[140px] flex gap-x-[8px]"
                       >
                         <Image
                           className="h-[19px] w-[18px]"
@@ -317,6 +315,8 @@ function Text({
                       ></div>
                     </div>
                   </div>
+
+                  
                 </label>
                 <div className="w-[1px] bg-black"></div>
                 <svg

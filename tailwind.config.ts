@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        "press-gothic": ['"Press Gothic Biform W00 Regular"', "sans-serif"],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
@@ -218,19 +221,19 @@ export default {
           950: "#042f2e",
         },
         cyan: {
-          50: "#ecfeff",  
-          100: "#cffafe", 
-          200: "#a5f3fc", 
-          300: "#67e8f9", 
-          400: "#22d3ee", 
-          500: "#06b6d4", 
-          600: "#0891b2", 
-          700: "#0e7490", 
-          800: "#155e75", 
-          900: "#164e63", 
-          950: "#083344", 
+          50: "#ecfeff",
+          100: "#cffafe",
+          200: "#a5f3fc",
+          300: "#67e8f9",
+          400: "#22d3ee",
+          500: "#06b6d4",
+          600: "#0891b2",
+          700: "#0e7490",
+          800: "#155e75",
+          900: "#164e63",
+          950: "#083344",
         },
-        
+
         sky: {
           50: "#f0f9ff",
           100: "#e0f2fe",

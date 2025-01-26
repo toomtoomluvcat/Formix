@@ -18,6 +18,7 @@ function Form() {
     color1: string;
     color2: string;
     color3: string;
+    
   }
 
   const [color, setColor] = useState<Color>({
@@ -547,11 +548,11 @@ function Form() {
 
           {/* <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
             {JSON.stringify(questions, null, 2)}
-          </div>  */}
+          </div>   */}
         </div>
       </form>
       <div>
-        {/* <div className="mt-4 flex gap-x-[10px] justify-center">
+        <div className="mt-4 flex gap-x-[10px] justify-center">
           <button
             style={{
               backgroundColor: "#FFB6C1", // สีพาสเทลชมพู
@@ -617,7 +618,7 @@ function Form() {
           >
             Theme 5
           </button>
-        </div> */}
+        </div> 
       </div>
     </div>
   );

@@ -694,6 +694,7 @@ function Workspace() {
                           className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
                         />
                       </Link>
+                      <Link href="/form01">
                       <Image
                         src="/Icon-form/29.png"
                         width={1000}
@@ -702,6 +703,7 @@ function Workspace() {
                         alt="question"
                         className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
                       />
+                      </Link>
                     </div>
                   </div>
                 </div>

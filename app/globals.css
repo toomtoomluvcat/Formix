@@ -4,6 +4,21 @@
 @import "@fontsource/roboto/400.css";
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/700.css";
+@import url("https://db.onlinewebfonts.com/c/d0a687dd2a0803f486cde808245bd3c5?family=Press+Gothic+Biform+W00+Regular");
+@font-face {
+  font-family: "Press Gothic Biform W00 Regular";
+  src: url("https://db.onlinewebfonts.com/t/d0a687dd2a0803f486cde808245bd3c5.eot");
+  src: url("https://db.onlinewebfonts.com/t/d0a687dd2a0803f486cde808245bd3c5.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/d0a687dd2a0803f486cde808245bd3c5.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/d0a687dd2a0803f486cde808245bd3c5.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/d0a687dd2a0803f486cde808245bd3c5.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/d0a687dd2a0803f486cde808245bd3c5.svg#Press Gothic Biform W00 Regular")
+      format("svg");
+}
 
 :root {
   --background: #ffffff;
@@ -25,9 +40,16 @@ body {
 
 div[contenteditable].placeholder::before {
   content: attr(data-placeholder);
-  color: #888;
+  color: rgba(58, 58, 58, 0.799); 
   pointer-events: none;
 }
+
+.page-other div[contenteditable].placeholder::before {
+  content: attr(data-placeholder);
+  color: rgb(213, 213, 213); 
+  pointer-events: none;
+}
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -94,4 +116,8 @@ input[type="number"] {
 
 .animation-slide-down {
   animation: slideDown 0.5s ease-out;
+}
+.strokedText {
+  color: white;
+  -webkit-text-stroke: 2px black;
 }

@@ -52,7 +52,7 @@ const InputCheck = ({
                 }
                 onFocus={(e) => {
                   e.target.style.borderColor = color.color1;
-                  e.target.style.backgroundColor = color.color3;
+                  e.target.style.backgroundColor = color.color2;
                   if (
                     isLastOption &&
                     !optionsValue.some((opt) => opt.label === "")
@@ -74,7 +74,7 @@ const InputCheck = ({
                 <input
                   onFocus={(e) => {
                     e.target.style.borderColor = color.color1;
-                    e.target.style.backgroundColor = color.color3;
+                    e.target.style.backgroundColor = color.color2;
                   }}
                   onBlur={(e) => {
                     e.target.style.backgroundColor = "transparent";
