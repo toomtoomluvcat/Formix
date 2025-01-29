@@ -20,17 +20,8 @@
       format("svg");
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+
 
 body {
   font-family: "roboto", sans-serif;
@@ -50,15 +41,6 @@ div[contenteditable].placeholder::before {
   pointer-events: none;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-}
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -120,4 +102,42 @@ input[type="number"] {
 .strokedText {
   color: white;
   -webkit-text-stroke: 2px black;
+}
+.color-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.color-input::-webkit-color-swatch {
+  
+}
+
+/* Custom radio button styles */
+input[type="radio"].custom-radio {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  outline: none;
+  border: 3px solid rgb(0, 0, 0); 
+  position: relative;
+}
+
+input[type="radio"].custom-radio:disabled {
+  border-color: black; 
+  background-color: white;
+  
+}
+input[type="radio"].custom-radio:checked::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

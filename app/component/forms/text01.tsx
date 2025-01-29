@@ -52,7 +52,7 @@ function Text({
   addChangeType,
 }: InputProp) {
   const [nameQuestion, setNameQuestion] = useState<string>("");
-  const [type, setType] = useState<string>("text");
+  const [type, setType] = useState<string>("Text");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -184,7 +184,7 @@ function Text({
                 e.target.style.backgroundColor = color.color10 ?? "";
               }}
               style={{
-                fontSize: "28px",
+                fontSize: "1.7em",
                 transition: "all 0.3s ease",
                 color: "white",
                 WebkitTextStroke: "3px black",
@@ -212,7 +212,7 @@ function Text({
             >
               <div className="flex w-full justify-center items-center">
                 <div className="flex items-center ml-4">
-                  <div className="font-press-gothic text-[1rem] underline">
+                  <div className="font-press-gothic text-[1em] underline">
                     {options.find((option) => option.value === type)?.label}
                   </div>
                 </div>
@@ -246,7 +246,7 @@ function Text({
                   <div key={optionIndex}>
                     <div
                       onClick={() => handleTypeChange(option.value)}
-                      className="py-[4px] px-[5px] text-[0.85rem] items-center transition-all duration-[300ms] rounded-[4px] my-[2px] w-[140px] flex gap-x-[8px]" // Tailwind CSS ของคุณ
+                      className="py-[4px] px-[5px]  items-center transition-all duration-[300ms] rounded-[4px] my-[2px] w-[140px] flex gap-x-[8px]" // Tailwind CSS ของคุณ
                       style={{
                         backgroundColor:
                           hoveredIndex === optionIndex
@@ -263,7 +263,7 @@ function Text({
                         height={20}
                         alt={option.value}
                       />
-                      <p className="font-press-gothic text-[16px]">
+                      <p className="font-press-gothic text-[1em]">
                         {option.label}
                       </p>
                     </div>
@@ -329,7 +329,7 @@ function Text({
               <p
                 className="font-press-gothic"
                 style={{
-                  fontSize: "20px",
+                  fontSize: "1.3em",
                   transition: "all 0.3s ease",
                   color: "white",
                   WebkitTextStroke: "3px black",

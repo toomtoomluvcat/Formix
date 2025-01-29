@@ -12,7 +12,7 @@ import ApexCharts from "apexcharts";
 import { Fascinate } from "next/font/google";
 
 function formrespone() {
-  const [display, setDisplay] = useState<number>(3);
+  const [display, setDisplay] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<
     {
@@ -47,7 +47,6 @@ function formrespone() {
     { position: 1, color1: "#F8C4CC", color2: "#F6EDBB", color3: "#BDE2F0" },
     { position: 2, color1: "#8EB15C", color2: "#B1CF86", color3: "#D2E6B5" },
     { position: 3, color1: "#FF8B00", color2: "#FED700", color3: "#FEFACD" },
-    // { position: 4, color1: "#", color2: "#", color3: "#" },
   ];
   const [displayArchive,setDisplayArchive] =useState();
 
@@ -205,7 +204,7 @@ function formrespone() {
         >
           <div className="mb-[20px] md:mb-[40px] pt-[15px] md:pt-[25px] px-[15px] md:px-[40px]">
             <p className="font-medium text-[12px] sm:text-[15px]">
-              Deleate forms{" "}
+              Delete forms{" "}
             </p>
             <p className="text-[9px] sm:text-[13px] text-[#474747] mt-[4px] sm:mt-[7px] max-w-[350px]">
               Are you sure you want to delete the form? Deleting the form will
@@ -634,9 +633,9 @@ function formrespone() {
               rounded-[8px] flex justify-between gap-x-[15px] bg-white translate-y-[-10px]"
             >
               <div className="mb-[10px]">
-                <p className="font-medium">Deleate forms </p>
+                <p className="font-medium">Delete forms </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                 
+                Removes all data entered in a form, usually before submission or permanently
                 </p>
               </div>
               <button

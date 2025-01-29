@@ -48,6 +48,7 @@ function Text({
   const [nameQuestion, setNameQuestion] = useState<string>("");
   const [type, setType] = useState<string>("text");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenDecoration,setIsOpenDecoration] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const divRef = useRef<HTMLDivElement>(null);
@@ -148,8 +149,8 @@ function Text({
 
   return (
     <div className="relative">
-      <div className="bg-black mb-[20px]  rounded-[20px]">
-        <div className="translate-x-[10px] py-[20px]  rounded-[20px] px-[30px] bg-white shadow-[0px_0px_3px_0px_rgba(0,0,0,0.34)]">
+      <div style={{backgroundColor:color.color1?? ""}} className=" mb-[20px]  rounded-[20px]">
+        <div className="translate-x-[10px] py-[20px]  border-2  rounded-[20px] px-[30px] bg-white shadow-[0px_0px_3px_0px_rgba(0,0,0,0)]">
           <div className="flex justify-between flex-wrap">
             <div className="max-w-[215px] sm:max-w-[300px]">
               <div
@@ -162,7 +163,7 @@ function Text({
                 className={`${
                   !nameQuestion ? "placeholder" : ""
                 } p-[4px] focus:outline-none 
-                focus:border-b-2 border-[#E5e5e5] focus:border-black transition-border duration-500 mb-4`}
+                focus:border-b-2 border-[#E5e5e5] ] focus:border-black transition-border duration-500 mb-4`}
                 onFocus={(e) => {
                   e.target.style.backgroundColor = color.color2 ?? "";
                 }}
@@ -189,7 +190,7 @@ function Text({
                       alt="selected type"
                       className="mr-2 w-[19px] h-[20px]"
                     />
-                    <div className="text-[0.85rem]">
+                    <div className="text-[0.85em]">
                       {options.find((option) => option.value === type)?.label}
                     </div>
                   </div>
@@ -212,7 +213,7 @@ function Text({
               {isOpen && (
                 <div
                   style={{
-                    boxShadow: "0px 0px 1px 0px  rgba(0,0,0,0.34)",
+                    boxShadow: "0px 0px 1px 0px  rgb(0, 0, 0)",
                   }}
                   className="absolute px-[10px] z-40  py-[5px] bg-white rounded-[7px]"
                 >

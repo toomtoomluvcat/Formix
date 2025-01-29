@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import NavBarInForm from "../component/nav";
+import NavBarInForm from "../component/nav01";
 import Text from "../component/forms/text01";
 
 function Form() {
@@ -148,7 +148,7 @@ function Form() {
     setQuestions((prev) => [
       ...prev,
       {
-        id: prev.length + 1,
+        id: prev.length >0? prev[prev.length-1].id+1 :1,
         title: "",
         type: "text",
         required: false,
@@ -170,12 +170,10 @@ function Form() {
     setRemovingId(idToDel);
     setTimeout(() => {
       setQuestions((prevQuestions) => {
-        const updatedQuestions = prevQuestions
-          .filter((item) => item.id !== idToDel)
-          .map((item, index) => ({
-            ...item,
-            id: index + 1,
-          }));
+        const updatedQuestions = prevQuestions.filter(
+          (item) => item.id !== idToDel
+        );
+
         return updatedQuestions;
       });
       setRemovingId(null);
@@ -225,9 +223,9 @@ function Form() {
               onInput={(e: React.FormEvent<HTMLDivElement>) =>
                 setTitle(e.currentTarget.textContent || "")
               }
-              className={` page-home font-medium max-w-[450px] font-press-gothic text-center text-[45px] px-4   
+              className={` page-home font-medium max-w-[450px] font-press-gothic text-center text-[4em] px-4   
       focus:transition-all duration-300 focus:border-b-2 
-      focus:border-solid focus:text-start focus:outline-none inline-block mb-6
+      focus:border-solid focus:text-start focus:outline-none inline-block mb-2
        ${!title ? "placeholder" : ""}`}
               onFocus={(e) => {
                 e.target.style.borderColor = color.color2 ?? "";
@@ -240,14 +238,6 @@ function Form() {
               style={{
                 transition: "all 0.3s ease",
                 color: `${color.color2 ?? ""}`,
-                //         WebkitTextStroke: "5px black",
-                //         paintOrder: "stroke fill",
-                //         textShadow: `
-                //   0px 0px 0px rgb(0, 0, 0),
-                //   2px 4px 0px rgb(0, 0, 0),
-                //   3px 5px 0px rgb(0, 0, 0),
-                //   0px 2px 0px rgb(0, 0, 0)
-                // `,
               }}
               contentEditable="true"
               suppressContentEditableWarning={true}
@@ -261,10 +251,10 @@ function Form() {
               onInput={(e: React.FormEvent<HTMLDivElement>) =>
                 setDescription(e.currentTarget.textContent || "")
               }
-              className={`page-home text-center text-[15px] px-4
+              className={`page-home text-center text-[0.9em] px-4
                focus:border-b-2 focus:transition-all 
                duration-300 focus:border-b-2 focus:border-black
-                focus:border-solid focus:outline-none mb-4 py-[3px]   ${
+                focus:border-solid focus:outline-none mb-12 py-[3px]   ${
                   !description ? "placeholder" : ""
                 }`}
               onFocus={(e) => {
@@ -327,7 +317,7 @@ function Form() {
           <button
             type="button"
             onClick={addQuesion}
-            className="flex items-center w-full gap-x-2 justify-center py-[22px] rounded-[7px] text-[25px] cursor-pointer"
+            className="flex items-center w-full gap-x-2 justify-center py-[22px] rounded-[7px] text-[1.8em] cursor-pointer"
             style={{
               backgroundColor: `${color.color2}`,
               boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
@@ -338,7 +328,7 @@ function Form() {
                 color: "white",
                 WebkitTextStroke: "3px black",
                 paintOrder: "stroke fill",
-                textShadow: "2px 3px 0px rgba(0,0,0,0.6)",
+                textShadow: "2px 3px 0px rgb(0, 0, 0)",
               }}
               className="font-press-gothic text-white"
             >
@@ -346,9 +336,9 @@ function Form() {
             </p>
           </button>
 
-          {/* <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
+          <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
             {JSON.stringify(questions, null, 2)}
-          </div>   */}
+          </div>   
         </div>
       </form>
       <div>

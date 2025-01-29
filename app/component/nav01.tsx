@@ -6,7 +6,7 @@ function NavBarInForm() {
   return (
     <div>
       <nav>
-        <div className="flex justify-between max-w-[1280px] mx-auto mt-6 px-[30px]">
+        <div className="flex justify-between max-w-[1280px] mx-auto pt-6 px-[30px]">
           <Link href={"/"}>
             <Image
               src="/Icon-form/FORMIX LOGO.png"
@@ -20,7 +20,7 @@ function NavBarInForm() {
 
           <div>
             <div className="flex text-[13px] gap-[35px] items-center">
-              <Link href="/form">
+              <Link href="/form01">
                 <div className="flex gap-[6px] font-medium items-center">
                   <Image
                     src="/Icon-form/1.png"
@@ -33,7 +33,7 @@ function NavBarInForm() {
                   <p className="md:block hidden">Quesion</p>
                 </div>
               </Link>
-              <Link href="/formrespone">
+              <Link href="/formrespone01">
                 <div className="flex gap-[6px] font-medium items-center">
                   <Image
                     src="/Icon-form/2.png"
@@ -46,7 +46,8 @@ function NavBarInForm() {
                   <p className="md:block hidden">Respone</p>
                 </div>
               </Link>
-              <Link href={'/form/preview'}><div className="flex gap-[6px] font-medium items-center">
+              <Link href={"/form01/preview"}>
+              <div className="flex gap-[6px] font-medium items-center">
                 <Image
                   src="/Icon-form/3.png"
                   width={20}

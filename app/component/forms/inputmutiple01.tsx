@@ -45,14 +45,13 @@ const InputMutiple = ({
             key={index}
           >
             <div className="flex items-center gap-x-[5px] mb-2">
-              {!isLastOption && (
-                <div className="w-[15px] h-[15px] rounded-[50%] border-2"></div>
-              )}
+              
               <input
                 onBlur={(e) => {
                   e.target.style.backgroundColor = "transparent";
                   e.target.style.borderColor = "transparent";
                 }}
+                
                 style={{
                   transition: "all 0.3s ease",
                   borderColor: "transparent",
@@ -79,7 +78,7 @@ const InputMutiple = ({
                   isLastOption ? "Add question" : "Add label options"
                 }
                 type="text"
-                className="w-full text-[16px] py-2 focus:outline-none border-[#e5e5e5]
+                className="w-full text-[16px] py-2 text-white focus:outline-none border-[#e5e5e5]
                  text-[12px] transition-all duration-500 px-2 boder-soild focus:border-black border-b-2"
               />
             </div>
@@ -94,7 +93,11 @@ const InputMutiple = ({
                     e.target.style.backgroundColor = "transparent";
                     e.target.style.borderColor = "transparent";
                   }}
-                  style={{ transition: "all 0.3s ease" ,backgroundColor :"transparent" }}
+                  style={{
+                    transition: "all 0.3s ease",
+                    backgroundColor: "transparent",
+                    borderColor : "transparent"
+                  }}
                   type="text"
                   maxLength={3}
                   value={item.limit || ""}
@@ -117,15 +120,13 @@ const InputMutiple = ({
                 />
 
                 <div onClick={() => deleteChoiceById(index)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 -960 960 960"
-                    width="24px"
-                    fill={color.color1 ?? ""}
-                  >
-                    <path d="M200-440v-80h560v80H200Z" />
-                  </svg>
+                  <Image
+                    src={"/Icon-form/Theme2/I12.png"}
+                    width={100}
+                    height={100}
+                    alt="icon"
+                    className="w-[23px] "
+                  ></Image>
                 </div>
               </div>
             )}
