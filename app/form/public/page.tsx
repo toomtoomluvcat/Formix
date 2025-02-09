@@ -20,7 +20,7 @@ function Preview() {
       title: string;
       type: string;
       required: boolean;
-      options?: Array<{ label: string; limit: number | null }> | null;
+      options?: Array<{ labelChoice: string; limitAns: number | null }> | null;
     }[]
   >([
     {
@@ -35,11 +35,11 @@ function Preview() {
       type: "check",
       required: false,
       options: [
-        { label: "Reading", limit: null },
-        { label: "Traveling", limit: null },
-        { label: "Cooking", limit: null },
-        { label: "Gaming", limit: null },
-        { label: "Photography", limit: null },
+        { labelChoice: "Reading", limitAns: null },
+        { labelChoice: "Traveling", limitAns: null },
+        { labelChoice: "Cooking", limitAns: null },
+        { labelChoice: "Gaming", limitAns: null },
+        { labelChoice: "Photography", limitAns: null },
       ],
     },
     {
@@ -54,11 +54,11 @@ function Preview() {
       type: "dropdown",
       required: false,
       options: [
-        { label: "Apple", limit: null },
-        { label: "Banana", limit: null },
-        { label: "Orange", limit: null },
-        { label: "Grapes", limit: null },
-        { label: "Pineapple", limit: null },
+        { labelChoice: "Apple", limitAns: null },
+        { labelChoice: "Banana", limitAns: null },
+        { labelChoice: "Orange", limitAns: null },
+        { labelChoice: "Grapes", limitAns: null },
+        { labelChoice: "Pineapple", limitAns: null },
       ],
     },
     {
@@ -67,11 +67,11 @@ function Preview() {
       type: "radio",
       required: true,
       options: [
-        { label: "Dog", limit: 1 },
-        { label: "Cat", limit: 1 },
-        { label: "Rabbit", limit: 1 },
-        { label: "Hamster", limit: 1 },
-        { label: "Bird", limit: 1 },
+        { labelChoice: "Dog", limitAns: 1 },
+        { labelChoice: "Cat", limitAns: 1 },
+        { labelChoice: "Rabbit", limitAns: 1 },
+        { labelChoice: "Hamster", limitAns: 1 },
+        { labelChoice: "Bird", limitAns: 1 },
       ],
     },
     {
@@ -80,11 +80,11 @@ function Preview() {
       type: "dropdown",
       required: false,
       options: [
-        { label: "Car", limit: null },
-        { label: "Bicycle", limit: null },
-        { label: "Bus", limit: null },
-        { label: "Train", limit: null },
-        { label: "Walk", limit: null },
+        { labelChoice: "Car", limitAns: null },
+        { labelChoice: "Bicycle", limitAns: null },
+        { labelChoice: "Bus", limitAns: null },
+        { labelChoice: "Train", limitAns: null },
+        { labelChoice: "Walk", limitAns: null },
       ],
     },
     {
@@ -93,11 +93,11 @@ function Preview() {
       type: "check",
       required: true,
       options: [
-        { label: "JavaScript", limit: null },
-        { label: "Python", limit: null },
-        { label: "Java", limit: null },
-        { label: "C++", limit: null },
-        { label: "Go", limit: null },
+        { labelChoice: "JavaScript", limitAns: null },
+        { labelChoice: "Python", limitAns: null },
+        { labelChoice: "Java", limitAns: null },
+        { labelChoice: "C++", limitAns: null },
+        { labelChoice: "Go", limitAns: null },
       ],
     },
     {
@@ -112,8 +112,8 @@ function Preview() {
       type: "radio",
       required: true,
       options: [
-        { label: "Yes", limit: 1 },
-        { label: "No", limit: 1 },
+        { labelChoice: "Yes", limitAns: 1 },
+        { labelChoice: "No", limitAns: 1 },
       ],
     },
     {
@@ -122,12 +122,12 @@ function Preview() {
       type: "radio",
       required: false,
       options: [
-        { label: "Action", limit: null },
-        { label: "Comedy", limit: null },
-        { label: "Drama", limit: null },
-        { label: "Horror", limit: null },
-        { label: "Romance", limit: null },
-        { label: "Sci-Fi", limit: null },
+        { labelChoice: "Action", limitAns: null },
+        { labelChoice: "Comedy", limitAns: null },
+        { labelChoice: "Drama", limitAns: null },
+        { labelChoice: "Horror", limitAns: null },
+        { labelChoice: "Romance", limitAns: null },
+        { labelChoice: "Sci-Fi", limitAns: null },
       ],
     },
     {
@@ -148,8 +148,8 @@ function Preview() {
       type: "radio",
       required: false,
       options: [
-        { label: "Yes, please", limit: 1 },
-        { label: "No, thanks", limit: 1 },
+        { labelChoice: "Yes, please", limitAns: 1 },
+        { labelChoice: "No, thanks", limitAns: 1 },
       ],
     },
     {
@@ -158,12 +158,12 @@ function Preview() {
       type: "check",
       required: false,
       options: [
-        { label: "USA", limit: null },
-        { label: "France", limit: null },
-        { label: "Japan", limit: null },
-        { label: "Italy", limit: null },
-        { label: "Thailand", limit: null },
-        { label: "India", limit: null },
+        { labelChoice: "USA", limitAns: null },
+        { labelChoice: "France", limitAns: null },
+        { labelChoice: "Japan", limitAns: null },
+        { labelChoice: "Italy", limitAns: null },
+        { labelChoice: "Thailand", limitAns: null },
+        { labelChoice: "India", limitAns: null },
       ],
     },
     {
@@ -178,11 +178,11 @@ function Preview() {
       type: "radio",
       required: true,
       options: [
-        { label: "Football", limit: 1 },
-        { label: "Basketball", limit: 1 },
-        { label: "Tennis", limit: 1 },
-        { label: "Swimming", limit: 1 },
-        { label: "Running", limit: 1 },
+        { labelChoice: "Football", limitAns: 1 },
+        { labelChoice: "Basketball", limitAns: 1 },
+        { labelChoice: "Tennis", limitAns: 1 },
+        { labelChoice: "Swimming", limitAns: 1 },
+        { labelChoice: "Running", limitAns: 1 },
       ],
     },
     {
@@ -191,11 +191,11 @@ function Preview() {
       type: "check",
       required: false,
       options: [
-        { label: "Facebook", limit: null },
-        { label: "Instagram", limit: 7 },
-        { label: "Twitter", limit: 6 },
-        { label: "LinkedIn", limit: null },
-        { label: "TikTok", limit: null },
+        { labelChoice: "Facebook", limitAns: null },
+        { labelChoice: "Instagram", limitAns: 7 },
+        { labelChoice: "Twitter", limitAns: 6 },
+        { labelChoice: "LinkedIn", limitAns: null },
+        { labelChoice: "TikTok", limitAns: null },
       ],
     },
     {
@@ -204,11 +204,11 @@ function Preview() {
       type: "dropdown",
       required: true,
       options: [
-        { label: "High School", limit: 5 },
-        { label: "Bachelor's Degree", limit: 8 },
-        { label: "Master's Degree", limit: 9 },
-        { label: "PhD", limit: null },
-        { label: "Other", limit: null },
+        { labelChoice: "High School", limitAns: 5 },
+        { labelChoice: "Bachelor's Degree", limitAns: 8 },
+        { labelChoice: "Master's Degree", limitAns: 9 },
+        { labelChoice: "PhD", limitAns: null },
+        { labelChoice: "Other", limitAns: null },
       ],
     },
     {
@@ -223,10 +223,10 @@ function Preview() {
       type: "radio",
       required: true,
       options: [
-        { label: "Definitely", limit: 1 },
-        { label: "Maybe", limit: 1 },
-        { label: "Not sure", limit: 1 },
-        { label: "No", limit: 1 },
+        { labelChoice: "Definitely", limitAns: 1 },
+        { labelChoice: "Maybe", limitAns: 1 },
+        { labelChoice: "Not sure", limitAns: 1 },
+        { labelChoice: "No", limitAns: 1 },
       ],
     },
   ]);
@@ -366,16 +366,16 @@ function Preview() {
                       <div key={index} className="flex items-center mb-2">
                         <label className="flex items-center cursor-pointer relative">
                           <input
-                            value={option.label}
+                            value={option.labelChoice}
                             checked={
                               answerList[questionId]?.answer.includes(
-                                option.label
+                                option.labelChoice
                               ) ?? false
                             }
                             onChange={(e) =>
                               handleCheckboxChange(
                                 item.id,
-                                option.label,
+                                option.labelChoice,
                                 e.target.checked
                               )
                             }
@@ -401,10 +401,10 @@ function Preview() {
                           </span>
                         </label>
                         <p className="ml-2  text-sm">
-                          {option.label} &nbsp;&nbsp;{" "}
+                          {option.labelChoice} &nbsp;&nbsp;{" "}
                           <span className=" text-gray-600">
                             {" "}
-                            {option.limit ? `(0/${option?.limit})` : ""}
+                            {option.limitAns ? `(0/${option?.limitAns})` : ""}
                           </span>
                         </p>
                       </div>
@@ -417,7 +417,7 @@ function Preview() {
                       <div key={index}>
                         <div className="flex items-center mb-2">
                           <input
-                          value={option.label}
+                          value={option.labelChoice}
                           onChange={(e) => handleInput(item.id, e.target.value)}
                             type="radio"
                             className="form-radio accent-[#000000]"
@@ -429,10 +429,10 @@ function Preview() {
                             htmlFor="disabled-radio-1"
                             className="ms-2 text-sm "
                           >
-                            {option.label} &nbsp;&nbsp;{" "}
+                            {option.labelChoice} &nbsp;&nbsp;{" "}
                             <span className=" text-gray-600">
                               {" "}
-                              {option.limit ? `(0/${option?.limit})` : ""}
+                              {option.limitAns ? `(0/${option?.limitAns})` : ""}
                             </span>
                           </label>
                         </div>
@@ -468,13 +468,13 @@ function Preview() {
                           <div className="flex hover:bg-gray-100 items-center transition-all duration-[500ms] rounded-lg pl-2 pr-6"
                             key={index}
                             onClick={() =>
-                              handleInputDropdown(item.id, option.label)
+                              handleInputDropdown(item.id, option.labelChoice)
                             }
                           >
                             <ul className="p-2 rounded-lg text-[0.85em]  cursor-pointer">
-                              {option.label}
+                              {option.labelChoice}
                             </ul>
-                            <p className="text-sm text-gray-600">{option.limit ? `(0/${option?.limit})` : ""}</p>
+                            <p className="text-sm text-gray-600">{option.limitAns ? `(0/${option?.limitAns})` : ""}</p>
                           </div>
                         ))}
                       </div>

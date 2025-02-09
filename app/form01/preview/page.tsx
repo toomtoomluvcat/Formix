@@ -12,7 +12,7 @@ function Preview() {
       title: string;
       type: string;
       required: boolean;
-      options?: Array<{ label: string; limit: number | null }> | null;
+      options?: Array<{ labelChoice: string; limitAns: number | null }> | null;
     }[]
   >([
     {
@@ -27,11 +27,11 @@ function Preview() {
       type: "check",
       required: false,
       options: [
-        { label: "Reading", limit: null },
-        { label: "Traveling", limit: null },
-        { label: "Cooking", limit: null },
-        { label: "Gaming", limit: null },
-        { label: "Photography", limit: null },
+        { labelChoice: "Reading", limitAns: null },
+        { labelChoice: "Traveling", limitAns: null },
+        { labelChoice: "Cooking", limitAns: null },
+        { labelChoice: "Gaming", limitAns: null },
+        { labelChoice: "Photography", limitAns: null },
       ],
     },
     {
@@ -46,11 +46,11 @@ function Preview() {
       type: "dropdown",
       required: false,
       options: [
-        { label: "Apple", limit: null },
-        { label: "Banana", limit: null },
-        { label: "Orange", limit: null },
-        { label: "Grapes", limit: null },
-        { label: "Pineapple", limit: null },
+        { labelChoice: "Apple", limitAns: null },
+        { labelChoice: "Banana", limitAns: null },
+        { labelChoice: "Orange", limitAns: null },
+        { labelChoice: "Grapes", limitAns: null },
+        { labelChoice: "Pineapple", limitAns: null },
       ],
     },
     {
@@ -59,11 +59,11 @@ function Preview() {
       type: "radio",
       required: true,
       options: [
-        { label: "Dog", limit: 1 },
-        { label: "Cat", limit: 1 },
-        { label: "Rabbit", limit: 1 },
-        { label: "Hamster", limit: 1 },
-        { label: "Bird", limit: 1 },
+        { labelChoice: "Dog", limitAns: 1 },
+        { labelChoice: "Cat", limitAns: 1 },
+        { labelChoice: "Rabbit", limitAns: 1 },
+        { labelChoice: "Hamster", limitAns: 1 },
+        { labelChoice: "Bird", limitAns: 1 },
       ],
     },
     {
@@ -72,11 +72,11 @@ function Preview() {
       type: "dropdown",
       required: false,
       options: [
-        { label: "Car", limit: null },
-        { label: "Bicycle", limit: null },
-        { label: "Bus", limit: null },
-        { label: "Train", limit: null },
-        { label: "Walk", limit: null },
+        { labelChoice: "Car", limitAns: null },
+        { labelChoice: "Bicycle", limitAns: null },
+        { labelChoice: "Bus", limitAns: null },
+        { labelChoice: "Train", limitAns: null },
+        { labelChoice: "Walk", limitAns: null },
       ],
     },
     {
@@ -85,11 +85,11 @@ function Preview() {
       type: "check",
       required: true,
       options: [
-        { label: "JavaScript", limit: null },
-        { label: "Python", limit: null },
-        { label: "Java", limit: null },
-        { label: "C++", limit: null },
-        { label: "Go", limit: null },
+        { labelChoice: "JavaScript", limitAns: null },
+        { labelChoice: "Python", limitAns: null },
+        { labelChoice: "Java", limitAns: null },
+        { labelChoice: "C++", limitAns: null },
+        { labelChoice: "Go", limitAns: null },
       ],
     },
     {
@@ -104,8 +104,8 @@ function Preview() {
       type: "radio",
       required: true,
       options: [
-        { label: "Yes", limit: 1 },
-        { label: "No", limit: 1 },
+        { labelChoice: "Yes", limitAns: 1 },
+        { labelChoice: "No", limitAns: 1 },
       ],
     },
     {
@@ -114,12 +114,12 @@ function Preview() {
       type: "radio",
       required: false,
       options: [
-        { label: "Action", limit: null },
-        { label: "Comedy", limit: null },
-        { label: "Drama", limit: null },
-        { label: "Horror", limit: null },
-        { label: "Romance", limit: null },
-        { label: "Sci-Fi", limit: null },
+        { labelChoice: "Action", limitAns: null },
+        { labelChoice: "Comedy", limitAns: null },
+        { labelChoice: "Drama", limitAns: null },
+        { labelChoice: "Horror", limitAns: null },
+        { labelChoice: "Romance", limitAns: null },
+        { labelChoice: "Sci-Fi", limitAns: null },
       ],
     },
     {
@@ -140,8 +140,8 @@ function Preview() {
       type: "radio",
       required: false,
       options: [
-        { label: "Yes, please", limit: 1 },
-        { label: "No, thanks", limit: 1 },
+        { labelChoice: "Yes, please", limitAns: 1 },
+        { labelChoice: "No, thanks", limitAns: 1 },
       ],
     },
     {
@@ -150,12 +150,12 @@ function Preview() {
       type: "check",
       required: false,
       options: [
-        { label: "USA", limit: null },
-        { label: "France", limit: null },
-        { label: "Japan", limit: null },
-        { label: "Italy", limit: null },
-        { label: "Thailand", limit: null },
-        { label: "India", limit: null },
+        { labelChoice: "USA", limitAns: null },
+        { labelChoice: "France", limitAns: null },
+        { labelChoice: "Japan", limitAns: null },
+        { labelChoice: "Italy", limitAns: null },
+        { labelChoice: "Thailand", limitAns: null },
+        { labelChoice: "India", limitAns: null },
       ],
     },
     {
@@ -304,7 +304,7 @@ function Preview() {
                           </svg>
                         </span>
                       </label>
-                      <p className="ml-2 text-white text-sm">{option.label}</p>
+                      <p className="ml-2 text-white text-sm">{option.labelChoice}</p>
                     </div>
                   ))}
                 </div>
@@ -327,7 +327,7 @@ function Preview() {
                           htmlFor="disabled-radio-1"
                           className="ms-2 text-white text-sm "
                         >
-                          {option.label}
+                          {option.labelChoice}
                         </label>
                       </div>
                     </div>

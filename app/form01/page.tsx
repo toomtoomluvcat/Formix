@@ -74,7 +74,7 @@ function Form() {
       title: string;
       type: string;
       required: boolean;
-      options?: Array<{ label: string; limit: number | null }>;
+      options?: Array<{ labelChoice: string; limitAns: number | null }>;
     }[]
   >([]);
   const [active, setActive] = useState<number | null>(null);
@@ -85,7 +85,7 @@ function Form() {
   const titleRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
 
-  const addLabel = (questionId: number): void => {
+  const addlabelChoice = (questionId: number): void => {
     setQuestions((prev) =>
       prev.map((question) =>
         question.id === questionId
@@ -94,10 +94,10 @@ function Form() {
               options: [
                 ...(question.options || []),
                 {
-                  label: `options ${
+                  labelChoice: `options ${
                     question.options ? question.options.length + 1 : 1
                   }`,
-                  limit: null,
+                  limitAns: null,
                 },
               ],
             }
@@ -106,10 +106,10 @@ function Form() {
     );
   };
 
-  const updateLabel = (
+  const updatelabelChoice = (
     questionId: number,
     optionIndex: number,
-    newLabel: string
+    newlabelChoice: string
   ): void => {
     setQuestions((prev) =>
       prev.map((question) =>
@@ -117,7 +117,7 @@ function Form() {
           ? {
               ...question,
               options: question.options?.map((option, index) =>
-                index === optionIndex ? { ...option, label: newLabel } : option
+                index === optionIndex ? { ...option, labelChoice: newlabelChoice } : option
               ),
             }
           : question
@@ -125,10 +125,10 @@ function Form() {
     );
   };
 
-  const updateLimit = (
+  const updatelimitAns = (
     questionId: number,
     optionIndex: number,
-    newLimit: number | null
+    newlimitAns: number | null
   ): void => {
     setQuestions((prev) =>
       prev.map((question) =>
@@ -136,7 +136,7 @@ function Form() {
           ? {
               ...question,
               options: question.options?.map((option, index) =>
-                index === optionIndex ? { ...option, limit: newLimit } : option
+                index === optionIndex ? { ...option, limitAns: newlimitAns } : option
               ),
             }
           : question
@@ -152,7 +152,7 @@ function Form() {
         title: "",
         type: "text",
         required: false,
-        options: [{ label: "options 1", limit: null }],
+        options: [{ labelChoice: "options 1", limitAns: null }],
       },
     ]);
     setActive(questions.length + 1);
@@ -270,7 +270,7 @@ function Form() {
               contentEditable="true"
               suppressContentEditableWarning={true}
               role="textbox"
-              aria-label="Form description"
+              aria-labelChoice="Form description"
               data-placeholder="Enter details or instructions for the form."
             />
           </div>
@@ -295,13 +295,13 @@ function Form() {
                 deleteChoiceById={(ChoiceToDel: number) =>
                   deleteChoiceById(item.id, ChoiceToDel)
                 }
-                updateLimit={(optionsIndex: number, limit: number) =>
-                  updateLimit(item.id, optionsIndex, limit)
+                updatelimitAns={(optionsIndex: number, limitAns: number) =>
+                  updatelimitAns(item.id, optionsIndex, limitAns)
                 }
-                updateLabel={(optionIndex: number, newLabel: string) =>
-                  updateLabel(item.id, optionIndex, newLabel)
+                updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
+                  updatelabelChoice(item.id, optionIndex, newlabelChoice)
                 }
-                addLabel={() => addLabel(item.id)}
+                addlabelChoice={() => addlabelChoice(item.id)}
                 optionsValue={item.options}
                 addChangeType={(newType: string) =>
                   addChangeType(item.id, newType)

@@ -5,8 +5,8 @@ import InputMutiple from "./inputmutiple";
 import Image from "next/image";
 
 interface Option {
-  label: string;
-  limit: number | null;
+  labelChoice: string;
+  limitAns: number | null;
 }
 interface Color {
   color1: string | null;
@@ -20,9 +20,9 @@ interface InputProp {
   titleQuestion: string;
   deleteFromById: () => void;
   updateRequired: () => void;
-  updateLimit: (optionIndex: number, limit: number) => void;
-  updateLabel: (optionIndex: number, newLabel: string) => void;
-  addLabel: () => void;
+  updatelimitAns: (optionIndex: number, limitAns: number) => void;
+  updatelabelChoice: (optionIndex: number, newlabelChoice: string) => void;
+  addlabelChoice: () => void;
   optionsValue?: Option[];
   color: Color;
   addChangeType: (newType: string) => void;
@@ -37,9 +37,9 @@ function Text({
   deleteFromById,
   updateRequired,
   deleteChoiceById,
-  updateLimit,
-  updateLabel,
-  addLabel,
+  updatelimitAns,
+  updatelabelChoice,
+  addlabelChoice,
   optionsValue,
   color,
   addChangeTitle,
@@ -112,35 +112,35 @@ function Text({
   const options = [
     {
       value: "text",
-      label: "Text",
+      labelChoice: "Text",
       imgSrc: "/Icon-form/6.png",
       wideth: 20,
       height: 20,
     },
     {
       value: "number",
-      label: "Number",
+      labelChoice: "Number",
       imgSrc: "/Icon-form/7.png",
       wideth: 22,
       height: 22,
     },
     {
       value: "mutiple",
-      label: "Multiple",
+      labelChoice: "Multiple",
       imgSrc: "/Icon-form/9.png",
       wideth: 22,
       height: 16,
     },
     {
       value: "check",
-      label: "Check",
+      labelChoice: "Check",
       imgSrc: "/Icon-form/8.png",
       wideth: 22,
       height: 10,
     },
     {
       value: "dropdown",
-      label: "Dropdown",
+      labelChoice: "Dropdown",
       imgSrc: "/Icon-form/10.png",
       wideth: 20,
       height: 20,
@@ -191,7 +191,7 @@ function Text({
                       className="mr-2 w-[19px] h-[20px]"
                     />
                     <div className="text-[0.85em]">
-                      {options.find((option) => option.value === type)?.label}
+                      {options.find((option) => option.value === type)?.labelChoice}
                     </div>
                   </div>
                   <svg
@@ -230,7 +230,7 @@ function Text({
                           height={20}
                           alt={option.value}
                         />
-                        <p>{option.label}</p>
+                        <p>{option.labelChoice}</p>
                       </div>
                     </div>
                   ))}
@@ -247,14 +247,14 @@ function Text({
                 deleteChoiceById={(ChoiceById: number) =>
                   deleteChoiceById(ChoiceById)
                 }
-                updateLimit={(optionsIndex: number, limit: number) =>
-                  updateLimit(optionsIndex, limit)
+                updatelimitAns={(optionsIndex: number, limitAns: number) =>
+                  updatelimitAns(optionsIndex, limitAns)
                 }
-                updateLabel={(optionIndex: number, newLabel: string) =>
-                  updateLabel(optionIndex, newLabel)
+                updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
+                  updatelabelChoice(optionIndex, newlabelChoice)
                 }
                 optionsValue={optionsValue}
-                addLabel={() => addLabel()}
+                addlabelChoice={() => addlabelChoice()}
               ></InputMutiple>
             )}
             {type === "check" && (
@@ -263,14 +263,14 @@ function Text({
                 deleteChoiceById={(ChoiceById: number) =>
                   deleteChoiceById(ChoiceById)
                 }
-                updateLimit={(optionsIndex: number, limit: number) =>
-                  updateLimit(optionsIndex, limit)
+                updatelimitAns={(optionsIndex: number, limitAns: number) =>
+                  updatelimitAns(optionsIndex, limitAns)
                 }
-                updateLabel={(optionIndex: number, newLabel: string) =>
-                  updateLabel(optionIndex, newLabel)
+                updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
+                  updatelabelChoice(optionIndex, newlabelChoice)
                 }
                 optionsValue={optionsValue}
-                addLabel={() => addLabel()}
+                addlabelChoice={() => addlabelChoice()}
               ></InputMutiple>
             )}
             {type === "dropdown" && (
@@ -279,14 +279,14 @@ function Text({
                 deleteChoiceById={(ChoiceById: number) =>
                   deleteChoiceById(ChoiceById)
                 }
-                updateLimit={(optionsIndex: number, limit: number) =>
-                  updateLimit(optionsIndex, limit)
+                updatelimitAns={(optionsIndex: number, limitAns: number) =>
+                  updatelimitAns(optionsIndex, limitAns)
                 }
-                updateLabel={(optionIndex: number, newLabel: string) =>
-                  updateLabel(optionIndex, newLabel)
+                updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
+                  updatelabelChoice(optionIndex, newlabelChoice)
                 }
                 optionsValue={optionsValue}
-                addLabel={() => addLabel()}
+                addlabelChoice={() => addlabelChoice()}
               ></InputMutiple>
             )}
             <div>
