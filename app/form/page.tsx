@@ -478,7 +478,7 @@ function Form() {
               contentEditable="true"
               suppressContentEditableWarning={true}
               role="textbox"
-              aria-labelChoice="Form description"
+              aria-label="Form description"
               data-placeholder="Enter details or instructions for the form."
             />
           </div>

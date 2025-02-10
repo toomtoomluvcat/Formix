@@ -100,7 +100,7 @@ const InputMutiple = ({
                   className={`text-center w-[70px] translate-y-[5px] focus:outline-none
      border-${color.color1} text-[14px] transition-all duration-500 px-2
      border-solid focus:border-black border-b-2`}
-                  placeholder="No-limitAns"
+                  placeholder="No-limit"
                 />
 
                 <div onClick={() => deleteChoiceById(index)}>

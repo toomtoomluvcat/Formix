@@ -213,7 +213,10 @@ function Text({
               <div className="flex w-full justify-center items-center">
                 <div className="flex items-center ml-4">
                   <div className="font-press-gothic text-[1em] underline">
-                    {options.find((option) => option.value === type)?.labelChoice}
+                    {
+                      options.find((option) => option.value === type)
+                        ?.labelChoice
+                    }
                   </div>
                 </div>
                 <svg
@@ -238,12 +241,50 @@ function Text({
             {isOpen && (
               <div
                 style={{
-                  boxShadow: "0px 0px 1px 0px  rgba(0,0,0,0.34)",
+                  filter: "drop-shadow(2px 2px 0px #000000)",
                 }}
-                className="absolute translate-y-[10px] px-[10px] z-40  py-[10px] border-[3px] border-black bg-white rounded-[12px]"
+                className="absolute translate-y-[10px] px-[10px] z-40  py-[10px] border-[3.5px] border-black bg-orange-400 rounded-[25px]"
               >
+                {" "}
+                <Image
+                  src={"/decorationIcon/14.svg"}
+                  width={100}
+                  height={100}
+                  alt="icon"
+                  className="right-4 top-[-7px] absolute w-[20px]"
+                ></Image>
+                <svg className="absolute w-[30px] top-[160px] left-[-10px]"
+                  width="52"
+                  height="49"
+                  viewBox="0 0 52 49"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <mask
+                    id="path-1-outside-1_1656_39"
+                    maskUnits="userSpaceOnUse"
+                    x="0"
+                    y="0"
+                    width="52"
+                    height="49"
+                    fill="black"
+                  >
+                    <rect fill="white" width="52" height="49" />
+                    <path d="M30.7112 5.60741V17.3296L41.4428 13.6974L44.7448 22.2827L34.0132 26.7404L40.7824 36.3163L33.5179 41.7646L26.0884 32.0236L18.989 41.7646L11.3943 36.3163L18.1635 26.4102L7.26679 22.2827L10.4037 13.6974L21.6306 17.3296V5.60741H30.7112Z" />
+                  </mask>
+                  <path
+                    d="M30.7112 5.60741V17.3296L41.4428 13.6974L44.7448 22.2827L34.0132 26.7404L40.7824 36.3163L33.5179 41.7646L26.0884 32.0236L18.989 41.7646L11.3943 36.3163L18.1635 26.4102L7.26679 22.2827L10.4037 13.6974L21.6306 17.3296V5.60741H30.7112Z"
+                    fill={"rgb(224, 83, 125)"}
+                  />
+                  <path
+                    d="M30.7112 5.60741H35.7112V0.607413H30.7112V5.60741ZM30.7112 17.3296H25.7112V24.3005L32.3142 22.0657L30.7112 17.3296ZM41.4428 13.6974L46.1095 11.9025L44.3864 7.42244L39.8398 8.9613L41.4428 13.6974ZM44.7448 22.2827L46.6629 26.9001L51.1595 25.0323L49.4115 20.4878L44.7448 22.2827ZM34.0132 26.7404L32.0952 22.1229L26.3214 24.5213L29.9303 29.6266L34.0132 26.7404ZM40.7824 36.3163L43.7824 40.3163L47.6713 37.3996L44.8653 33.4301L40.7824 36.3163ZM33.5179 41.7646L29.5423 44.7969L32.5501 48.7405L36.5179 45.7646L33.5179 41.7646ZM26.0884 32.0236L30.064 28.9914L25.9972 23.6595L22.0476 29.0787L26.0884 32.0236ZM18.989 41.7646L16.0745 45.8273L20.1068 48.7201L23.0297 44.7096L18.989 41.7646ZM11.3943 36.3163L7.2661 33.4953L4.50888 37.5303L8.47979 40.379L11.3943 36.3163ZM18.1635 26.4102L22.2917 29.2311L25.8765 23.9851L19.9346 21.7344L18.1635 26.4102ZM7.26679 22.2827L2.57046 20.5667L0.874582 25.208L5.49565 26.9584L7.26679 22.2827ZM10.4037 13.6974L11.9428 8.94016L7.36033 7.45759L5.70739 11.9814L10.4037 13.6974ZM21.6306 17.3296L20.0915 22.0868L26.6306 24.2024V17.3296H21.6306ZM21.6306 5.60741V0.607413H16.6306V5.60741H21.6306ZM25.7112 5.60741V17.3296H35.7112V5.60741H25.7112ZM32.3142 22.0657L43.0458 18.4335L39.8398 8.9613L29.1082 12.5935L32.3142 22.0657ZM36.7761 15.4923L40.0781 24.0775L49.4115 20.4878L46.1095 11.9025L36.7761 15.4923ZM42.8268 17.6652L32.0952 22.1229L35.9313 31.3579L46.6629 26.9001L42.8268 17.6652ZM29.9303 29.6266L36.6995 39.2025L44.8653 33.4301L38.0961 23.8542L29.9303 29.6266ZM37.7824 32.3163L30.5179 37.7646L36.5179 45.7646L43.7824 40.3163L37.7824 32.3163ZM37.4935 38.7324L30.064 28.9914L22.1127 35.0559L29.5423 44.7969L37.4935 38.7324ZM22.0476 29.0787L14.9483 38.8197L23.0297 44.7096L30.1291 34.9686L22.0476 29.0787ZM21.9035 37.7019L14.3089 32.2536L8.47979 40.379L16.0745 45.8273L21.9035 37.7019ZM15.5225 39.1372L22.2917 29.2311L14.0353 23.5892L7.2661 33.4953L15.5225 39.1372ZM19.9346 21.7344L9.03792 17.6069L5.49565 26.9584L16.3923 31.086L19.9346 21.7344ZM11.9631 23.9986L15.1 15.4133L5.70739 11.9814L2.57046 20.5667L11.9631 23.9986ZM8.86461 18.4546L20.0915 22.0868L23.1697 12.5724L11.9428 8.94016L8.86461 18.4546ZM26.6306 17.3296V5.60741H16.6306V17.3296H26.6306ZM21.6306 10.6074H30.7112V0.607413H21.6306V10.6074Z"
+                    fill="black"
+                    mask="url(#path-1-outside-1_1656_39)"
+                  />
+                </svg>
                 {options.map((option, optionIndex) => (
                   <div key={optionIndex}>
+                    <div className="absolute"></div>
                     <div
                       onClick={() => handleTypeChange(option.value)}
                       className="py-[4px] px-[5px]  items-center transition-all duration-[300ms] rounded-[4px] my-[2px] w-[140px] flex gap-x-[8px]" // Tailwind CSS ของคุณ
@@ -274,7 +315,7 @@ function Text({
           </div>
         </div>
         <div className="">
-          {type === "number" && <InputNumber  color={color}></InputNumber>}
+          {type === "number" && <InputNumber color={color}></InputNumber>}
           {type === "text" && <Inputtext color={color} />}
           {type === "mutiple" && (
             <InputMutiple
@@ -285,9 +326,10 @@ function Text({
               updatelimitAns={(optionsIndex: number, limitAns: number) =>
                 updatelimitAns(optionsIndex, limitAns)
               }
-              updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
-                updatelabelChoice(optionIndex, newlabelChoice)
-              }
+              updatelabelChoice={(
+                optionIndex: number,
+                newlabelChoice: string
+              ) => updatelabelChoice(optionIndex, newlabelChoice)}
               optionsValue={optionsValue}
               addlabelChoice={() => addlabelChoice()}
             ></InputMutiple>
@@ -301,9 +343,10 @@ function Text({
               updatelimitAns={(optionsIndex: number, limitAns: number) =>
                 updatelimitAns(optionsIndex, limitAns)
               }
-              updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
-                updatelabelChoice(optionIndex, newlabelChoice)
-              }
+              updatelabelChoice={(
+                optionIndex: number,
+                newlabelChoice: string
+              ) => updatelabelChoice(optionIndex, newlabelChoice)}
               optionsValue={optionsValue}
               addlabelChoice={() => addlabelChoice()}
             ></InputMutiple>
@@ -317,9 +360,10 @@ function Text({
               updatelimitAns={(optionsIndex: number, limitAns: number) =>
                 updatelimitAns(optionsIndex, limitAns)
               }
-              updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
-                updatelabelChoice(optionIndex, newlabelChoice)
-              }
+              updatelabelChoice={(
+                optionIndex: number,
+                newlabelChoice: string
+              ) => updatelabelChoice(optionIndex, newlabelChoice)}
               optionsValue={optionsValue}
               addlabelChoice={() => addlabelChoice()}
             ></InputMutiple>
@@ -385,9 +429,9 @@ function Text({
                 alt="icon"
                 className="w-[25px] h-[25px]"
               ></Image>
-              
+
               <svg
-               onClick={() => deleteFromById()}
+                onClick={() => deleteFromById()}
                 width="25"
                 height="25"
                 viewBox="0 0 34 34"

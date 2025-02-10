@@ -11,6 +11,9 @@ export default {
       fontFamily: {
         "press-gothic": ['"Press Gothic Biform W00 Regular"', "sans-serif"],
       },
+      scale: {
+        '-1': '-1'
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
