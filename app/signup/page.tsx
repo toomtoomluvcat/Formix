@@ -11,8 +11,12 @@ function Signup() {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
   const [error, setError] = useState<string>("");
-
-  const handleSubmit = (): void => {
+  const data = {
+    email: email,
+    password: password,
+    confirmPassword: confirmPassword,
+  };
+  const handleSubmit = async (): Promise<void> => {
     if (!email || !password || !confirmPassword) {
       setError("Please provide all required information.");
       return;
@@ -30,8 +34,25 @@ function Signup() {
       setError("Passwords do not match.");
       return;
     }
+    try {
+      const res = await fetch("http://localhost:5001/auth/signup", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data), 
+      });
+      if (!res.ok) {
+        const errorData = await res.json(); 
+        throw new Error(errorData.message || `HTTP error! Status: ${res.status}`);
+      }
+      setError("");
+      window.location.href = "/signin";
+    }catch (err) {
+      setError(err.message);
+    }
 
-    setError("");
+
   };
 
   const togglePasswordVisibility = (): void => {

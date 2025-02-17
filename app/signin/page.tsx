@@ -10,9 +10,29 @@ function Signin() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const [error, setError] = useState<string>("");
+  const data = {
+    email: email,
+    password: password,
+  };
+  const handleSubmit = async (): Promise<void> => {
+    try {
+      const res = await fetch("http://localhost:5001/auth/login", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data), 
+      });
+      if (!res.ok) {
+        const errorData = await res.json(); 
+        throw new Error(errorData.message || `HTTP error! Status: ${res.status}`);
+      }
+      setError("");
+      window.location.href = "/workspace";
+    }catch (err) {
+      setError(err.message);
+    }
 
-  const handleSubmit = (): void => {
-    
   };
 
   const togglePasswordVisibility = (): void => {
