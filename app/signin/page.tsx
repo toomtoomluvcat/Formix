@@ -2,19 +2,21 @@
 import React, { ChangeEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function Signin() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
   const [error, setError] = useState<string>("");
+  const router = useRouter();
   const data = {
     email: email,
     password: password,
   };
   const handleSubmit = async (): Promise<void> => {
+    setError("");
     try {
       const res = await fetch("http://localhost:5001/auth/login", {
         method: "POST",
@@ -27,10 +29,22 @@ function Signin() {
         const errorData = await res.json(); 
         throw new Error(errorData.message || `HTTP error! Status: ${res.status}`);
       }
-      setError("");
-      window.location.href = "/workspace";
+      const dataUser = await res.json();
+
+    if (!dataUser.token) {
+      throw new Error("Invalid response: No token received");
+    }
+
+    localStorage.setItem("token", dataUser.token);
+
+    alert("Login Success!");
+    router.push("/workspace");
     }catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     }
 
   };

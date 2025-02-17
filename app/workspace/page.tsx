@@ -2,6 +2,7 @@
 import React, { ChangeEvent, useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function Workspace() {
   const [username, setUsername] = useState<string>("username");
@@ -34,6 +35,42 @@ function Workspace() {
   const accountPcRef = useRef<HTMLDivElement | null>(null);
   const accountMoblieRef = useRef<HTMLDivElement | null>(null);
   const notifyref = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchUserData() {
+      const token = localStorage.getItem("jwt");
+
+      if (!token) {
+        alert("Please login to access this page.");
+        router.push("/signin");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5001/post/private", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+        });
+
+        if (response.status === 401) {
+          alert("Session expired. Please login again.");
+          localStorage.removeItem("jwt");
+          router.push("/signin");
+          return;
+        }
+
+        const data = await response.json();
+        console.log("Private Data:", data);
+  } catch (error) {
+        console.error("Error:", error);
+      }
+  }
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);

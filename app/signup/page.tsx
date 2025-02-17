@@ -2,15 +2,16 @@
 import React, { ChangeEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function Signup() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const router = useRouter();
   const data = {
     email: email,
     password: password,
@@ -47,9 +48,13 @@ function Signup() {
         throw new Error(errorData.message || `HTTP error! Status: ${res.status}`);
       }
       setError("");
-      window.location.href = "/signin";
+      router.push("/signin");
     }catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     }
 
 
