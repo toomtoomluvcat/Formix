@@ -47,6 +47,40 @@ function Form() {
   const titleRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
 
+  const saveForm = async () => {
+    const formData = {
+      title,
+      description,
+      questions: questions.map((q) => ({
+        id: q.id,
+        title: q.title,
+        type: q.type,
+        required: q.required,
+        options: q.options?.map((opt) => ({
+          labelChoice: opt.labelChoice,
+          limitAns: opt.limitAns,
+        })),
+      })),
+    };
+  
+    try {
+      const response = await fetch("http://localhost:5001/create-form", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+  
+      if (response.ok) {
+        console.log("Saved Successfully");
+      } else {
+        console.error("Failed to Save");
+      }
+    } catch (error) {
+      console.error("Save Error", error);
+    }
+  };
+  
+
   const addlabelChoice = (questionId: number): void => {
     setQuestions((prev) =>
       prev.map((question) =>
@@ -615,8 +649,15 @@ function Form() {
           >
             Theme 5
           </button>
+          <button
+        onClick={saveForm}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+        บันทึก
+        </button>
         </div>
       </div>
+
     </div>
   );
 }
