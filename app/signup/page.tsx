@@ -13,28 +13,28 @@ function Signup() {
   const [error, setError] = useState<string>("");
   const router = useRouter();
   const data = {
-    email: email,
-    password: password,
-    confirmPassword: confirmPassword,
+    email: "pare@dfyfhdf.com",
+    password: "xfhdxdgx",
+    confirmPassword: "xfhdxdgx",
   };
   const handleSubmit = async (): Promise<void> => {
-    if (!email || !password || !confirmPassword) {
-      setError("Please provide all required information.");
-      return;
-    }
-    const strongPasswordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).{8,}$/;
+    // if (!email || !password || !confirmPassword) {
+    //   setError("Please provide all required information.");
+    //   return;
+    // }
+    // const strongPasswordRegex =
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).{8,}$/;
 
-    if (!strongPasswordRegex.test(password)) {
-      setError(
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
-      );
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+    // if (!strongPasswordRegex.test(password)) {
+    //   setError(
+    //     "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
+    //   );
+    //   return;
+    // }
+    // if (password !== confirmPassword) {
+    //   setError("Passwords do not match.");
+    //   return;
+    // }
     try {
       const res = await fetch("http://localhost:5001/auth/signup", {
         method: "POST",

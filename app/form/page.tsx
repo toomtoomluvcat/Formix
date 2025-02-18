@@ -46,14 +46,19 @@ function Form() {
   const [removingId, setRemovingId] = useState<number | null>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
+  const [activeForm,setActiveForm] = useState<boolean>(true);
 
   const saveForm = async () => {
     const formData = {
       title,
       description,
+      active:activeForm,
       questions: questions.map((q) => ({
         id: q.id,
         title: q.title,
+        
+        theme: "00",
+        userID: 0,
         type: q.type,
         required: q.required,
         options: q.options?.map((opt) => ({
@@ -64,12 +69,12 @@ function Form() {
     };
   
     try {
-      const response = await fetch("http://localhost:5001/create-form", {
+      const response = await fetch("http://localhost:5001/form/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-  
+      console.log(response.status)
       if (response.ok) {
         console.log("Saved Successfully");
       } else {

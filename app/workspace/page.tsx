@@ -39,10 +39,9 @@ function Workspace() {
 
   useEffect(() => {
     async function fetchUserData() {
-      const token = localStorage.getItem("jwt");
-
+      const token = await localStorage.getItem("token");
+      console.log("เรียก"+token)
       if (!token) {
-        alert("Please login to access this page.");
         router.push("/signin");
         return;
       }
@@ -57,7 +56,6 @@ function Workspace() {
         });
 
         if (response.status === 401) {
-          alert("Session expired. Please login again.");
           localStorage.removeItem("jwt");
           router.push("/signin");
           return;

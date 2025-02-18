@@ -12,8 +12,8 @@ function Signin() {
   const [error, setError] = useState<string>("");
   const router = useRouter();
   const data = {
-    email: email,
-    password: password,
+    email: "pare@dfyfhdf.com",
+    password: "xfhdxdgx",
   };
   const handleSubmit = async (): Promise<void> => {
     setError("");
@@ -34,10 +34,8 @@ function Signin() {
     if (!dataUser.token) {
       throw new Error("Invalid response: No token received");
     }
+    await localStorage.setItem("token", dataUser.token);
 
-    localStorage.setItem("token", dataUser.token);
-
-    alert("Login Success!");
     router.push("/workspace");
     }catch (err) {
       if (err instanceof Error) {
