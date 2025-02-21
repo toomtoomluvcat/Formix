@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,46 +11,55 @@ function Signin() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/workspace");
+      return;
+    }
+  }, []);
+
   const data = {
-    email: "pare@dfyfhdf.com",
-    password: "xfhdxdgx",
+    email: email,
+    password: password,
   };
   const handleSubmit = async (): Promise<void> => {
     setError("");
     try {
       const res = await fetch("http://localhost:5001/auth/login", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data), 
+        body: JSON.stringify(data),
       });
       if (!res.ok) {
-        const errorData = await res.json(); 
-        throw new Error(errorData.message || `HTTP error! Status: ${res.status}`);
+        const errorData = await res.json();
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${res.status}`
+        );
       }
       const dataUser = await res.json();
 
-    if (!dataUser.token) {
-      throw new Error("Invalid response: No token received");
-    }
-    await localStorage.setItem("token", dataUser.token);
-
-    router.push("/workspace");
-    }catch (err) {
+      if (!dataUser.token) {
+        throw new Error("Invalid response: No token received");
+      }
+      localStorage.setItem("token", dataUser.token);
+      localStorage.setItem("expDate", dataUser.expDate);
+      router.push("/workspace");
+    } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
         setError("An unexpected error occurred.");
       }
     }
-
   };
 
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);
   };
-  
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex flex-col grow">
@@ -66,7 +75,7 @@ function Signin() {
         </Link>
         <div className="w-full flex-col flex items-center mx-auto mt-[130px] px-[50px]">
           <h1 className="font-medium max-w-[350px] w-full mb-[15px] text-[30px]">
-          🔐 Welcome <br></br>Back  to Formix! 
+            🔐 Welcome <br></br>Back to Formix!
           </h1>
           <p className="text-red-400 text-[13px] w-full px-[7px] max-w-[350px]">
             {error}
@@ -125,7 +134,7 @@ function Signin() {
                   </svg>
                 </button>
               </div>
-              
+
               <button
                 onClick={() => handleSubmit()}
                 type="button"
@@ -135,7 +144,7 @@ function Signin() {
               </button>
               <div className="w-full mt-2 mb-[100px]">
                 <p className="text-center text-[12px]">
-                Don't Have an Account Yet? {" "}
+                  Don't Have an Account Yet?{" "}
                   <Link
                     href={"/signup"}
                     className="font-medium hover:text-[#3E3E3E] transition-all duration-[500ms]"

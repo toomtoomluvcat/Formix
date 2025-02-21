@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,14 +9,23 @@ function Signup() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [errMsg,setErrMsg] = useState<{errors:{msg:string}}| null | undefined>(null);
   const router = useRouter();
   const data = {
-    email: "pare@dfyfhdf.com",
-    password: "xfhdxdgx",
-    confirmPassword: "xfhdxdgx",
+    email: email,
+    password: password,
+    confirmPassword: confirmPassword,
   };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/workspace");
+      return;
+    }
+  }, []);
   const handleSubmit = async (): Promise<void> => {
     // if (!email || !password || !confirmPassword) {
     //   setError("Please provide all required information.");
@@ -38,26 +47,24 @@ function Signup() {
     try {
       const res = await fetch("http://localhost:5001/auth/signup", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data), 
+        body: JSON.stringify(data),
       });
+      setErrMsg(await res.json());
       if (!res.ok) {
-        const errorData = await res.json(); 
-        throw new Error(errorData.message || `HTTP error! Status: ${res.status}`);
+        const errorData = await res.json();
+
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${res.status}`
+        );
       }
       setError("");
       router.push("/signin");
-    }catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred.");
-      }
+    } catch (err) {
+      setError(errMsg?.errors.msg?? "")
     }
-
-
   };
 
   const togglePasswordVisibility = (): void => {

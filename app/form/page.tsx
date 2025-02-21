@@ -4,8 +4,45 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import NavBarInForm from "../component/nav";
 import Text from "../component/forms/text";
+import { useRouter } from "next/navigation";
 
 function Form() {
+  const router = useRouter();
+useEffect(() => {
+    async function fetchUserData() {
+      const token = localStorage.getItem("token");
+      console.log("เรียก"+token)
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5001/posts/private", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+        }); 
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          router.push("/signin");
+          return;
+        }
+
+        const data = await response.json();
+        console.log("Private Data:", data);
+  } catch (error) {
+        console.error("Error:", error);
+      }
+  }
+    fetchUserData();
+  }, []);
+
+
+
   useEffect(() => {
     if (titleRef.current) {
       titleRef.current.textContent = title;
@@ -45,46 +82,36 @@ function Form() {
   };
   const [removingId, setRemovingId] = useState<number | null>(null);
   const titleRef = useRef<HTMLDivElement>(null);
-  const descriptionRef = useRef<HTMLDivElement>(null);
+    const descriptionRef = useRef<HTMLDivElement>(null);
   const [activeForm,setActiveForm] = useState<boolean>(true);
 
-  const saveForm = async () => {
-    const formData = {
-      title,
-      description,
-      active:activeForm,
-      questions: questions.map((q) => ({
-        id: q.id,
-        title: q.title,
-        
-        theme: "00",
-        userID: 0,
-        type: q.type,
-        required: q.required,
-        options: q.options?.map((opt) => ({
-          labelChoice: opt.labelChoice,
-          limitAns: opt.limitAns,
-        })),
-      })),
-    };
-  
-    try {
-      const response = await fetch("http://localhost:5001/form/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      console.log(response.status)
-      if (response.ok) {
-        console.log("Saved Successfully");
-      } else {
-        console.error("Failed to Save");
-      }
-    } catch (error) {
-      console.error("Save Error", error);
-    }
+  const hadleSubmit=async():Promise<void>=>{
+      
+  const data = {
+    title,
+    description,
+    color,
+    theme: "0001",
+    limitForm: 2,
+    questions:"กระมงปรือ" 
   };
-  
+  const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+  const res = await fetch("http://localhost:5001/form/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-auth-token": token, // ส่ง Token ไปด้วย
+    },
+    body: JSON.stringify(data),
+  });
+
+  const responseData = await res.json();
+  console.log(responseData);
+};
 
   const addlabelChoice = (questionId: number): void => {
     setQuestions((prev) =>
@@ -655,7 +682,7 @@ function Form() {
             Theme 5
           </button>
           <button
-        onClick={saveForm}
+        onClick={()=>hadleSubmit()}
         className="bg-blue-500 text-white px-4 py-2 rounded"
         >
         บันทึก

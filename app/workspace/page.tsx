@@ -39,47 +39,45 @@ function Workspace() {
 
   useEffect(() => {
     async function fetchUserData() {
-      const token = await localStorage.getItem("token");
-      console.log("เรียก"+token)
-      if (!token) {
+      const token = localStorage.getItem("token");
+      const expDate = localStorage.getItem("expDate")
+      if ((!token && (Number(expDate?? 0) > Date.now())) || !expDate) {
         router.push("/signin");
         return;
       }
-
-      try {
-        const response = await fetch("http://localhost:5001/post/private", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-        });
-
-        if (response.status === 401) {
-          localStorage.removeItem("jwt");
-          router.push("/signin");
-          return;
-        }
-
-        const data = await response.json();
-        console.log("Private Data:", data);
-  } catch (error) {
-        console.error("Error:", error);
-      }
-  }
+    }
     fetchUserData();
   }, []);
+  useEffect(()=> {
+    async function getForm() {
+      
+      try{
+      const response = await fetch("http://localhost:5001/workspace/getForm", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",          
+        },
+      })
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      setFormData(result);
+    }catch(error){
+      console.log('error', error)
+    }}
+    getForm();
+  },[])
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const isMarket = urlParams.get("isMarket");
-    console.log(isMarket);
     if (isMarket === "true") {
       setShowMarket(true);
     } else {
       setShowMarket(false);
     }
-  },[]);
+  }, []);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -117,6 +115,10 @@ function Workspace() {
     handleSearchForm("");
   }, [formData]);
 
+  const hadleLogout = (): void => {
+    localStorage.removeItem("token");
+    router.push("/signin");
+  };
   const handleShowOptionsForms = (id: number): void => {
     setFormData((prev) =>
       prev.map((item, index) =>
@@ -326,15 +328,16 @@ function Workspace() {
           className="max-w-[220px] lg:max-w-[280px] hidden md:flex flex-col items-between h-[94vh] justify-between gap-y-[30px]"
         >
           <div className="flex flex-col px-[15px]">
-            <Link href={'/'}>
-            <Image
-              src="/Icon-form/FORMIX LOGO.png"
-              width={1000}
-              height={1000}
-              quality={100}
-              alt="question"
-              className="h-[20px] w-[70px]"
-            /></Link>
+            <Link href={"/"}>
+              <Image
+                src="/Icon-form/FORMIX LOGO.png"
+                width={1000}
+                height={1000}
+                quality={100}
+                alt="question"
+                className="h-[20px] w-[70px]"
+              />
+            </Link>
 
             <div
               className="flex items-center font-medium"
@@ -471,7 +474,10 @@ function Workspace() {
                     />
                     <h4>Change password</h4>
                   </div>
-                  <div className=" flex gap-x-[5px] items-center hover:bg-[#D9D9D9] transition-all duration-[400ms] p-[7px] rounded-[5px]">
+                  <div
+                    onClick={() => hadleLogout()}
+                    className=" flex gap-x-[5px] items-center hover:bg-[#D9D9D9] transition-all duration-[400ms] p-[7px] rounded-[5px]"
+                  >
                     <Image
                       src="/Icon-form/39.png"
                       width={1000}
@@ -730,14 +736,14 @@ function Workspace() {
                         />
                       </Link>
                       <Link href="/form01">
-                      <Image
-                        src="/Icon-form/29.png"
-                        width={1000}
-                        height={1000}
-                        quality={100}
-                        alt="question"
-                        className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
-                      />
+                        <Image
+                          src="/Icon-form/29.png"
+                          width={1000}
+                          height={1000}
+                          quality={100}
+                          alt="question"
+                          className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
+                        />
                       </Link>
                     </div>
                   </div>
@@ -925,7 +931,10 @@ function Workspace() {
               />
             </div>
           </Link>
-          <Link href={"/workspace?isMarket=true"} onClick={() => setShowMarket(true)}>
+          <Link
+            href={"/workspace?isMarket=true"}
+            onClick={() => setShowMarket(true)}
+          >
             <div className="md:hidden flex justify-center items-center bg-white border-2 w-[52px] h-[52px] rounded-[50%]">
               <Image
                 src="/Icon-form/23.png"
