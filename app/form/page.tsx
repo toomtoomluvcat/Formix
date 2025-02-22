@@ -87,14 +87,22 @@ useEffect(() => {
 
   const hadleSubmit=async():Promise<void>=>{
       
-  const data = {
-    title,
-    description,
-    color,
-    theme: "0001",
-    limitForm: 2,
-    questions:"กระมงปรือ" 
-  };
+    const data = {
+      title,
+      description,
+      color,
+      theme: "0001",
+      limitForm: 2,
+      questions:{
+        create: questions.map( q => ({
+          title: q.title,
+          type: q.type,
+          required: q.required,
+          limit: 100,
+          limitAns: 1
+        }))
+      }
+    };
   const token = localStorage.getItem("token");
       if (!token) {
         router.push("/signin");

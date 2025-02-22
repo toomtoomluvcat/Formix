@@ -50,18 +50,24 @@ function Workspace() {
   }, []);
   useEffect(()=> {
     async function getForm() {
-      
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
       try{
       const response = await fetch("http://localhost:5001/workspace/getForm", {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",          
+          "Content-Type": "application/json",
+          "x-auth-token": token,
         },
       })
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
+      console.log("Fetched data:", result);
       setFormData(result);
     }catch(error){
       console.log('error', error)
