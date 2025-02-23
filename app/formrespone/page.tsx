@@ -9,7 +9,7 @@ import React, {
 import NavBarInForm from "../component/nav";
 import Image from "next/image";
 import ApexCharts from "apexcharts";
-import { Fascinate } from "next/font/google";
+import { _limitValue } from "chart.js/helpers";
 
 function formrespone() {
   const [display, setDisplay] = useState<number>(1);
@@ -25,6 +25,7 @@ function formrespone() {
     { imgSrc: "/Icon-form/17.png", wideth: 20, label: "Bar Chart" },
   ]);
   const [chart, setChart] = useState<number>(0);
+  const [isSaveData,setIsSaveData]= useState<boolean>(false)
   const [isChecked, setIsChecked] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [amount, setAmount] = useState<number | null>(0);
@@ -48,7 +49,7 @@ function formrespone() {
     { position: 2, color1: "#8EB15C", color2: "#B1CF86", color3: "#D2E6B5" },
     { position: 3, color1: "#FF8B00", color2: "#FED700", color3: "#FEFACD" },
   ];
-  const [displayArchive,setDisplayArchive] =useState();
+  const [displayArchive, setDisplayArchive] = useState();
 
   // const hadleSendData: MouseEventHandler<HTMLDivElement> = (color: {
   //   position: number;
@@ -83,7 +84,7 @@ function formrespone() {
     if (isDel === "delete my form") {
       setLetDel(true);
     } else {
-      setLetDel(false); 
+      setLetDel(false);
     }
   }, [isDel]);
 
@@ -103,12 +104,33 @@ function formrespone() {
       setIsOpen(false);
     }
   };
+  
+  const setSetting=():void=>{
+    const setting ={
+      limit:amount,
+      archive:isChecked,
+      color:color
+    }
+    localStorage.setItem("setting",JSON.stringify(setting))
+    setIsSaveData(true)
+    setTimeout(() => {
+      setIsSaveData(false)
+    }, 3000);
+  }
 
   useEffect(() => {
+    const setting = JSON.parse(localStorage.getItem("setting")?? "")
+    if (setting){
+      setColor(setting.color)
+      setAmount(setting.limit)
+  
+    }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    
+   
   }, []);
 
   const getChartOptions = () => {
@@ -481,8 +503,7 @@ function formrespone() {
               <div>
                 <p className="font-medium">limiting forms </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  You can limit the number of responses to your
-                  form.
+                  You can limit the number of responses to your form.
                 </p>
               </div>
               <div className="max-w-[200px] relative mt-4">
@@ -603,7 +624,7 @@ function formrespone() {
               <div className="mb-[10px]">
                 <p className="font-medium">form colour </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                Export forms to google sheet
+                  Export forms to google sheet
                 </p>
               </div>
 
@@ -624,7 +645,7 @@ function formrespone() {
               </a>
             </div>
           </div>
-          <div className="bg-black rounded-[8px] mb-[150px]">
+          <div className="bg-black rounded-[8px]">
             <div
               style={{
                 boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
@@ -635,7 +656,8 @@ function formrespone() {
               <div className="mb-[10px]">
                 <p className="font-medium">Delete forms </p>
                 <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                Removes all data entered in a form, usually before submission or permanently
+                  Removes all data entered in a form, usually before submission
+                  or permanently
                 </p>
               </div>
               <button
@@ -646,6 +668,9 @@ function formrespone() {
                 delete
               </button>
             </div>
+          </div>
+          <div className="flex justify-end mb-[100px]">
+            <button className={`rounded-lg ${isSaveData? "bg-stone-800":"bg-black"} text-white w-[120px] py-[10px] text-[13px]`} disabled={isSaveData} onClick={()=>setSetting()} type="button">{isSaveData? "Saving ...":"Save change"}</button>
           </div>
         </div>
       )}

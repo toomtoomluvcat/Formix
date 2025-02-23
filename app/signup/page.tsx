@@ -21,10 +21,17 @@ function Signup() {
   };
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const expDate:number |null = Number(localStorage.getItem("expDate"))
+    console.log('expDate', expDate)
+    if (Date.now() > expDate? expDate:0){
+      localStorage.removeItem("token")
+    }
+    
     if (token) {
       router.push("/workspace");
       return;
     }
+    
   }, []);
   const handleSubmit = async (): Promise<void> => {
     // if (!email || !password || !confirmPassword) {

@@ -11,7 +11,6 @@ function Form() {
 useEffect(() => {
     async function fetchUserData() {
       const token = localStorage.getItem("token");
-      console.log("เรียก"+token)
       if (!token) {
         router.push("/signin");
         return;
@@ -37,7 +36,17 @@ useEffect(() => {
   } catch (error) {
         console.error("Error:", error);
       }
+
+
+  //get setting
+  const setting = JSON.parse(localStorage.getItem("setting")?? "")
+  if (setting){
+    setColor(setting.color)
+    setLimitForm(setting.limit)
+
   }
+
+}
     fetchUserData();
   }, []);
 
@@ -56,7 +65,7 @@ useEffect(() => {
     color2: string;
     color3: string;
   }
-
+  const [limitForm,setLimitForm] = useState<number|null>(null)
   const [color, setColor] = useState<Color>({
     color1: "#000000",
     color3: "#C4C4C4",
@@ -91,8 +100,8 @@ useEffect(() => {
       title,
       description,
       color,
-      theme: "0001",
-      limitForm: 2,
+      theme: "0002",
+      limitForm: limitForm,
       questions:{
         create: questions.map( q => ({
           title: q.title,
@@ -119,9 +128,12 @@ useEffect(() => {
     },
     body: JSON.stringify(data),
   });
-
+  
   const responseData = await res.json();
   console.log(responseData);
+  if (res.ok){
+    router.push("/workspace")
+  }
 };
 
   const addlabelChoice = (questionId: number): void => {

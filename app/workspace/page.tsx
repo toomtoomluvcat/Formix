@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 function Workspace() {
-  const [username, setUsername] = useState<string>("username");
-  const [email, setEmail] = useState<string>("userna.me@kkumail.com");
+  const [username, setUsername] = useState<string | null>("username");
+  const [email, setEmail] = useState<string | null>(null);
   const [totalForm, settotalForm] = useState<number>(0);
   const [activeForm, setActiveForm] = useState<number>(0);
   const [respone, setRespone] = useState<number>(0);
@@ -40,44 +40,48 @@ function Workspace() {
   useEffect(() => {
     async function fetchUserData() {
       const token = localStorage.getItem("token");
-      const expDate = localStorage.getItem("expDate")
-      if ((!token && (Number(expDate?? 0) > Date.now())) || !expDate) {
+      const expDate = localStorage.getItem("expDate");
+      if ((!token && Number(expDate ?? 0) > Date.now()) || !expDate) {
         router.push("/signin");
         return;
       }
     }
     fetchUserData();
   }, []);
-  useEffect(()=> {
+  useEffect(() => {
     async function getForm() {
       const token = localStorage.getItem("token");
       if (!token) {
         router.push("/signin");
         return;
       }
-      try{
-      const response = await fetch("http://localhost:5001/workspace/getForm", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": token,
-        },
-      })
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      try {
+        const response = await fetch(
+          "http://localhost:5001/workspace/getForm",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": token,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        console.log("Fetched data:", result);
+        setFormData(result.forms);
+        settotalForm(result.totalForm);
+        setActiveForm(result.activeForm);
+        setEmail(result.email);
+        // setRespone(result.responseForm);
+      } catch (error) {
+        console.log("error", error);
       }
-      const result = await response.json();
-      console.log("Fetched data:", result);
-      setFormData(result.forms);
-      settotalForm(result.totalForm);
-      setActiveForm(result.activeForm);
-      setEmail(result.email);
-      // setRespone(result.responseForm);
-    }catch(error){
-      console.log('error', error)
-    }}
+    }
     getForm();
-  },[])
+  }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -125,38 +129,40 @@ function Workspace() {
     handleSearchForm("");
   }, [formData]);
 
-  async function updateUserName(userId: number) {
+  async function updateUserName() {
     const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/signin");
-        return;
-      }
-      try {
-        const response = await fetch(`http://localhost:5001/workspace/${userId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": token, 
-          },
-          body: JSON.stringify({ name: changeUsername }),
-        });
-    
-        if (!response.ok) {
-          throw new Error("Failed to update user name");
-        }
-    
-        const result = await response.json();
-        console.log("✅ User name updated successfully:", result);
-      } catch (error) {
-        console.error("❌ Error updating user name:", error);
-      }
-  }
 
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+    try {
+      console.log("start put ");
+      const response = await fetch(`http://localhost:5001/workspace/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+        body: JSON.stringify({ name: changeUsername, token: token }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user name");
+      }
+
+      const result = await response.json();
+      console.log("✅ User name updated successfully:", result);
+    } catch (error) {
+      console.error("❌ Error updating user name:", error);
+    }
+  }
 
   const hadleLogout = (): void => {
     localStorage.removeItem("token");
     router.push("/signin");
   };
+
   const handleShowOptionsForms = (id: number): void => {
     setFormData((prev) =>
       prev.map((item, index) =>
@@ -250,8 +256,9 @@ function Workspace() {
                 <button
                   type="button"
                   onClick={() => {
-                    handleSaveUsername();
-                    setShowChangeName(false);
+                    updateUserName(),
+                      setShowChangeName(false),
+                      setChangeUsername("");
                   }}
                   className="bg-black p-[12px] rounded-[7px] text-white text-[10px]"
                 >
@@ -531,8 +538,8 @@ function Workspace() {
             )}
           </div>
         </div>
-        <div className="mt-[30px] md:mt-[0px] grow px-[15px] md:px-[45px]">
-          <div className="flex items-center  justify-between">
+        <div className=" mt-[30px] md:mt-[0px] grow px-[15px] md:px-[45px]">
+          <div className=" flex items-center  justify-between">
             <div>
               <h2 className="font-medium text-[13px] sm:text-[15px]">Create</h2>
               <h2 className="text-[10px] sm:text-[12px] max-w-[200px] sm:max-w-[400px] text-[#515151]">
@@ -660,7 +667,7 @@ function Workspace() {
             </div>
           </div>
           {!showMarket ? (
-            <div>
+            <div className="mb-2">
               <div
                 style={{
                   borderRight: "1px solid #c7c7c7",
@@ -726,7 +733,7 @@ function Workspace() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center md:flex-row flex-col mt-[20px] gap-y-[20px]">
+              <div className=" flex items-center md:flex-row flex-col mt-[20px] gap-y-[20px]">
                 <div className="w-full mx-[0px]">
                   <div className="mt-[px] h-[250px] md:h-[450px] bg-[#F5F5F5] px-[25px] py-[15px] rounded-[10px]">
                     <div
@@ -786,7 +793,7 @@ function Workspace() {
                     </div>
                   </div>
                 </div>
-                <div className="rounded-[15px] mx-[15px] w-full h-[300px] md:h-[450px] border-2 py-[16px] px-[20px] ">
+                <div className=" rounded-[15px]  mx-[15px] w-full h-fit min-h-[300px] md:h-[450px] border-2 py-[16px] px-[20px] ">
                   <div
                     style={{
                       borderBottom: "2px dashed #C7c7c7",
@@ -804,9 +811,17 @@ function Workspace() {
                       placeholder="search your project"
                     ></input>
                   </div>
-                  <div className="mt-2">
+                  <div
+                    className="pr-4 mt-2 sm:h-[350px] overflow-y-auto [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:rounded-full
+  [&::-webkit-scrollbar-track]:bg-gray-100
+  [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb]:bg-gray-300
+  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+                  >
                     {formDataToSearch.map((item, index) => (
-                      <div className="flex flex-col " key={index}>
+                      <div className=" flex flex-col " key={index}>
                         <div className="flex mt-2 justify-between items-center">
                           <div className="flex gap-x-2 items-center">
                             <Image
