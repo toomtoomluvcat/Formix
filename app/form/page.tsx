@@ -39,10 +39,13 @@ useEffect(() => {
 
 
   //get setting
-  const setting = JSON.parse(localStorage.getItem("setting")?? "")
+  
+  const setting = localStorage.getItem("setting")?? ""
+  
   if (setting){
-    setColor(setting.color)
-    setLimitForm(setting.limit)
+    
+    setColor(JSON.parse(setting).color)
+    setLimitForm(JSON.parse(setting).limit)
 
   }
 

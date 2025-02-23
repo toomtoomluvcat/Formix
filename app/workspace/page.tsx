@@ -21,14 +21,15 @@ function Workspace() {
   const [newPassworld, setNewPassword] = useState<string>("");
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
   const [errorChangePassword, setErrorChangePassword] = useState<string>("");
-  const [formData, setFormData] = useState([
-    { name: "toomtam", archive: true, proflieId: "0001", status: false },
-    { name: "pare", archive: false, proflieId: "0002", status: false },
-  ]);
+  const [formData, setFormData] = useState<
+    | { name: string; archive: boolean; proflieId: string; status: boolean }[]
+    | null
+  >(null);
   const [showMarket, setShowMarket] = useState<boolean>(false);
   const [formDataToSearch, setFormDataToSearch] = useState<
-    { name: string; archive: boolean; proflieId: string; status: boolean }[]
-  >([]);
+    | { name: string; archive: boolean; proflieId: string; status: boolean }[]
+    | null
+  >(null);
   const [firstTime, setfirstTime] = useState<boolean>(true);
   const [shownotify, setnotify] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -101,7 +102,9 @@ function Workspace() {
         setnotify(false);
       }
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setFormData((prev) => prev.map((item) => ({ ...item, status: false })));
+        setFormData((prev) =>
+          prev ? prev.map((item) => ({ ...item, status: false })) : []
+        );
       }
 
       if (
@@ -157,7 +160,15 @@ function Workspace() {
       console.error("❌ Error updating user name:", error);
     }
   }
+  const hadleCreateForm = (theme: string): void => {
+    if (localStorage.getItem("setting")) {
+      localStorage.removeItem("setting");
+    }
+    console.log("`/form${theme}`", `/form${theme}`);
 
+    router.push(`/form${theme}`);
+
+  };
   const hadleLogout = (): void => {
     localStorage.removeItem("token");
     router.push("/signin");
@@ -165,11 +176,13 @@ function Workspace() {
 
   const handleShowOptionsForms = (id: number): void => {
     setFormData((prev) =>
-      prev.map((item, index) =>
-        index === id
-          ? { ...item, status: !item.status }
-          : { ...item, status: false }
-      )
+      prev
+        ? prev.map((item, index) =>
+            index === id
+              ? { ...item, status: !item.status }
+              : { ...item, status: false }
+          )
+        : []
     );
   };
 
@@ -177,7 +190,11 @@ function Workspace() {
     const inputText = searchText.toLowerCase();
     if (inputText) {
       setFormDataToSearch(
-        formData.filter((item) => item.name.toLowerCase().includes(inputText))
+        formData
+          ? formData.filter((item) =>
+              item.name.toLowerCase().includes(inputText)
+            )
+          : null
       );
     } else {
       setFormDataToSearch(formData);
@@ -770,8 +787,8 @@ function Workspace() {
                       </div>
                     </div>
                     <div className="mt-4 flex  flex-wrap gap-2">
-                      <Link href="/form">
                         <Image
+                         onClick={() => hadleCreateForm("")}
                           src="/Icon-form/28.png"
                           width={1000}
                           height={1000}
@@ -779,21 +796,20 @@ function Workspace() {
                           alt="question"
                           className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
                         />
-                      </Link>
-                      <Link href="/form01">
-                        <Image
-                          src="/Icon-form/29.png"
-                          width={1000}
-                          height={1000}
-                          quality={100}
-                          alt="question"
-                          className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
-                        />
-                      </Link>
+
+                      <Image
+                        onClick={() => hadleCreateForm("01")}
+                        src="/Icon-form/29.png"
+                        width={1000}
+                        height={1000}
+                        quality={100}
+                        alt="question"
+                        className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
+                      />
                     </div>
                   </div>
                 </div>
-                <div className=" rounded-[15px]  mx-[15px] w-full h-fit min-h-[300px] md:h-[450px] border-2 py-[16px] px-[20px] ">
+                <div className=" rounded-[15px]  mx-[15px] w-full  min-h-[300px] md:h-[450px] border-2 py-[16px] px-[20px] ">
                   <div
                     style={{
                       borderBottom: "2px dashed #C7c7c7",
@@ -820,7 +836,7 @@ function Workspace() {
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
                   >
-                    {formDataToSearch.map((item, index) => (
+                    {formDataToSearch?.map((item, index) => (
                       <div className=" flex flex-col " key={index}>
                         <div className="flex mt-2 justify-between items-center">
                           <div className="flex gap-x-2 items-center">
