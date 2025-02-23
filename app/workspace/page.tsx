@@ -3,7 +3,6 @@ import React, { ChangeEvent, useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function Workspace() {
   const [username, setUsername] = useState<string | null>(null);
@@ -26,7 +25,20 @@ function Workspace() {
   const [formData, setFormData] = useState<
     | { name: string; archive: boolean; proflieId: string; status: boolean }[]
     | null
-  >([{ name: "toom", archive: true, proflieId: "0001", status: false }]);
+  >([
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+    { name: "toom", archive: true, proflieId: "0001", status: false },
+  ]);
   const [showMarket, setShowMarket] = useState<boolean>(false);
   const [formDataToSearch, setFormDataToSearch] = useState<
     | { name: string; archive: boolean; proflieId: string; status: boolean }[]
@@ -66,16 +78,13 @@ function Workspace() {
       return;
     }
     try {
-      const response = await fetch(
-        "http://localhost:5001/workspace/getForm",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:5001/workspace/getForm", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      });
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -94,7 +103,7 @@ function Workspace() {
       setActiveForm(result.activeForm);
       setEmail(result.email);
       setUserId(result.userID);
-       
+
       // setRespone(result.responseForm);
     } catch (error) {
       console.log("error", error);
@@ -183,7 +192,7 @@ function Workspace() {
       const result = await response.json();
       console.log("User name updated successfully:", result);
 
-      await getForm();  
+      await getForm();
     } catch (error) {
       console.error("Error updating user name:", error);
     }
@@ -834,7 +843,7 @@ function Workspace() {
                         />
                       </div>
                     </div>
-                    <div className="mt-4 flex  flex-wrap gap-2">
+                    <div className="mt-4 flex flex-wrap gap-2">
                       <Image
                         onClick={() => hadleCreateForm("")}
                         src="/Icon-form/28.png"
@@ -876,7 +885,7 @@ function Workspace() {
                     ></input>
                   </div>
                   <div
-                    className="pr-4 mt-2 overflow-y-auto [&::-webkit-scrollbar]:w-2
+                    className="pr-4 mt-2 h-[350px] overflow-y-auto [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-gray-100
   [&::-webkit-scrollbar-thumb]:rounded-full
@@ -885,7 +894,7 @@ function Workspace() {
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
                   >
                     {formDataToSearch?.map((item, index) => (
-                      <div className="  flex flex-col border-2  " key={index}>
+                      <div className="  flex flex-col " key={index}>
                         <div className="flex mt-2 justify-between items-center ">
                           <div className="flex gap-x-2 items-center">
                             <Image
@@ -914,21 +923,10 @@ function Workspace() {
                               }
                             ></div>
 
-                            <Image
-                              title="Edit"
-                              src={`/Icon-form/41.svg`}
-                              width={1000}
-                              height={1000}
-                              quality={100}
-                              alt="question"
-                              className="h-auto hover:brightness-[90%] mb-[2px] transition-all duration-[500ms] w-[18px]"
-                            />
-                            <div className="absolute bottom-5 left-5 ">
+                           
+                            <div className="absolute bottom-[-84px] left-[-100px]  ">
                               {item.status && (
-                                <div
-                                  ref={menuRef}
-                                  className="relative border-2 border-red-400"
-                                >
+                                <div ref={menuRef} style={{zIndex:item.status? "20":"0"}} className="relative">
                                   <div className="w-[120px] bg-white px-[5px]  bg-white  py-[8px] rounded-[7px] ] gap-x-[5px] flex flex-col gap-y-[5px] border-2 items-center">
                                     <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image

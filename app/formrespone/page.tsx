@@ -8,8 +8,8 @@ import React, {
 } from "react";
 import NavBarInForm from "../component/nav";
 import Image from "next/image";
-import ApexCharts from "apexcharts";
-import { _limitValue } from "chart.js/helpers";
+import DynamicBarChart from "../component/graph/bar";
+import DynamicPieChart from "../component/graph/circle";
 
 function formrespone() {
   const [display, setDisplay] = useState<number>(1);
@@ -21,8 +21,8 @@ function formrespone() {
       label: string;
     }[]
   >([
-    { imgSrc: "/Icon-form/16.png", wideth: 20, label: "Circle Chart" },
-    { imgSrc: "/Icon-form/17.png", wideth: 20, label: "Bar Chart" },
+    { imgSrc: "/Icon-form/16.png", wideth: 20, label: "Circle" },
+    { imgSrc: "/Icon-form/17.png", wideth: 20, label: "Bar" },
   ]);
   const [chart, setChart] = useState<number>(0);
   const [isSaveData,setIsSaveData]= useState<boolean>(false)
@@ -59,6 +59,29 @@ function formrespone() {
   // },limit:number,archive:boolean) => {
   //   sessionStorage.setItem("color":"")
   // };
+  const setData = [
+    { name: "IT", value: 2 },
+    { name: "Product Development", value: 2 },
+    { name: "Sales", value: 6 },
+    { name: "Marketing", value: 4 },
+    { name: "Support", value: 3 },
+    { name: "Human Resources", value: 5 },
+    { name: "Finance", value: 7 },
+    { name: "Operations", value: 6 },
+    { name: "Legal", value: 3 },
+    { name: "Customer Success", value: 4 },
+    { name: "Engineering", value: 8 },
+    { name: "Data Science", value: 4 },
+    { name: "Quality Assurance", value: 2 },
+    { name: "Design", value: 5 },
+    { name: "Logistics", value: 6 },
+    { name: "Procurement", value: 3 },
+    { name: "Public Relations", value: 2 },
+    { name: "Corporate Strategy", value: 5 },
+    { name: "R&D", value: 7 },
+    { name: "Training", value: 4 },
+    { name: "Administration", value: 3 },
+  ];
   const updateColor = (
     newPosition: number,
     newcolor1: string,
@@ -119,10 +142,10 @@ function formrespone() {
   }
 
   useEffect(() => {
-    const setting = JSON.parse(localStorage.getItem("setting")?? "")
+    const setting = (localStorage.getItem("setting")?? "")
     if (setting){
-      setColor(setting.color)
-      setAmount(setting.limit)
+      setColor(JSON.parse(setting).color)
+      setAmount(JSON.parse(setting).limit)
   
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -133,84 +156,9 @@ function formrespone() {
    
   }, []);
 
-  const getChartOptions = () => {
-    if (chart === 0) {
-      return {
-        series: [52.8, 26.8, 20.4],
-        colors: ["#001F3F", "#3A6D8C", "#EAD8B1"],
-        chart: {
-          height: 320,
-          width: "100%",
-          type: "pie",
-        },
-        stroke: {
-          colors: ["white"],
-        },
-        plotOptions: {
-          pie: {
-            labels: {
-              show: true,
-            },
-            size: "100%",
-            dataLabels: {
-              offset: -25,
-            },
-            expandOnClick: false,
-            customScale: 0.85,
-          },
-        },
-        labels: ["Direct", "Organic search", "Referrals"],
-        dataLabels: {
-          enabled: true,
-        },
-        legend: {
-          position: "bottom",
-          fontFamily: "roboto, sans-serif",
-        },
-      };
-    } else if (chart === 1) {
-      // Bar Chart options
-      return {
-        series: [
-          {
-            name: "Sales",
-            data: [30, 40, 50, 60, 70, 80],
-          },
-        ],
-        chart: {
-          type: "bar",
-          height: 320,
-          width: "100%",
-        },
-        plotOptions: {
-          bar: {
-            horizontal: true,
-            columnWidth: "40%",
-          },
-        },
-        xaxis: {
-          categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        },
-        colors: ["515151"],
-        dataLabels: {
-          enabled: false,
-        },
-        legend: {
-          position: "top",
-        },
-      };
-    }
-  };
+  
 
-  useEffect(() => {
-    const chartElement = document.getElementById("chart");
-    if (chartElement) {
-      const chartInstance = new ApexCharts(chartElement, getChartOptions());
-      chartInstance.render();
-
-      return () => chartInstance.destroy();
-    }
-  }, [display, chart]);
+ 
 
   return (
     <div className="relative">
@@ -406,7 +354,7 @@ function formrespone() {
                                       alt={option.label}
                                     />
                                     <p className="text-[11px] sm:text-[12px]">
-                                      {option.label}
+                                      {option.label} 
                                     </p>
                                   </div>
                                 </div>
@@ -418,16 +366,14 @@ function formrespone() {
                     </div>
                   </div>
                 </div>
-
-                <div className="mx-auto flex justify-center">
-                  <div
-                    style={{
-                      borderTop: "2px dashed #868686",
-                      width: "80%",
-                      margin: "20px 0px",
-                    }}
-                  />
+                {options[chart]?.label === "Circle" && (
+                <DynamicPieChart data={setData}></DynamicPieChart>
+              )}
+              {options[chart]?.label === "Bar" && (
+                <div className="mt-4">
+                  <DynamicBarChart data={setData}></DynamicBarChart>
                 </div>
+              )}
 
                 <div className="py-6 px-16" id="chart"></div>
               </div>
