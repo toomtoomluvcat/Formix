@@ -3,9 +3,11 @@ import React, { ChangeEvent, useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function Workspace() {
-  const [username, setUsername] = useState<string | null>("username");
+  const [username, setUsername] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [totalForm, settotalForm] = useState<number>(0);
   const [activeForm, setActiveForm] = useState<number>(0);
@@ -24,7 +26,7 @@ function Workspace() {
   const [formData, setFormData] = useState<
     | { name: string; archive: boolean; proflieId: string; status: boolean }[]
     | null
-  >(null);
+  >([{ name: "toom", archive: true, proflieId: "0001", status: false }]);
   const [showMarket, setShowMarket] = useState<boolean>(false);
   const [formDataToSearch, setFormDataToSearch] = useState<
     | { name: string; archive: boolean; proflieId: string; status: boolean }[]
@@ -39,6 +41,14 @@ function Workspace() {
   const router = useRouter();
 
   useEffect(() => {
+    const savedUsername = localStorage.getItem("username");
+    if (savedUsername) {
+      console.log("Loaded username from localStorage:", savedUsername);
+      setUsername(savedUsername);
+    }
+  }, []);
+
+  useEffect(() => {
     async function fetchUserData() {
       const token = localStorage.getItem("token");
       const expDate = localStorage.getItem("expDate");
@@ -49,38 +59,48 @@ function Workspace() {
     }
     fetchUserData();
   }, []);
-  useEffect(() => {
-    async function getForm() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/signin");
-        return;
-      }
-      try {
-        const response = await fetch(
-          "http://localhost:5001/workspace/getForm",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "x-auth-token": token,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        console.log("Fetched data:", result);
-        setFormData(result.forms);
-        settotalForm(result.totalForm);
-        setActiveForm(result.activeForm);
-        setEmail(result.email);
-        // setRespone(result.responseForm);
-      } catch (error) {
-        console.log("error", error);
-      }
+  async function getForm() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/signin");
+      return;
     }
+    try {
+      const response = await fetch(
+        "http://localhost:5001/workspace/getForm",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      console.log("Fetched data:", result);
+
+      if (result.name) {
+        console.log("📌 Setting username:", result.name);
+        setUsername(result.name);
+        localStorage.setItem("username", result.name);
+      } else {
+        console.warn("⚠️ No username found in API response");
+      }
+      setFormData(result.forms);
+      settotalForm(result.totalForm);
+      setActiveForm(result.activeForm);
+      setEmail(result.email);
+      setUserId(result.userID);
+       
+      // setRespone(result.responseForm);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+  useEffect(() => {
     getForm();
   }, []);
 
@@ -132,34 +152,46 @@ function Workspace() {
     handleSearchForm("");
   }, [formData]);
 
-  async function updateUserName() {
+  async function updateUserName(userId: number, changeUsername: string) {
     const token = localStorage.getItem("token");
 
     if (!token) {
+      console.error("No token found, redirecting to signin...");
       router.push("/signin");
       return;
     }
+
     try {
-      console.log("start put ");
-      const response = await fetch(`http://localhost:5001/workspace/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": token,
-        },
-        body: JSON.stringify({ name: changeUsername, token: token }),
-      });
+      console.log("Sending PUT request...");
+
+      const response = await fetch(
+        `http://localhost:5001/workspace/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+          body: JSON.stringify({ name: changeUsername }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to update user name");
+        throw new Error(`Failed to update user name: ${response.statusText}`);
       }
 
       const result = await response.json();
-      console.log("✅ User name updated successfully:", result);
+      console.log("User name updated successfully:", result);
+
+      await getForm();  
     } catch (error) {
-      console.error("❌ Error updating user name:", error);
+      console.error("Error updating user name:", error);
     }
   }
+  useEffect(() => {
+    console.log("🎯 Username updated:", username);
+  }, [username]);
+
   const hadleCreateForm = (theme: string): void => {
     if (localStorage.getItem("setting")) {
       localStorage.removeItem("setting");
@@ -167,7 +199,6 @@ function Workspace() {
     console.log("`/form${theme}`", `/form${theme}`);
 
     router.push(`/form${theme}`);
-
   };
   const hadleLogout = (): void => {
     localStorage.removeItem("token");
@@ -273,9 +304,26 @@ function Workspace() {
                 <button
                   type="button"
                   onClick={() => {
-                    updateUserName(),
-                      setShowChangeName(false),
-                      setChangeUsername("");
+                    console.log("📌 Button clicked!");
+                    console.log(
+                      "🆔 userId:",
+                      userId,
+                      "✏️ changeUsername:",
+                      changeUsername
+                    );
+
+                    if (!userId) {
+                      console.error("❌ userId is missing!");
+                      return;
+                    }
+                    if (!changeUsername) {
+                      console.error("❌ changeUsername is empty!");
+                      return;
+                    }
+
+                    updateUserName(userId, changeUsername);
+                    setShowChangeName(false);
+                    setChangeUsername("");
                   }}
                   className="bg-black p-[12px] rounded-[7px] text-white text-[10px]"
                 >
@@ -787,15 +835,15 @@ function Workspace() {
                       </div>
                     </div>
                     <div className="mt-4 flex  flex-wrap gap-2">
-                        <Image
-                         onClick={() => hadleCreateForm("")}
-                          src="/Icon-form/28.png"
-                          width={1000}
-                          height={1000}
-                          quality={100}
-                          alt="question"
-                          className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
-                        />
+                      <Image
+                        onClick={() => hadleCreateForm("")}
+                        src="/Icon-form/28.png"
+                        width={1000}
+                        height={1000}
+                        quality={100}
+                        alt="question"
+                        className="h-auto hover:brightness-[90%] transition-all duration-[500ms] w-[90px]"
+                      />
 
                       <Image
                         onClick={() => hadleCreateForm("01")}
@@ -828,7 +876,7 @@ function Workspace() {
                     ></input>
                   </div>
                   <div
-                    className="pr-4 mt-2 sm:h-[350px] overflow-y-auto [&::-webkit-scrollbar]:w-2
+                    className="pr-4 mt-2 overflow-y-auto [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-gray-100
   [&::-webkit-scrollbar-thumb]:rounded-full
@@ -837,8 +885,8 @@ function Workspace() {
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
                   >
                     {formDataToSearch?.map((item, index) => (
-                      <div className=" flex flex-col " key={index}>
-                        <div className="flex mt-2 justify-between items-center">
+                      <div className="  flex flex-col border-2  " key={index}>
+                        <div className="flex mt-2 justify-between items-center ">
                           <div className="flex gap-x-2 items-center">
                             <Image
                               src={`/Icon-form/${item.proflieId}.svg`}
@@ -852,7 +900,7 @@ function Workspace() {
                               {item.name}
                             </p>
                           </div>
-                          <div className="relative flex items-center gap-x-[15px]">
+                          <div className="relative flex items-center gap-x-[15px] ">
                             <div
                               title={
                                 item.archive
@@ -875,10 +923,13 @@ function Workspace() {
                               alt="question"
                               className="h-auto hover:brightness-[90%] mb-[2px] transition-all duration-[500ms] w-[18px]"
                             />
-                            <div className="absolute bottom-5 left-[-15px] ">
+                            <div className="absolute bottom-5 left-5 ">
                               {item.status && (
-                                <div ref={menuRef} className="">
-                                  <div className="w-[120px] bg-white px-[5px] bg-white  py-[8px] rounded-[7px] ] gap-x-[5px] flex flex-col gap-y-[5px] border-2 items-center">
+                                <div
+                                  ref={menuRef}
+                                  className="relative border-2 border-red-400"
+                                >
+                                  <div className="w-[120px] bg-white px-[5px]  bg-white  py-[8px] rounded-[7px] ] gap-x-[5px] flex flex-col gap-y-[5px] border-2 items-center">
                                     <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
                                         src={`/Icon-form/44.svg`}
@@ -890,7 +941,7 @@ function Workspace() {
                                       />
                                       <h2 className="text-[10px]">Coppy Url</h2>
                                     </div>
-                                    <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                    <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
                                         src={`/Icon-form/46.svg`}
                                         width={1000}
