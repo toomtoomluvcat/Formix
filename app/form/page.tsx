@@ -99,7 +99,10 @@ useEffect(() => {
           type: q.type,
           required: q.required,
           limit: 100,
-          limitAns: 1
+          limitAns: 1,
+          options: q.options 
+          ? { create: q.options.map(opt => ({ text: opt.labelChoice, limitAns: opt.limitAns })) }
+          : undefined,
         }))
       }
     };

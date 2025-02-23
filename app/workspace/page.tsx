@@ -68,7 +68,11 @@ function Workspace() {
       }
       const result = await response.json();
       console.log("Fetched data:", result);
-      setFormData(result);
+      setFormData(result.forms);
+      settotalForm(result.totalForm);
+      setActiveForm(result.activeForm);
+      setEmail(result.email);
+      // setRespone(result.responseForm);
     }catch(error){
       console.log('error', error)
     }}
@@ -120,6 +124,34 @@ function Workspace() {
   useEffect(() => {
     handleSearchForm("");
   }, [formData]);
+
+  async function updateUserName(userId: number) {
+    const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+      try {
+        const response = await fetch(`http://localhost:5001/workspace/${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token, 
+          },
+          body: JSON.stringify({ name: changeUsername }),
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to update user name");
+        }
+    
+        const result = await response.json();
+        console.log("✅ User name updated successfully:", result);
+      } catch (error) {
+        console.error("❌ Error updating user name:", error);
+      }
+  }
+
 
   const hadleLogout = (): void => {
     localStorage.removeItem("token");
