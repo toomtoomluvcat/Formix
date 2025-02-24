@@ -251,6 +251,32 @@ function Preview() {
       }
     }
   };
+
+  async function formPublic(formID: Number){
+    try {
+      const response = await fetch(
+        `http://localhost:5001/workspace/${formID}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      console.log("Fetched data:", result);
+      setQuestions(result);
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+  useEffect(() => {
+      formPublic(formID);
+    }, []);
+
   const handleInput = (inputIndex: number, value: string): void => {
     setAnswerList((prev) =>
       prev.map((item) =>

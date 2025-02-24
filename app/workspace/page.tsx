@@ -23,25 +23,12 @@ function Workspace() {
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
   const [errorChangePassword, setErrorChangePassword] = useState<string>("");
   const [formData, setFormData] = useState<
-    | { name: string; archive: boolean; proflieId: string; status: boolean }[]
+    | { id:string,name: string; archive: boolean; proflieId: string; status: boolean }[]
     | null
-  >([
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-    { name: "toom", archive: true, proflieId: "0001", status: false },
-  ]);
+  >(null);
   const [showMarket, setShowMarket] = useState<boolean>(false);
   const [formDataToSearch, setFormDataToSearch] = useState<
-    | { name: string; archive: boolean; proflieId: string; status: boolean }[]
+    | {id:string, name: string; archive: boolean; proflieId: string; status: boolean }[]
     | null
   >(null);
   const [firstTime, setfirstTime] = useState<boolean>(true);
@@ -92,11 +79,12 @@ function Workspace() {
       console.log("Fetched data:", result);
 
       if (result.name) {
-        console.log("📌 Setting username:", result.name);
+        console.log("Setting username:", result.name);
         setUsername(result.name);
+        console.log('clo', result.forms)
         localStorage.setItem("username", result.name);
       } else {
-        console.warn("⚠️ No username found in API response");
+        console.warn("No username found in API response");
       }
       setFormData(result.forms);
       settotalForm(result.totalForm);
