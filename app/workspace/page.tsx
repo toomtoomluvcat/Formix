@@ -86,6 +86,8 @@ function Workspace() {
       } else {
         console.warn("No username found in API response");
       }
+      console.log('result.forms', result.forms)
+      setFormData(result);
       setFormData(result.forms);
       settotalForm(result.totalForm);
       setActiveForm(result.activeForm);
