@@ -1,10 +1,16 @@
+// app/publicform/[id]/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import NavBarInForm from "../../component/nav";
 import Link from "next/link";
+import { useParams,useRouter } from "next/navigation";
 
 function Preview() {
+  const router = useRouter()
+  const { id } = useParams();
+  const [formName,setFormName] = useState<string|null>(null);
+  const [description,setDescription]=useState<string|null>(null);
   const [dropdown, setDropdown] = useState<{ [key: number]: boolean }>({});
   const [answerList, setAnswerList] = useState<
     {
@@ -20,221 +26,15 @@ function Preview() {
       title: string;
       type: string;
       required: boolean;
-      options?: Array<{ labelChoice: string; limitAns: number | null }> | null;
-    }[]
-  >([
-    {
-      id: 1,
-      title: "What is your favorite color?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 3,
-      title: "Select your hobbies",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "Reading", limitAns: null },
-        { labelChoice: "Traveling", limitAns: null },
-        { labelChoice: "Cooking", limitAns: null },
-        { labelChoice: "Gaming", limitAns: null },
-        { labelChoice: "Photography", limitAns: null },
-      ],
-    },
-    {
-      id: 50,
-      title: "How old are you?",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 4,
-      title: "Select your favorite fruit",
-      type: "dropdown",
-      required: false,
-      options: [
-        { labelChoice: "Apple", limitAns: null },
-        { labelChoice: "Banana", limitAns: null },
-        { labelChoice: "Orange", limitAns: null },
-        { labelChoice: "Grapes", limitAns: null },
-        { labelChoice: "Pineapple", limitAns: null },
-      ],
-    },
-    {
-      id: 5,
-      title: "Choose your favorite pets",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Dog", limitAns: 1 },
-        { labelChoice: "Cat", limitAns: 1 },
-        { labelChoice: "Rabbit", limitAns: 1 },
-        { labelChoice: "Hamster", limitAns: 1 },
-        { labelChoice: "Bird", limitAns: 1 },
-      ],
-    },
-    {
-      id: 6,
-      title: "What is your preferred mode of transport?",
-      type: "dropdown",
-      required: false,
-      options: [
-        { labelChoice: "Car", limitAns: null },
-        { labelChoice: "Bicycle", limitAns: null },
-        { labelChoice: "Bus", limitAns: null },
-        { labelChoice: "Train", limitAns: null },
-        { labelChoice: "Walk", limitAns: null },
-      ],
-    },
-    {
-      id: 7,
-      title: "Which programming languages do you know?",
-      type: "check",
-      required: true,
-      options: [
-        { labelChoice: "JavaScript", limitAns: null },
-        { labelChoice: "Python", limitAns: null },
-        { labelChoice: "Java", limitAns: null },
-        { labelChoice: "C++", limitAns: null },
-        { labelChoice: "Go", limitAns: null },
-      ],
-    },
-    {
-      id: 8,
-      title: "Rate your experience with our service",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 9,
-      title: "Do you like our website design?",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Yes", limitAns: 1 },
-        { labelChoice: "No", limitAns: 1 },
-      ],
-    },
-    {
-      id: 10,
-      title: "What kind of movies do you prefer?",
-      type: "radio",
-      required: false,
-      options: [
-        { labelChoice: "Action", limitAns: null },
-        { labelChoice: "Comedy", limitAns: null },
-        { labelChoice: "Drama", limitAns: null },
-        { labelChoice: "Horror", limitAns: null },
-        { labelChoice: "Romance", limitAns: null },
-        { labelChoice: "Sci-Fi", limitAns: null },
-      ],
-    },
-    {
-      id: 11,
-      title: "What is your full name?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 12,
-      title: "What is your email address?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 13,
-      title: "Would you like to receive our newsletter?",
-      type: "radio",
-      required: false,
-      options: [
-        { labelChoice: "Yes, please", limitAns: 1 },
-        { labelChoice: "No, thanks", limitAns: 1 },
-      ],
-    },
-    {
-      id: 14,
-      title: "Select the countries you have visited",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "USA", limitAns: null },
-        { labelChoice: "France", limitAns: null },
-        { labelChoice: "Japan", limitAns: null },
-        { labelChoice: "Italy", limitAns: null },
-        { labelChoice: "Thailand", limitAns: null },
-        { labelChoice: "India", limitAns: null },
-      ],
-    },
-    {
-      id: 15,
-      title: "How satisfied are you with our product?",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 16,
-      title: "What is your favorite sport?",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Football", limitAns: 1 },
-        { labelChoice: "Basketball", limitAns: 1 },
-        { labelChoice: "Tennis", limitAns: 1 },
-        { labelChoice: "Swimming", limitAns: 1 },
-        { labelChoice: "Running", limitAns: 1 },
-      ],
-    },
-    {
-      id: 17,
-      title: "Which social media platforms do you use?",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "Facebook", limitAns: null },
-        { labelChoice: "Instagram", limitAns: 7 },
-        { labelChoice: "Twitter", limitAns: 6 },
-        { labelChoice: "LinkedIn", limitAns: null },
-        { labelChoice: "TikTok", limitAns: null },
-      ],
-    },
-    {
-      id: 18,
-      title: "What is your highest level of education?",
-      type: "dropdown",
-      required: true,
-      options: [
-        { labelChoice: "High School", limitAns: 5 },
-        { labelChoice: "Bachelor's Degree", limitAns: 8 },
-        { labelChoice: "Master's Degree", limitAns: 9 },
-        { labelChoice: "PhD", limitAns: null },
-        { labelChoice: "Other", limitAns: null },
-      ],
-    },
-    {
-      id: 19,
-      title: "How many hours do you spend online per day?",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 20,
-      title: "Would you recommend our service to others?",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Definitely", limitAns: 1 },
-        { labelChoice: "Maybe", limitAns: 1 },
-        { labelChoice: "Not sure", limitAns: 1 },
-        { labelChoice: "No", limitAns: 1 },
-      ],
-    },
-  ]);
+      options?: Array<{ text: string; limitAns: number | null }>
+    }[]| null
+  >(null);
+
   useEffect(() => {
     generateAnswer();
-  }, []);
+  }, [questions]);
   const generateAnswer = (): void => {
-    if (questions.length > 0) {
+    if (questions!==null) {
       for (let i = 0; i < questions.length; i++) {
         setAnswerList((prev) => [
           ...prev,
@@ -252,10 +52,11 @@ function Preview() {
     }
   };
 
-  async function formPublic(formID: Number){
+  async function formPublic() {
     try {
+     
       const response = await fetch(
-        `http://localhost:5001/workspace/${formID}`,
+        `http://localhost:5001/recieve/public/${id}`,
         {
           method: "GET",
           headers: {
@@ -263,19 +64,28 @@ function Preview() {
           },
         }
       );
+      
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+
       const result = await response.json();
-      console.log("Fetched data:", result);
-      setQuestions(result);
+      setFormName(result.title)
+      setDescription(result.description)
+
+      setQuestions(result.questions)
+      
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
     }
   }
+  useEffect(()=>{
+    formPublic();
+  },[])
   useEffect(() => {
-      formPublic(formID);
-    }, []);
+    console.log(questions)
+
+  }, [questions]);
 
   const handleInput = (inputIndex: number, value: string): void => {
     setAnswerList((prev) =>
@@ -341,13 +151,14 @@ function Preview() {
     <div className="relative">
       <div className="mt-12 max-w-[650px] mx-auto">
         <div className="mb-8">
-          <h1 className="text-[30px] font-medium text-center">Form Name</h1>
+          <h1 className="text-[30px] font-medium text-center">{formName}</h1>
           <p className="mt-4 text-center text-[#c4c4c4]">
-            enter description here
+            {description}
           </p>
-          <p>{JSON.stringify(answerList)}</p>
         </div>
+        {questions&&(
         <div>
+          
           {questions.map((item, questionId) => (
             <div
               key={item.id}
@@ -361,7 +172,7 @@ function Preview() {
               >
                 <span>{item.title}</span>
                 {item.required && <span className="ml-1 text-red-400">*</span>}
-                {item.type === "text" && (
+                {item.type == "text" && (
                   <div className="mt-2 mr-[30%]">
                     <input
                       value={answerList[questionId]?.answer[0] ?? ""}
@@ -373,7 +184,7 @@ function Preview() {
                     ></input>
                   </div>
                 )}
-                {item.type === "number" && (
+                {item.type == "number" && (
                   <div className="mt-2 mr-[30%]">
                     <input
                       value={answerList[questionId]?.answer[0] ?? ""}
@@ -386,22 +197,22 @@ function Preview() {
                   </div>
                 )}
 
-                {item.type === "check" && (
+                {(item.type == "mutiple" ||item.type=="check") && (
                   <div className="mt-4">
                     {item.options?.map((option, index) => (
                       <div key={index} className="flex items-center mb-2">
                         <label className="flex items-center cursor-pointer relative">
                           <input
-                            value={option.labelChoice}
+                            value={option.text}
                             checked={
                               answerList[questionId]?.answer.includes(
-                                option.labelChoice
+                                option.text
                               ) ?? false
                             }
                             onChange={(e) =>
                               handleCheckboxChange(
                                 item.id,
-                                option.labelChoice,
+                                option.text,
                                 e.target.checked
                               )
                             }
@@ -427,7 +238,7 @@ function Preview() {
                           </span>
                         </label>
                         <p className="ml-2  text-sm">
-                          {option.labelChoice} &nbsp;&nbsp;{" "}
+                          {option.text} &nbsp;&nbsp;{" "}
                           <span className=" text-gray-600">
                             {" "}
                             {option.limitAns ? `(0/${option?.limitAns})` : ""}
@@ -437,25 +248,26 @@ function Preview() {
                     ))}
                   </div>
                 )}
-                {item.type === "radio" && (
+                {item.type == "radio" && (
                   <div className="mt-4">
                     {item.options?.map((option, index) => (
                       <div key={index}>
                         <div className="flex items-center mb-2">
                           <input
-                          value={option.labelChoice}
-                          onChange={(e) => handleInput(item.id, e.target.value)}
+                            value={option.text}
+                            onChange={(e) =>
+                              handleInput(item.id, e.target.value)
+                            }
                             type="radio"
                             className="form-radio accent-[#000000]"
                             name={`radio-group-${item.id}`}
-                           
                           />
 
                           <label
                             htmlFor="disabled-radio-1"
                             className="ms-2 text-sm "
                           >
-                            {option.labelChoice} &nbsp;&nbsp;{" "}
+                            {option.text} &nbsp;&nbsp;{" "}
                             <span className=" text-gray-600">
                               {" "}
                               {option.limitAns ? `(0/${option?.limitAns})` : ""}
@@ -466,17 +278,17 @@ function Preview() {
                     ))}
                   </div>
                 )}
-                {item.type === "dropdown" && (
+                {item.type == "dropdown" && (
                   <div className="relative mt-4 w-fit min-w-[100px]">
                     <div
                       onClick={() => handleDropdown(item.id)}
                       className="flex justify-center border-2 rounded-lg py-[4px]"
                     >
-                     <span className="text-sm px-4 ml-1">
-                      {answerList[questionId]?.answer.length > 0
-                        ? answerList[questionId]?.answer
-                        : "options"}
-                    </span>
+                      <span className="text-sm px-4 ml-1">
+                        {answerList[questionId]?.answer.length > 0
+                          ? answerList[questionId]?.answer
+                          : "options"}
+                      </span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         height="24px"
@@ -491,16 +303,19 @@ function Preview() {
                     {dropdown[item.id] && (
                       <div className="absolute left-0 top-full px-2 py-2 w-fit bg-white border-2 rounded-lg mt-2 shadow-lg">
                         {item.options?.map((option, index) => (
-                          <div className="flex hover:bg-gray-100 items-center transition-all duration-[500ms] rounded-lg pl-2 pr-6"
+                          <div
+                            className="flex hover:bg-gray-100 items-center transition-all duration-[500ms] rounded-lg pl-2 pr-6"
                             key={index}
                             onClick={() =>
-                              handleInputDropdown(item.id, option.labelChoice)
+                              handleInputDropdown(item.id, option.text)
                             }
                           >
                             <ul className="p-2 rounded-lg text-[0.85em]  cursor-pointer">
-                              {option.labelChoice}
+                              {option.text}
                             </ul>
-                            <p className="text-sm text-gray-600">{option.limitAns ? `(0/${option?.limitAns})` : ""}</p>
+                            <p className="text-sm text-gray-600">
+                              {option.limitAns ? `(0/${option?.limitAns})` : ""}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -511,6 +326,7 @@ function Preview() {
             </div>
           ))}
         </div>
+        )}
       </div>
     </div>
   );

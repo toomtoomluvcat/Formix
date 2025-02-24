@@ -23,12 +23,24 @@ function Workspace() {
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
   const [errorChangePassword, setErrorChangePassword] = useState<string>("");
   const [formData, setFormData] = useState<
-    | { id:string,name: string; archive: boolean; proflieId: string; status: boolean }[]
+    | {
+        id: string;
+        name: string;
+        archive: boolean;
+        proflieId: string;
+        status: boolean;
+      }[]
     | null
   >(null);
   const [showMarket, setShowMarket] = useState<boolean>(false);
   const [formDataToSearch, setFormDataToSearch] = useState<
-    | {id:string, name: string; archive: boolean; proflieId: string; status: boolean }[]
+    | {
+        id: string;
+        name: string;
+        archive: boolean;
+        proflieId: string;
+        status: boolean;
+      }[]
     | null
   >(null);
   const [firstTime, setfirstTime] = useState<boolean>(true);
@@ -72,21 +84,20 @@ function Workspace() {
           "x-auth-token": token,
         },
       });
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
-      console.log("Fetched data:", result);
-
+      console.log("result", result);
       if (result.name) {
         console.log("Setting username:", result.name);
         setUsername(result.name);
-        console.log('clo', result.forms)
         localStorage.setItem("username", result.name);
       } else {
         console.warn("No username found in API response");
       }
-      console.log('result.forms', result.forms)
+      console.log("result", result.forms);
       setFormData(result);
       setFormData(result.forms);
       settotalForm(result.totalForm);
@@ -155,14 +166,11 @@ function Workspace() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      console.error("No token found, redirecting to signin...");
       router.push("/signin");
       return;
     }
 
     try {
-      console.log("Sending PUT request...");
-
       const response = await fetch(
         `http://localhost:5001/workspace/${userId}`,
         {
@@ -180,27 +188,23 @@ function Workspace() {
       }
 
       const result = await response.json();
-      console.log("User name updated successfully:", result);
 
       await getForm();
     } catch (error) {
       console.error("Error updating user name:", error);
     }
   }
-  useEffect(() => {
-    console.log("🎯 Username updated:", username);
-  }, [username]);
 
   const hadleCreateForm = (theme: string): void => {
     if (localStorage.getItem("setting")) {
       localStorage.removeItem("setting");
     }
-    console.log("`/form${theme}`", `/form${theme}`);
 
     router.push(`/form${theme}`);
   };
   const hadleLogout = (): void => {
     localStorage.removeItem("token");
+    localStorage.setItem("username", "username");
     router.push("/signin");
   };
 
@@ -230,6 +234,7 @@ function Workspace() {
       setFormDataToSearch(formData);
     }
   };
+  
   const handleChangePassword = (): void => {
     if (newPassworld.length < 8) {
       setErrorChangePassword("Password should have more than 8 character");
@@ -265,6 +270,70 @@ function Workspace() {
       setShowNav(true);
       setIsHiding(false);
     }
+  };
+
+
+  const getPublicForm = async (id: string): Promise<void> => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+    try {
+      console.log("start deleting");
+      
+      const res = await fetch(`http://localhost:5001/recieve/public/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      });
+      
+      // ตรวจสอบว่า response มาเป็น ok หรือไม่
+      if (!res.ok) {
+        throw new Error("fail to get"+res.status);
+      }
+      router.push(`/publicform/${id}`)
+  
+    } catch (error) {
+      console.error("Error:", error);
+      // แสดง error ถ้ามี
+    }
+    
+  };
+
+  const hadleDelete = async (id: string): Promise<void> => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+    try {
+      console.log("start deleting");
+      
+      // ส่ง request DELETE ไปที่ backend
+      const res = await fetch(`http://localhost:5001/workspace/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      });
+  
+      // ตรวจสอบว่า response มาเป็น ok หรือไม่
+      if (!res.ok) {
+        throw new Error("Failed to delete, status: " + res.status);
+      }
+      setFormDataToSearch((prev) =>prev? prev?.filter((item) => item.id !== id):[]);
+  
+      console.log("Delete successful");
+      // คุณสามารถทำอะไรต่อหลังจากลบสำเร็จ เช่น อัพเดต UI
+    } catch (error) {
+      console.error("Error:", error);
+      // แสดง error ถ้ามี
+    }
+    
   };
 
   return (
@@ -303,14 +372,6 @@ function Workspace() {
                 <button
                   type="button"
                   onClick={() => {
-                    console.log("📌 Button clicked!");
-                    console.log(
-                      "🆔 userId:",
-                      userId,
-                      "✏️ changeUsername:",
-                      changeUsername
-                    );
-
                     if (!userId) {
                       console.error("❌ userId is missing!");
                       return;
@@ -913,12 +974,15 @@ function Workspace() {
                               }
                             ></div>
 
-                           
                             <div className="absolute bottom-[-84px] left-[-100px]  ">
                               {item.status && (
-                                <div ref={menuRef} style={{zIndex:item.status? "20":"0"}} className="relative">
+                                <div
+                                  ref={menuRef}
+                                  style={{ zIndex: item.status ? "20" : "0" }}
+                                  className="relative"
+                                >
                                   <div className="w-[120px] bg-white px-[5px]  bg-white  py-[8px] rounded-[7px] ] gap-x-[5px] flex flex-col gap-y-[5px] border-2 items-center">
-                                    <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                    <div onClick={()=>{getPublicForm(item.id)}} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
                                         src={`/Icon-form/44.svg`}
                                         width={1000}
@@ -942,7 +1006,12 @@ function Workspace() {
                                         Archive Form
                                       </h2>
                                     </div>
-                                    <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                    <div onClick={() => {
+                                          hadleDelete(item.id),
+                                          setFormData((prev) =>
+                                            prev ? prev.map((item) => ({ ...item, status: false })) : []
+                                          );
+                                        }} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
                                         src={`/Icon-form/45.svg`}
                                         width={1000}
@@ -951,7 +1020,12 @@ function Workspace() {
                                         alt="question"
                                         className="h-[15px] mb-[2px] w-auto"
                                       />
-                                      <h2 className="text-[10px]">Delete</h2>
+                                      <h2
+                                        
+                                        className="text-[10px]"
+                                      >
+                                        Delete
+                                      </h2>
                                     </div>
                                   </div>
                                 </div>

@@ -107,6 +107,7 @@ useEffect(() => {
       limitForm: limitForm,
       questions:{
         create: questions.map( q => ({
+          questionID	:q.id,
           title: q.title,
           type: q.type,
           required: q.required,
