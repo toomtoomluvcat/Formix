@@ -17,31 +17,21 @@ interface PieData {
 
 interface DynamicPieChartProps {
   data: PieData[];
+  theme:string;
+  color:string[];
 }
 
-const DynamicPieChart: React.FC<DynamicPieChartProps> = ({ data }) => {
+const DynamicPieChart: React.FC<DynamicPieChartProps> = ({ data,theme ,color}) => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-  const COLORS = [
-    "rgb(224, 83, 125)",
-    "rgb(77, 120, 231)",
-    "rgb(106, 165, 218)",
-    "rgb(28, 215, 147)",
-    "rgb(254, 216, 60)",
-    "rgb(255, 147, 86)",
-    "rgb(228, 228, 228)",
-    "rgb(58, 44, 77)",
-    "#0088FE",
-    "#00C49F",
-    "#FFBB28",
-    "#FF8042",
-    "#8884D8",
-    "#82CA9D",
-    "#F06292",
-    "#BA68C8",
-    "#4DD0E1",
-    "#DCE775",
-  ];
+  const getBorderColor =(size:number):string|undefined=>{
+    switch(theme){
+      case "0001":
+        return "transparent";
+      case "0002":
+        return `${size}px solid black`
+    }
+  }
   useEffect(() => {
     const checkScreenSize = () => {
       setIsSmallScreen(window.innerWidth < 640);
@@ -52,7 +42,7 @@ const DynamicPieChart: React.FC<DynamicPieChartProps> = ({ data }) => {
 
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
-  const getColor = (index: number): string => COLORS[index % COLORS.length];
+  const getColor = (index: number): string => color[index % color.length];
 
   const total = data.reduce((sum, entry) => sum + entry.value, 0);
 
@@ -64,8 +54,9 @@ const DynamicPieChart: React.FC<DynamicPieChartProps> = ({ data }) => {
         <div
           style={{
             filter: "drop-shadow(2px 3.5px 0px #000000)",
+            border:getBorderColor(3)
           }}
-          className="bg-white p-6 rounded-[25px] w-[150px] border-[3px] border-black"
+          className="bg-white p-6 rounded-[25px] w-[150px] "
         >
           <div className="flex items-center gap-x-[7px]">
             <div
@@ -93,10 +84,10 @@ const DynamicPieChart: React.FC<DynamicPieChartProps> = ({ data }) => {
           return (
             <li key={`legend-${index}`} className="flex items-center gap-2">
               <div
-                className="w-3 h-3 border-2 border-black rounded-full"
-                style={{ backgroundColor: color }}
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: color ,border:getBorderColor(2)}}
               />
-              <span className="text-[12px] sm:text-sm text-white">
+              <span className="text-[12px] sm:text-sm text-black">
                 {entry.value} ({percentage}%)
               </span>
             </li>

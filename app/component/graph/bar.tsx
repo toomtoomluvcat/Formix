@@ -11,6 +11,8 @@ import {
   Cell,
 } from "recharts";
 
+
+
 interface BarData {
   name: string;
   value: number;
@@ -18,46 +20,21 @@ interface BarData {
 
 interface DynamicBarChartProps {
   data: BarData[];
+  theme:String;
+  color:string[];
 }
 
-const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
+const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data ,theme,color}) => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-  const COLORS = [
-    "#E0537D",
-    "#4D78E7",
-    "#6AA5DA",
-    "#1CD793",
-    "#FDD83C",
-    "#FF9356",
-    "#E4E4E4",
-    "#3A2C4D",
-    "#0088FE",
-    "#00C49F",
-    "#FFBB28",
-    "#FF8042",
-    "#8884D8",
-    "#82CA9D",
-    "#F06292",
-    "#BA68C8",
-    "#4DD0E1",
-    "#DCE775",
-    "#D47C8F",
-    "#5A82D4",
-    "#B4A3D7",
-    "#72D8B5",
-    "#F2C88D",
-    "#F59E6F",
-    "#E3E4E6",
-    "#2C4D72",
-    "#0061B2",
-    "#00A078",
-    "#FF9E3C",
-    "#FF6542",
-    "#7E8BCC",
-    "#58B58F",
-    "#D974B6",
-  ];
+  const getBorderColor =(size:number):string|undefined=>{
+    switch(theme){
+      case "0001":
+        return "transparent";
+      case "0002":
+        return `${size}px solid black`
+    }
+  }
   
   useEffect(() => {
     const checkScreenSize = () => {
@@ -77,7 +54,7 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
       const index = data.findIndex(
         (item) => item.name === payload[0].payload.name
       );
-      const barColor = COLORS[index % COLORS.length];
+      const barColor = color[index % color.length];
       const value = payload[0].value;
       const name = payload[0].payload.name;
       const percentage = ((value / total) * 100).toFixed(1);
@@ -85,16 +62,16 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
       return (
         <div
           style={{
-            filter: "drop-shadow(0px 4px 0px rgb(0, 0, 0))",
-          }}
-          className="bg-white p-6  rounded-[25px] w-[150px] border-[3px] border-black"
+            filter: "drop-shadow(0px 6px 0px rgb(0, 0, 0))",
+          border:getBorderColor(3)}}
+          className="bg-white p-6 rounded-[25px] w-[150px]"
         >
           <div className="flex items-center gap-x-[7px]">
             <div
               className="min-w-[8px] min-h-[8px] rounded-full"
               style={{ backgroundColor: barColor }}
             ></div>
-            <p className="font-medium">{name}</p>
+            <p className="font-medium">{ }</p>
           </div>
           <p className="text-gray-600">Value: {value}</p>
           <p className="text-gray-600">{percentage}%</p>
@@ -109,12 +86,12 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
     return (
       <ul className="flex flex-wrap justify-center w-[90%] mx-auto gap-4 mt-4">
         {data.map((entry, index) => (
-          <li key={`legend-${index}`} className="flex items-center gap-2">
+          <li key={`legend-${index}`} className={`flex items-center gap-2 `}>
             <div
-              className="w-3 h-3 border-2 border-black rounded-full"
-              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+              className={`w-3 h-3 rounded-full `}
+              style={{ backgroundColor: color[index % color.length] , border:getBorderColor(2)}}
             />
-            <span className="text-[10px] sm:text-sm text-white">
+            <span className="text-[10px] sm:text-sm text-black">
               {entry.name}: {entry.value.toLocaleString()}
             </span>
           </li>
@@ -163,7 +140,7 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
+                fill={color[index % color.length]}
                 stroke="white"
                 strokeWidth={1}
               />

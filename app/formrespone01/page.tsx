@@ -519,11 +519,55 @@ function formrespone() {
                 <div className="h-[2px] w-[78%] mt-2 bg-white " />
               </div>
               {options[chart]?.label === "Circle" && (
-                <DynamicPieChart data={setData}></DynamicPieChart>
+                <DynamicPieChart
+                  color={[
+                    "rgb(58, 44, 77)",
+                    "rgb(224, 83, 125)",
+                    "rgb(255, 147, 86)",
+                    "rgb(254, 216, 60)",
+                    "rgb(28, 215, 147)",
+                    "rgb(106, 165, 218)",
+                    "rgb(77, 120, 231)",
+                    "#0088FE",
+                    "#00C49F",
+                    "#FFBB28",
+                    "#FF8042",
+                    "#8884D8",
+                    "#82CA9D",
+                    "#F06292",
+                    "#BA68C8",
+                    "#4DD0E1",
+                    "#DCE775",
+                  ]}
+                  theme={"0002"}
+                  data={setData}
+                ></DynamicPieChart>
               )}
               {options[chart]?.label === "Bar" && (
                 <div className="mt-4">
-                  <DynamicBarChart data={setData}></DynamicBarChart>
+                  <DynamicBarChart
+                  color={[
+                    "rgb(58, 44, 77)",
+                    "rgb(224, 83, 125)",
+                    "rgb(255, 147, 86)",
+                    "rgb(254, 216, 60)",
+                    "rgb(28, 215, 147)",
+                    "rgb(106, 165, 218)",
+                    "rgb(77, 120, 231)",
+                    "#0088FE",
+                    "#00C49F",
+                    "#FFBB28",
+                    "#FF8042",
+                    "#8884D8",
+                    "#82CA9D",
+                    "#F06292",
+                    "#BA68C8",
+                    "#4DD0E1",
+                    "#DCE775",
+                  ]}
+                    theme={"0002"}
+                    data={setData}
+                  ></DynamicBarChart>
                 </div>
               )}
             </div>

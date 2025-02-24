@@ -25,7 +25,7 @@ function formrespone() {
     { imgSrc: "/Icon-form/17.png", wideth: 20, label: "Bar" },
   ]);
   const [chart, setChart] = useState<number>(0);
-  const [isSaveData,setIsSaveData]= useState<boolean>(false)
+  const [isSaveData, setIsSaveData] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [amount, setAmount] = useState<number | null>(0);
@@ -60,28 +60,56 @@ function formrespone() {
   //   sessionStorage.setItem("color":"")
   // };
   const setData = [
-    { name: "IT", value: 2 },
-    { name: "Product Development", value: 2 },
-    { name: "Sales", value: 6 },
-    { name: "Marketing", value: 4 },
-    { name: "Support", value: 3 },
-    { name: "Human Resources", value: 5 },
-    { name: "Finance", value: 7 },
-    { name: "Operations", value: 6 },
-    { name: "Legal", value: 3 },
-    { name: "Customer Success", value: 4 },
-    { name: "Engineering", value: 8 },
-    { name: "Data Science", value: 4 },
-    { name: "Quality Assurance", value: 2 },
-    { name: "Design", value: 5 },
-    { name: "Logistics", value: 6 },
-    { name: "Procurement", value: 3 },
-    { name: "Public Relations", value: 2 },
-    { name: "Corporate Strategy", value: 5 },
-    { name: "R&D", value: 7 },
-    { name: "Training", value: 4 },
-    { name: "Administration", value: 3 },
+    [
+      { name: "Software Development", value: 5 },
+      { name: "Network Engineering", value: 4 },
+      { name: "Cyber Security", value: 6 },
+      { name: "Database Administration", value: 7 },
+      { name: "IT Support", value: 3 },
+      { name: "Product Management", value: 5 },
+    ],
+    [
+      { name: "Finance", value: 8 },
+      { name: "Accounting", value: 4 },
+      { name: "Investment", value: 6 },
+      { name: "Risk Management", value: 5 },
+      { name: "Insurance", value: 7 },
+      { name: "Audit", value: 3 },
+    ],
+    [
+      { name: "Marketing", value: 6 },
+      { name: "Public Relations", value: 4 },
+      { name: "Content Creation", value: 5 },
+      { name: "Branding", value: 7 },
+      { name: "Social Media", value: 6 },
+      { name: "Advertising", value: 3 },
+    ],
+    [
+      { name: "Sales", value: 9 },
+      { name: "Customer Service", value: 4 },
+      { name: "Business Development", value: 8 },
+      { name: "Retail", value: 5 },
+      { name: "Wholesale", value: 7 },
+      { name: "E-commerce", value: 6 },
+    ],
+    [
+      { name: "Healthcare", value: 7 },
+      { name: "Nursing", value: 5 },
+      { name: "Medical Research", value: 6 },
+      { name: "Pharmacy", value: 4 },
+      { name: "Psychology", value: 8 },
+      { name: "Surgery", value: 3 },
+    ],
+    [
+      { name: "Legal", value: 6 },
+      { name: "Criminal Law", value: 5 },
+      { name: "Corporate Law", value: 7 },
+      { name: "Family Law", value: 4 },
+      { name: "Intellectual Property", value: 6 },
+      { name: "Environmental Law", value: 3 },
+    ],
   ];
+  
   const updateColor = (
     newPosition: number,
     newcolor1: string,
@@ -127,38 +155,31 @@ function formrespone() {
       setIsOpen(false);
     }
   };
-  
-  const setSetting=():void=>{
-    const setting ={
-      limit:amount,
-      archive:isChecked,
-      color:color
-    }
-    localStorage.setItem("setting",JSON.stringify(setting))
-    setIsSaveData(true)
+
+  const setSetting = (): void => {
+    const setting = {
+      limit: amount,
+      archive: isChecked,
+      color: color,
+    };
+    localStorage.setItem("setting", JSON.stringify(setting));
+    setIsSaveData(true);
     setTimeout(() => {
-      setIsSaveData(false)
-    }, 3000);
-  }
+      setIsSaveData(false);
+    }, 1000);
+  };
 
   useEffect(() => {
-    const setting = (localStorage.getItem("setting")?? "")
-    if (setting){
-      setColor(JSON.parse(setting).color)
-      setAmount(JSON.parse(setting).limit)
-  
+    const setting = localStorage.getItem("setting") ?? "";
+    if (setting) {
+      setColor(JSON.parse(setting).color);
+      setAmount(JSON.parse(setting).limit);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-    
-   
   }, []);
-
-  
-
- 
 
   return (
     <div className="relative">
@@ -266,8 +287,9 @@ function formrespone() {
 
       {display === 1 && (
         <div className="">
-          <div className="max-w-[800px] mx-auto px-[30px]  mt-[50px]">
-            <div className=" bg-black rounded-lg">
+          <div className="max-w-[800px] mx-auto px-[30px] flex flex-col gap-[45px]  mt-[50px]">
+            {setData.map((item,index)=>(
+            <div key={index} className=" bg-black rounded-lg">
               <div
                 className="  translate-y-[-15px] z-40 bg-white border-2
                bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6"
@@ -287,13 +309,15 @@ function formrespone() {
                           />
                           <div>
                             <p className="text-[8px] sm:text-[11px] font-medium">
-                              question 1
+                              question {index+1}
                             </p>
                             <p className="text-[#4C4C4C] text-[11px] mt-[2px] sm:text-[13px]">
                               dog is cat right?
                             </p>
                           </div>
                         </div>
+
+                        
                         <div
                           ref={dropdownRef}
                           style={{
@@ -354,7 +378,7 @@ function formrespone() {
                                       alt={option.label}
                                     />
                                     <p className="text-[11px] sm:text-[12px]">
-                                      {option.label} 
+                                      {option.label}
                                     </p>
                                   </div>
                                 </div>
@@ -367,17 +391,61 @@ function formrespone() {
                   </div>
                 </div>
                 {options[chart]?.label === "Circle" && (
-                <DynamicPieChart data={setData}></DynamicPieChart>
-              )}
-              {options[chart]?.label === "Bar" && (
-                <div className="mt-4">
-                  <DynamicBarChart data={setData}></DynamicBarChart>
-                </div>
-              )}
+                  <DynamicPieChart
+                    color={[
+                      "#222831",
+                      "#2C323A",
+                      "#393E46",
+                      "#4E5965",
+                      "#5E6B75",
+                      "#6D9886",
+                      "#7FA395",
+                      "#89B9A8",
+                      "#A1D1C2",
+                      "#F2E7D5",
+                      "#E5D1B8",
+                      "#DCC9B6",
+                      "#F7F7F7",
+                      "#EDEDED",
+                      "#DADADA",
+                      "#C3C3C3",
+                      "#B0B0B0",
+                    ]}
+                    theme={"0001"}
+                    data={setData[index]}
+                  ></DynamicPieChart>
+                )}
+                {options[chart]?.label === "Bar" && (
+                  <div className="mt-4">
+                    <DynamicBarChart
+                    color={[
+                      "#222831",
+                      "#2C323A",
+                      "#393E46",
+                      "#4E5965",
+                      "#5E6B75",
+                      "#6D9886",
+                      "#7FA395",
+                      "#89B9A8",
+                      "#A1D1C2",
+                      "#F2E7D5",
+                      "#E5D1B8",
+                      "#DCC9B6",
+                      "#F7F7F7",
+                      "#EDEDED",
+                      "#DADADA",
+                      "#C3C3C3",
+                      "#B0B0B0",
+                    ]}
+                      theme={"0001"}
+                      data={setData[index]}
+                    ></DynamicBarChart>
+                  </div>
+                )}
 
                 <div className="py-6 px-16" id="chart"></div>
               </div>
-            </div>
+            </div>))}
           </div>
         </div>
       )}
@@ -616,7 +684,16 @@ function formrespone() {
             </div>
           </div>
           <div className="flex justify-end mb-[100px]">
-            <button className={`rounded-lg ${isSaveData? "bg-stone-800":"bg-black"} text-white w-[120px] py-[10px] text-[13px]`} disabled={isSaveData} onClick={()=>setSetting()} type="button">{isSaveData? "Saving ...":"Save change"}</button>
+            <button
+              className={`rounded-lg ${
+                isSaveData ? "bg-stone-800" : "bg-black"
+              } text-white w-[120px] py-[10px] text-[13px]`}
+              disabled={isSaveData}
+              onClick={() => setSetting()}
+              type="button"
+            >
+              {isSaveData ? "Saving ..." : "Save change"}
+            </button>
           </div>
         </div>
       )}
