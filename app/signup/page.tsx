@@ -59,21 +59,24 @@ function Signup() {
         },
         body: JSON.stringify(data),
       });
-      setErrMsg(await res.json());
-      if (!res.ok) {
-        const errorData = await res.json();
+    
+      const responseData = await res.json();
 
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${res.status}`
-        );
+      if (!res.ok) {
+        throw new Error(responseData.errors?.[0]?.msg || `HTTP error! Status: ${res.status}`);
       }
+    
+      setErrMsg(null);
       setError("");
       router.push("/signin");
     } catch (err) {
-      setError(errMsg?.errors.msg?? "")
+      if (err instanceof Error) {
+        setError(err.message || "Something went wrong");
+      } else {
+        setError("Something went wrong");
+      }
     }
-  };
-
+  }
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);
   };

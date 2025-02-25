@@ -33,21 +33,26 @@ function Signin() {
         },
         body: JSON.stringify(data),
       });
+  
+      const responseData = await res.json();
+      console.log("API Response:", responseData);
+  
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${res.status}`
-        );
+        const errorMessage = responseData.errors?.[0]?.msg || `HTTP error! Status: ${res.status}`;
+        throw new Error(errorMessage);
       }
-      const dataUser = await res.json();
-
-      if (!dataUser.token) {
+  
+      if (!responseData.token) {
         throw new Error("Invalid response: No token received");
       }
-      localStorage.setItem("token", dataUser.token);
-      localStorage.setItem("expDate", dataUser.expDate);
+  
+      localStorage.setItem("token", responseData.token);
+      localStorage.setItem("expDate", responseData.expDate);
+  
       router.push("/workspace");
     } catch (err) {
+      console.error("Fetch Error:", err);
+  
       if (err instanceof Error) {
         setError(err.message);
       } else {
