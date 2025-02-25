@@ -160,7 +160,7 @@ function Workspace() {
 
   useEffect(() => {
     handleSearchForm("");
-  }, [formData]);
+  },[] );
 
   async function updateUserName(userId: number, changeUsername: string) {
     const token = localStorage.getItem("token");
@@ -219,21 +219,18 @@ function Workspace() {
         : []
     );
   };
-
-  const handleSearchForm = (searchText: string): void => {
-    const inputText = searchText.toLowerCase();
+  const handleSearchForm = (searchText: string | null): void => {
+    if (!formData) return; // ป้องกัน formData เป็น null
+  
+    const inputText = searchText?.toLowerCase() || "";
     if (inputText) {
-      setFormDataToSearch(
-        formData
-          ? formData.filter((item) =>
-              item.name.toLowerCase().includes(inputText)
-            )
-          : null
+      setFormData(
+        formData.filter((item) => item.name.toLowerCase().includes(inputText))
       );
     } else {
-      setFormDataToSearch(formData);
     }
   };
+  
   
   const handleChangePassword = (): void => {
     if (newPassworld.length < 8) {
@@ -325,7 +322,7 @@ function Workspace() {
       if (!res.ok) {
         throw new Error("Failed to delete, status: " + res.status);
       }
-      setFormDataToSearch((prev) =>prev? prev?.filter((item) => item.id !== id):[]);
+      setFormData((prev) =>prev? prev?.filter((item) => item.id !== id):[]);
   
       console.log("Delete successful");
       // คุณสามารถทำอะไรต่อหลังจากลบสำเร็จ เช่น อัพเดต UI
@@ -944,7 +941,7 @@ function Workspace() {
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
                   >
-                    {formDataToSearch?.map((item, index) => (
+                    {formData?.map((item, index) => (
                       <div className="  flex flex-col " key={index}>
                         <div className="flex mt-2 justify-between items-center ">
                           <div className="flex gap-x-2 items-center">
