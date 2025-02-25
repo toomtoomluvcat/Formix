@@ -82,6 +82,38 @@ function Preview() {
   useEffect(()=>{
     formPublic();
   },[])
+
+  async function submitForm(){
+    const data = {
+      formID:id,
+      email: "guest@gmail.com",
+      answer: answerList.map(ans => ({
+        questionID: ans.id,
+        value: ans.answer,
+      }))
+    }
+    
+    try { 
+      const response = await fetch(
+        `http://localhost:5001/response/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   useEffect(() => {
     console.log(questions)
 
