@@ -51,13 +51,7 @@ function Workspace() {
   const notifyref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const savedUsername = localStorage.getItem("username");
-    if (savedUsername) {
-      console.log("Loaded username from localStorage:", savedUsername);
-      setUsername(savedUsername);
-    }
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -68,8 +62,15 @@ function Workspace() {
         return;
       }
     }
+    const savedUsername = localStorage.getItem("username");
+
     fetchUserData();
+    if (savedUsername) {
+      console.log("Loaded username from localStorage:", savedUsername);
+      setUsername(savedUsername);
+    }
   }, []);
+
   async function getForm() {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -98,7 +99,7 @@ function Workspace() {
         console.warn("No username found in API response");
       }
       console.log("result", result.forms);
-      setFormData(result);
+      setFormDataToSearch(result.forms);
       setFormData(result.forms);
       settotalForm(result.totalForm);
       setActiveForm(result.activeForm);
@@ -110,9 +111,6 @@ function Workspace() {
       console.log("error", error);
     }
   }
-  useEffect(() => {
-    getForm();
-  }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -122,7 +120,9 @@ function Workspace() {
     } else {
       setShowMarket(false);
     }
+    getForm();
   }, []);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -157,10 +157,6 @@ function Workspace() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuRef, accountMoblieRef, accountPcRef]);
-
-  useEffect(() => {
-    handleSearchForm("");
-  },[] );
 
   async function updateUserName(userId: number, changeUsername: string) {
     const token = localStorage.getItem("token");
@@ -219,19 +215,21 @@ function Workspace() {
         : []
     );
   };
+
   const handleSearchForm = (searchText: string | null): void => {
-    if (!formData) return; // ป้องกัน formData เป็น null
-  
+    if (!formData) return;
+
     const inputText = searchText?.toLowerCase() || "";
     if (inputText) {
       setFormData(
         formData.filter((item) => item.name.toLowerCase().includes(inputText))
       );
     } else {
+      console.log("Start!");
+      setFormData(formDataToSearch);
     }
   };
-  
-  
+
   const handleChangePassword = (): void => {
     if (newPassworld.length < 8) {
       setErrorChangePassword("Password should have more than 8 character");
@@ -269,16 +267,18 @@ function Workspace() {
     }
   };
 
-
+  useEffect(() => {
+    console.log("formto", formDataToSearch);
+  }, [formDataToSearch]);
   const getPublicForm = async (id: string): Promise<void> => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
       return;
     }
     try {
       console.log("start deleting");
-      
+
       const res = await fetch(`http://localhost:5001/recieve/public/${id}`, {
         method: "GET",
         headers: {
@@ -286,30 +286,25 @@ function Workspace() {
           "x-auth-token": token,
         },
       });
-      
-      // ตรวจสอบว่า response มาเป็น ok หรือไม่
+
       if (!res.ok) {
-        throw new Error("fail to get"+res.status);
+        throw new Error("fail to get" + res.status);
       }
-      router.push(`/publicform/${id}`)
-  
+      router.push(`/publicform/${id}`);
     } catch (error) {
       console.error("Error:", error);
-      // แสดง error ถ้ามี
     }
-    
   };
 
   const hadleDelete = async (id: string): Promise<void> => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
       return;
     }
     try {
       console.log("start deleting");
-      
-      // ส่ง request DELETE ไปที่ backend
+
       const res = await fetch(`http://localhost:5001/workspace/${id}`, {
         method: "DELETE",
         headers: {
@@ -317,20 +312,21 @@ function Workspace() {
           "x-auth-token": token,
         },
       });
-  
-      // ตรวจสอบว่า response มาเป็น ok หรือไม่
+
       if (!res.ok) {
         throw new Error("Failed to delete, status: " + res.status);
       }
-      setFormData((prev) =>prev? prev?.filter((item) => item.id !== id):[]);
-  
+      setFormData((prev) =>
+        prev ? prev?.filter((item) => item.id !== id) : []
+      );
+      setFormDataToSearch((prev) =>
+        prev ? prev?.filter((item) => item.id !== id) : []
+      );
+
       console.log("Delete successful");
-      // คุณสามารถทำอะไรต่อหลังจากลบสำเร็จ เช่น อัพเดต UI
     } catch (error) {
       console.error("Error:", error);
-      // แสดง error ถ้ามี
     }
-    
   };
 
   return (
@@ -979,7 +975,12 @@ function Workspace() {
                                   className="relative"
                                 >
                                   <div className="w-[120px] bg-white px-[5px]  bg-white  py-[8px] rounded-[7px] ] gap-x-[5px] flex flex-col gap-y-[5px] border-2 items-center">
-                                    <div onClick={()=>{getPublicForm(item.id)}} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                    <div
+                                      onClick={() => {
+                                        getPublicForm(item.id);
+                                      }}
+                                      className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]"
+                                    >
                                       <Image
                                         src={`/Icon-form/44.svg`}
                                         width={1000}
@@ -1003,12 +1004,20 @@ function Workspace() {
                                         Archive Form
                                       </h2>
                                     </div>
-                                    <div onClick={() => {
-                                          hadleDelete(item.id),
+                                    <div
+                                      onClick={() => {
+                                        hadleDelete(item.id),
                                           setFormData((prev) =>
-                                            prev ? prev.map((item) => ({ ...item, status: false })) : []
+                                            prev
+                                              ? prev.map((item) => ({
+                                                  ...item,
+                                                  status: false,
+                                                }))
+                                              : []
                                           );
-                                        }} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                      }}
+                                      className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]"
+                                    >
                                       <Image
                                         src={`/Icon-form/45.svg`}
                                         width={1000}
@@ -1017,12 +1026,7 @@ function Workspace() {
                                         alt="question"
                                         className="h-[15px] mb-[2px] w-auto"
                                       />
-                                      <h2
-                                        
-                                        className="text-[10px]"
-                                      >
-                                        Delete
-                                      </h2>
+                                      <h2 className="text-[10px]">Delete</h2>
                                     </div>
                                   </div>
                                 </div>

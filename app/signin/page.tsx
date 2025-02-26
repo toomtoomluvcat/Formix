@@ -23,7 +23,8 @@ function Signin() {
     email: email,
     password: password,
   };
-  const handleSubmit = async (): Promise<void> => {
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
     setError("");
     try {
       const res = await fetch("http://localhost:5001/auth/login", {
@@ -95,7 +96,7 @@ function Signin() {
               placeholder="Email "
               className="bg-[#F5F5F5] w-full  rounded-[15px] px-[15px] py-[10px]"
             />
-            <div className="w-full">
+            <form  onSubmit={(e:React.FormEvent<HTMLFormElement>) => handleSubmit(e)}  className="w-full">
               <div className="relative  mt-[7px]">
                 <input
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -141,8 +142,8 @@ function Signin() {
               </div>
 
               <button
-                onClick={() => handleSubmit()}
-                type="button"
+               
+                type="submit"
                 className="border-2 mt-6 text-white bg-black hover:bg-[#262626] transition-all duration-[500ms] rounded-[15px] py-[10px] w-full"
               >
                 Continue
@@ -158,7 +159,7 @@ function Signin() {
                   </Link>{" "}
                 </p>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
