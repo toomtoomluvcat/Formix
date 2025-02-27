@@ -1,4 +1,6 @@
 "use client";
+
+import { motion } from "framer-motion";
 import React, {
   ChangeEvent,
   MouseEventHandler,
@@ -10,6 +12,7 @@ import NavBarInForm from "../component/nav";
 import Image from "next/image";
 import DynamicBarChart from "../component/graph/bar";
 import DynamicPieChart from "../component/graph/circle";
+import { Fascinate } from "next/font/google";
 
 function formrespone() {
   const [display, setDisplay] = useState<number>(2);
@@ -49,28 +52,40 @@ function formrespone() {
     { position: 2, color1: "#8EB15C", color2: "#B1CF86", color3: "#D2E6B5" },
     { position: 3, color1: "#FF8B00", color2: "#FED700", color3: "#FEFACD" },
   ];
-  const [ivdRespone, setivdRespone] = useState<
-    { time: number; email: string; question: string; answer: string[] }[] | null
+  const [ivdRespone, setIvDRespone] = useState<
+    | {
+        time: number;
+        email: string;
+        data: { question: string; answer: string }[];
+      }[]
+    | null
   >([
     {
       time: 1700000000,
       email: "user1@example.com",
-      question: "คุณชอบสีอะไร?",
-      answer: ["สีน้ำเงิน", "สีแดง"],
+      data: [
+        { question: "What is your favorite color?", answer: "Blue" },
+        { question: "What is your favorite animal?", answer: "Dog" },
+      ],
     },
     {
       time: 1700000001,
       email: "user2@example.com",
-      question: "สัตว์เลี้ยงตัวโปรดของคุณคืออะไร?",
-      answer: ["แมว", "สุนัข"],
+      data: [
+        { question: "What is your favorite hobby?", answer: "Reading" },
+        { question: "What is your favorite food?", answer: "Pizza" },
+      ],
     },
     {
       time: 1700000002,
       email: "user3@example.com",
-      question: "คุณชอบกินอาหารประเภทไหน?",
-      answer: ["อาหารไทย", "อาหารญี่ปุ่น"],
+      data: [
+        { question: "Where do you live?", answer: "Thailand" },
+        { question: "What is your favorite season?", answer: "Summer" },
+      ],
     },
   ]);
+
   const [displayArchive, setDisplayArchive] = useState();
   const setData = [
     [
@@ -122,6 +137,9 @@ function formrespone() {
       { name: "Environmental Law", value: 3 },
     ],
   ];
+  const [isShow, setIsShow] = useState<boolean[]>(
+    ivdRespone?.map(() => false) || []
+  );
 
   const updateColor = (
     newPosition: number,
@@ -151,6 +169,12 @@ function formrespone() {
       setLetDel(false);
     }
   }, [isDel]);
+
+  const showIvdRes = (position: number) => {
+    setIsShow((prev) =>
+      prev.map((item, index) => (index === position ? !item : item))
+    );
+  };
 
   const decreaseAmount = (): void => {
     if (amount === null || amount === 0) {
@@ -305,7 +329,7 @@ function formrespone() {
               <div key={index} className=" bg-black rounded-lg">
                 <div
                   className="  translate-y-[-15px] z-40 bg-white border-2
-               bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6"
+               bg-white rounded-lg shadow  p-4 md:p-6"
                 >
                   <div className="fle justify-between items-start ">
                     <div className="">
@@ -464,33 +488,69 @@ function formrespone() {
       )}
       {display == 2 && (
         <div>
-          {ivdRespone ? (
-            <div className="max-w-[1260px] mx-auto mt-6 px-8">
-              {ivdRespone?.map((item, index) => (
-                <div key={index} className="w-full border-2 rounded-lg mb-4 md:px-10 py-4 p-6">
-                  <div>{item.email}</div>
-                  <div>{item.answer.join(", ")}</div>
+          {ivdRespone?.map((item, index) => (
+            <div
+              key={index}
+              className="max-w-[700px] mx-auto mt-4 border-2 rounded-lg mb-4 md:px-10 py-4 p-6"
+              style={{
+                filter: "drop-shadow(0px 5px 0px rgb(0, 0, 0))",
+                backgroundColor: "white",
+              }}
+            >
+              <div
+                onClick={() => showIvdRes(index)}
+                className="flex justify-between items-center mb-2 cursor-pointer"
+              >
+                <div>
+                  <div className="text-[18px]">Response {index + 1}</div>
+                  <div className="text-[13px]">{item.email?? "guess"}</div>
                 </div>
-              ))}
+                <svg
+                  className={`w-[0.7rem] h-4 ml-2 transition-transform duration-300 ${
+                    isShow[index] ? "rotate-180" : "rotate-0"
+                  }`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 4 4 4-4"
+                  />
+                </svg>
+              </div>
+
+              {/* Section ที่ต้องการให้มี Animation */}
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={
+                  isShow[index]
+                    ? { opacity: 1, height: "auto" }
+                    : { opacity: 0, height: 0 }
+                }
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              ><div>{new Date(item.time).toLocaleString('th-TH', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false, 
+                timeZone: 'Asia/Bangkok' 
+              })}</div>
+              
+                {item.data?.map((datum, number) => (
+                  <div key={number}>
+                    {datum.question}: {datum.answer}
+                  </div>
+                ))}
+              </motion.div>
             </div>
-          ) : (
-            <div className="flex flex-col justify-center items-center mt-[100px]">
-              <Image
-                src="/Icon-form/19.png"
-                width={1000}
-                height={1000}
-                quality={100}
-                alt="question"
-                className=" sm:w-[274px] h-auto w-[200px] "
-              />
-              <h2 className="mt-[45px] font-medium text-[25px]">
-                No Respone yet
-              </h2>
-              <h2 className="mt-[10px] text-[13px] max-w-[250px]  text-center">
-                Your form has no responses. Create it and share widely
-              </h2>
-            </div>
-          )}
+          ))}
         </div>
       )}
       {display == 3 && (
