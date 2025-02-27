@@ -3,10 +3,80 @@
 import React, { useEffect, useState } from "react";
 import NavBarInForm from "../../component/nav";
 import Link from "next/link";
+import Image from "next/image";
 
 function Preview() {
   const [title, setTitle] = useState<string>("");
+  const [showPublic, setShowPublic] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
+  const [url, seturl] = useState<string>("http://localhost:3000/publicform/");
+  interface Color {
+    color1: string;
+    color2: string;
+    color3: string;
+  }
+  const [limitForm, setLimitForm] = useState<number | null>(null);
+  const [color, setColor] = useState<Color>({
+    color1: "#000000",
+    color3: "#C4C4C4",
+    color2: "#fef2f2",
+  });
+
+  const hadleSubmit = async (): Promise<void> => {
+    const setting = localStorage.getItem("setting");
+    const color = setting
+      ? JSON.parse(setting).color
+      : {
+          color1: "#000000",
+          color3: "#C4C4C4",
+          color2: "#fef2f2",
+        };
+    const archive = setting ? JSON.parse(setting) : true;
+    const data = {
+      title,
+      description,
+      archive,
+      color,
+      theme: "0002",
+      limitForm: JSON.parse(localStorage.getItem("setting") || '{"limit":0}')
+        .limit,
+      questions: {
+        create: questions?.map((q) => ({
+          questionID: q.id,
+          title: q.title,
+          type: q.type,
+          required: q.required,
+          limit: 100,
+          limitAns: 1,
+          options: q.options
+            ? {
+                create: q.options.map((opt) => ({
+                  text: opt.labelChoice,
+                  limitAns: opt.limitAns,
+                })),
+              }
+            : undefined,
+        })),
+      },
+    };
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+    const res = await fetch("http://localhost:5001/form/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": token, // ส่ง Token ไปด้วย
+      },
+      body: JSON.stringify(data),
+    });
+    setShowPublic(true);
+    const responseData = await res.json();
+    // if (res.ok) {
+    //   router.push("/workspace");
+    // }
+  };
 
   const [questions, setQuestions] = useState<
     | {
@@ -20,17 +90,33 @@ function Preview() {
   >(null);
   const [dropdown, setDropdown] = useState<{ show: boolean }[]>();
   useEffect(() => {
+    const setting = localStorage.getItem("setting");
+    const localColor = setting
+      ? JSON.parse(setting).color
+      : {
+          color1: "#000000",
+          color3: "#C4C4C4",
+          color2: "#fef2f2",
+        };
     const localData = localStorage.getItem("formQuestions");
     const localTitle = localData ? JSON.parse(localData).title : null;
-    
+
     const localQuestion = localData ? JSON.parse(localData).questions : null;
     const localDescription = localData
       ? JSON.parse(localData).description
       : null;
 
-    setTitle(localTitle)
-    setDescription(localDescription)
-    setQuestions(localQuestion)
+    if (localColor) {
+      setColor({
+        color1: localColor.color1,
+        color2: localColor.color2,
+        color3: localColor.color3,
+      });
+    }
+
+    setTitle(localTitle);
+    setDescription(localDescription);
+    setQuestions(localQuestion);
   }, []);
   const createDropdown = (): void => {
     const dropdownQuestions = questions?.filter(
@@ -49,29 +135,80 @@ function Preview() {
   useEffect(() => createDropdown, []);
   return (
     <div className="relative">
-      <div className=" bg-black text-white py-1 text-center text-[10px]">
+      <div style={{backgroundColor:color.color1}} className=" text-white py-1 text-center text-[10px]">
         This is the preview of your form.{" "}
         <Link className="underline font-medium" href="/form">
           {" "}
           Back to form
         </Link>
       </div>
-      <NavBarInForm></NavBarInForm>
+      <NavBarInForm hadlesubmit={() => hadleSubmit()}></NavBarInForm>
+      {showPublic && (
+        <div>
+          <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
+          <div
+            style={{
+              boxShadow: `0px 0px 1px 0px ${color.color1}`,
+            }}
+            className="fixed top-1/2 left-1/2 transform rounded-[15px] w-[70vw] max-w-[420px] -translate-x-1/2 -translate-y-1/2 z-40 bg-white"
+          >
+            <Image
+              width={1000}
+              height={1000}
+              alt="changeusername"
+              src={"/Icon-form/39.svg"}
+            ></Image>
+            <div className="mb-[10px] md:mb-[20px] pt-[15px] md:pt-[25px] px-[15px] md:px-[40px]">
+              <p className="font-medium text-[12px] sm:text-[15px]">
+                Your form is now live!
+              </p>
+              <p className="text-[9px] sm:text-[13px] text-[#474747] mt-[4px] sm:mt-[7px] max-w-[350px]">
+                Let it go live! We're here to help you summarize all the data
+                efficiently!
+              </p>
+              <div className="py-[8px] flex gap-x-[5px]">
+                <input
+                  value={url}
+                  onChange={() => {
+                    return;
+                  }}
+                  className="grow rounded-[7px] px-[15px] text-[13px] bg-[#f6f6f6]"
+                  type="text"
+                />
+                <Link
+                  href="/workspace"
+                  type="button"
+                  className="border-2 border-black py-[10px] w-full text-center  rounded-[7px] text-[10px]"
+                >
+                  Workspace
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(url);
+                  }}
+                  className="bg-black w-full   rounded-[7px] text-white text-[10px]"
+                >
+                  Copy URL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="mt-12 max-w-[650px] mx-auto">
         <div className="mb-8">
           <h1 className="text-[30px] font-medium text-center">{title}</h1>
-          <p className="mt-4 text-center text-[#c4c4c4]">
-            {description}
-          </p>
+          <p className="mt-4 text-center text-[#c4c4c4]">{description}</p>
         </div>
         <div>
           {questions?.map((item) => (
             <div
               key={item.id}
               style={{
-                filter: "drop-shadow(6px 3px 0px rgb(0, 0, 0)) ",
+                filter: `drop-shadow(6px 3px 0px ${color.color1}) `,border:`2px solid ${color.color1}`,
               }}
-              className="mx-[15px] mb-4 border-[2.5px] bg-white py-6 px-6 border-black rounded-[12px]"
+              className="mx-[15px] mb-4 bg-white py-6 px-6  rounded-[12px]"
             >
               <span>{item.title}</span>
               {item.required && <span className="ml-1 text-red-400">*</span>}

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import React, {
   ChangeEvent,
   MouseEventHandler,
@@ -8,14 +9,15 @@ import React, {
   useRef,
   useState,
 } from "react";
-import NavBarInForm from "../component/nav";
+import NavBarInForm from "../../component/nav";
 import Image from "next/image";
-import DynamicBarChart from "../component/graph/bar";
-import DynamicPieChart from "../component/graph/circle";
-import { Fascinate } from "next/font/google";
+import DynamicBarChart from "../../component/graph/bar";
+import DynamicPieChart from "../../component/graph/circle";
+import { useParams } from "next/navigation";
 
 function formrespone() {
-  const [display, setDisplay] = useState<number>(2);
+    const { id } = useParams();
+  const [display, setDisplay] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<
     {
@@ -193,18 +195,7 @@ function formrespone() {
     }
   };
 
-  const setSetting = (): void => {
-    const setting = {
-      limit: amount,
-      archive: isChecked,
-      color: color,
-    };
-    localStorage.setItem("setting", JSON.stringify(setting));
-    setIsSaveData(true);
-    setTimeout(() => {
-      setIsSaveData(false);
-    }, 1000);
-  };
+ 
 
   useEffect(() => {
     const setting = localStorage.getItem("setting") ?? "";
@@ -220,75 +211,24 @@ function formrespone() {
 
   return (
     <div className="relative">
-      {delForm && (
-        <div className="fixed inset-0 bg-black opacity-50 z-30"></div>
-      )}
-      {delForm && (
-        <div
-          style={{
-            boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-          }}
-          className="fixed top-1/2 left-1/2 transform rounded-[15px] w-[70vw] max-w-[420px] -translate-x-1/2 -translate-y-1/2 z-40 bg-white"
-        >
-          <div className="mb-[20px] md:mb-[40px] pt-[15px] md:pt-[25px] px-[15px] md:px-[40px]">
-            <p className="font-medium text-[12px] sm:text-[15px]">
-              Delete forms{" "}
-            </p>
-            <p className="text-[9px] sm:text-[13px] text-[#474747] mt-[4px] sm:mt-[7px] max-w-[350px]">
-              Are you sure you want to delete the form? Deleting the form will
-              permanently remove all data, including all received responses, and
-              none of the information can be recovered.
-            </p>
-            <p className="text-[9px] sm:text-[13px] text-red-500 px-[15px] mt-[15px] py-[10px] rounded-[7px] bg-red-300">
-              <strong>Warning:</strong> This action is not reversible. Please be
-              certain.
-            </p>
-          </div>
-          <div className="flex flex-col gap-y-[10px] px-[45px] py-[15px]  w-full bg-[#f4f4f4] rounded-b-[15px]">
-            <p className="text-[9px] sm:text-[13px]">
-              To verify, type{" "}
-              <strong className="font-medium">delete my form</strong> below:
-            </p>
-            <input
-              value={isDel}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setIsdel(e.target.value)
-              }
-              className="w-full rounded-[6px] border-2 text-[13px] text-[#474747] px-[15px] py-[6px]"
-              style={{
-                boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-              }}
-            ></input>
-            <div className="mt-[12px] mb-[12px] justify-end flex gap-x-[10px]">
-              <p
-                onClick={() => {
-                  setDelForm(false), setIsdel("");
-                }}
-                style={{
-                  boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-                }}
-                className="text-[9px] sm:text-[13px] px-[12px] py-[5px] rounded-[7px] "
-              >
-                cancel
-              </p>
-              <p
-                style={{
-                  boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-                }}
-                className={
-                  letDel
-                    ? "text-[9px] text-white bg-black pointer-events-none sm:text-[13px] px-[12px] py-[5px] rounded-[7px] "
-                    : "text-[9px] text-white bg-[#C4C4C4] sm:text-[13px] px-[12px] py-[5px] rounded-[7px]"
-                }
-              >
-                comfirm
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <nav>
+       <div className="flex justify-between max-w-[1280px] mx-auto mt-6 px-[30px]">
+          <Link href={"/"}>
+            <Image
+              src="/Icon-form/FORMIX LOGO.png"
+              width={1000}
+              height={1000}
+              quality={100}
+              alt="question"
+              className="h-[23px]  w-[70px]"
+            />
+          </Link>
 
-      <NavBarInForm />
+         
+        </div>
+      </nav>
+
+     
       <div className="flex max-w-[370px] justify-between gap-x-[15px] mx-auto items-center text-[13px] mt-[50px] px-[20px]">
         <h2
           onClick={() => setDisplay(1)}
@@ -310,16 +250,7 @@ function formrespone() {
         >
           individual
         </h2>
-        <h2
-          onClick={() => setDisplay(3)}
-          className={
-            display === 3
-              ? "text-white hover:bg-[#212121] transition-all duration-[300ms] bg-black w-[170px] text-center py-[6px] rounded-[7px]"
-              : "w-[170px] hover:bg-[#FCFCFC] transition-all duration-[300ms] text-center py-[6px] rounded-[7px] border-2"
-          }
-        >
-          setting
-        </h2>
+        
       </div>
 
       {display === 1 && (
@@ -487,7 +418,7 @@ function formrespone() {
         </div>
       )}
       {display == 2 && (
-        <div>
+        <div className="mt-10">
           {ivdRespone?.map((item, index) => (
             <div
               key={index}
@@ -503,7 +434,7 @@ function formrespone() {
               >
                 <div>
                   <div className="text-[18px]">Response {index + 1}</div>
-                  <div className="text-[13px]">{item.email?? "guess"}</div>
+                  <div className="text-[13px]">{item.email ?? "guess"}</div>
                 </div>
                 <svg
                   className={`w-[0.7rem] h-4 ml-2 transition-transform duration-300 ${
@@ -533,16 +464,22 @@ function formrespone() {
                 }
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
-              ><div>{new Date(item.time).toLocaleString('th-TH', { 
-                day: '2-digit', 
-                month: '2-digit', 
-                year: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                hour12: false, 
-                timeZone: 'Asia/Bangkok' 
-              })}</div>
-              
+              >
+                <div className="text-[13px] mb-2">
+                  timeStamp:{" "}
+                  {new Date(item.time).toLocaleString("th-TH", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+
+                    timeZone: "Asia/Bangkok",
+                  })}
+                </div>
+
                 {item.data?.map((datum, number) => (
                   <div key={number}>
                     {datum.question}: {datum.answer}
@@ -553,238 +490,7 @@ function formrespone() {
           ))}
         </div>
       )}
-      {display == 3 && (
-        <div className="mx-auto px-[30px] max-w-[700px] flex flex-col gap-y-[35px] mt-[50px]">
-          <div className="bg-black rounded-[8px]">
-            <div
-              style={{
-                boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-              }}
-              className="bg-[8px] px-[30px] md:px-[45px] py-[25px] rounded-[8px] flex justify-between gap-x-[15px] bg-white translate-y-[-10px]"
-            >
-              <div>
-                <p className="font-medium">Archive forms</p>
-                <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  This archive temporarily stores your forms to prevent
-                  submissions. You can reactivate them later.
-                </p>
-              </div>
-
-              <label className="flex cursor-pointer select-none items-center">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => setIsChecked(!isChecked)}
-                    className="sr-only"
-                  />
-                  <div className="translate-y-[1px]">
-                    <div
-                      className={`box block h-[20px] w-10 rounded-full bg-black transition-all duration-300 ease-in-out`}
-                      style={{
-                        backgroundColor: isChecked ? `#000000` : `#C4C4C4`,
-                      }}
-                    ></div>
-                    <div
-                      className={`absolute left-1 top-1 flex h-[12px] translate-y-[0px] w-[12px] items-center justify-center rounded-full bg-white transition-all duration-300 ease-in-out ${
-                        isChecked ? "translate-x-[21px]" : ""
-                      }`}
-                    ></div>
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div className="bg-black rounded-[8px]">
-            <div
-              style={{
-                boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-              }}
-              className="bg-[8px]  px-[30px] md:px-[45px] py-[25px] rounded-[8px] flex justify-between gap-x-[15px] bg-white translate-y-[-10px]"
-            >
-              <div>
-                <p className="font-medium">limiting forms </p>
-                <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  You can limit the number of responses to your form.
-                </p>
-              </div>
-              <div className="max-w-[200px] relative mt-4">
-                <label className="block mb-1 text-sm text-slate-600">
-                  Select Amount
-                </label>
-                <div className="relative  ">
-                  <button
-                    onClick={decreaseAmount}
-                    className=" absolute right-9 top-1 rounded-md border border-transparent p-1.5 text-center text-sm transition-all
-                     text-slate-600 
-                    hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100
-                     disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none
-                      hidden sm:block"
-                    type="button"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path d="M3.75 7.25a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z" />
-                    </svg>
-                  </button>
-                  <input
-                    id="amountInput"
-                    type="number"
-                    value={amount === null || amount === 0 ? "" : amount}
-                    onChange={(e) =>
-                      setAmount(e.target.value ? parseInt(e.target.value) : 0)
-                    }
-                    className=" bg-transparent text-slate-700 text-sm border 
-                    border-slate-200 rounded-md pl-3 sm:pr-10 pr-3 py-2
-                     transition duration-300 ease
-                     focus:outline-none focus:border-slate-400 hover:border-slate-300 
-                     shadow-sm focus:shadow appearance-none [&::-webkit-outer-spin-button]:appearance-none
-                      [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-
-                  <button
-                    onClick={increaseAmount}
-                    className="absolute right-1 top-1 rounded-md border border-transparent p-1.5 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none hidden sm:block"
-                    type="button"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
-                    </svg>
-                  </button>
-                </div>
-                <p className="flex items-center mt-2 text-xs text-slate-400">
-                  Enter the limit number, or leave blank if no limit.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-black rounded-[8px]">
-            <div
-              style={{
-                boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-              }}
-              className="bg-[8px] px-[30px] md:px-[45px] py-[25px] rounded-[8px] gap-x-[15px] bg-white translate-y-[-10px]"
-            >
-              <div className="mb-[40px]">
-                <p className="font-medium">form color </p>
-                <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  choose you color style for display
-                </p>
-              </div>
-              <div className="flex flex-col mb-[15px] gap-y-[5px] px-[40px] sm:px-[70px]">
-                {colorArray.map((item) => (
-                  <div
-                    key={item.position}
-                    onClick={() =>
-                      updateColor(
-                        item.position,
-                        item.color1,
-                        item.color2,
-                        item.color3
-                      )
-                    }
-                    className={
-                      color.position == item.position
-                        ? "flex justify-center gap-x-[25px] bg-[#F6F6F6] py-[13px] rounded-[10px] transition-all duration-[500ms]"
-                        : "flex justify-center gap-x-[25px] py-[13px] rounded-[10px] transition-all duration-[500ms]"
-                    }
-                  >
-                    <div
-                      style={{ backgroundColor: `${item.color1}` }}
-                      className={`w-[25px] h-[25px] sm:w-[35px] sm:h-[35px] rounded-[50%] `}
-                    ></div>
-                    <div
-                      style={{ backgroundColor: `${item.color2}` }}
-                      className={`w-[25px] h-[25px] sm:w-[35px] sm:h-[35px] rounded-[50%]  `}
-                    ></div>
-                    <div
-                      style={{ backgroundColor: `${item.color3}` }}
-                      className={`w-[25px] h-[25px] sm:w-[35px] sm:h-[35px] rounded-[50%]  `}
-                    ></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="bg-black rounded-[8px]">
-            <div
-              style={{
-                boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-              }}
-              className="bg-[8px] px-[30px] md:px-[45px] py-[25px] rounded-[8px] item-center flex justify-between gap-x-[15px] bg-white translate-y-[-10px]"
-            >
-              <div className="mb-[10px]">
-                <p className="font-medium">form colour </p>
-                <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  Export forms to google sheet
-                </p>
-              </div>
-
-              <a
-                href="/path/to/your/file.pdf"
-                download="your-file-name.pdf"
-                className="btn border-2 h-full px-4 py-1 rounded-[4px] flex text-[#474747] items-center gap-x-[10px] text-[13px] mt-[10px] btn-primary"
-              >
-                <Image
-                  src={"/Icon-form/20.png"}
-                  width={1000}
-                  height={1000}
-                  quality={100}
-                  alt="question"
-                  className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
-                />
-                Export form
-              </a>
-            </div>
-          </div>
-          <div className="bg-black rounded-[8px]">
-            <div
-              style={{
-                boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-              }}
-              className="bg-[8px] px-[30px] md:px-[45px] py-[25px] 
-              rounded-[8px] flex justify-between gap-x-[15px] bg-white translate-y-[-10px]"
-            >
-              <div className="mb-[10px]">
-                <p className="font-medium">Delete forms </p>
-                <p className="text-[13px] text-[#474747] mt-[10px] max-w-[300px]">
-                  Removes all data entered in a form, usually before submission
-                  or permanently
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setDelForm(true)}
-                className="px-[15px] text-[13px] py-2 rounded-lg bg-black text-white h-full"
-              >
-                delete
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-end mb-[100px]">
-            <button
-              className={`rounded-lg ${
-                isSaveData ? "bg-stone-800" : "bg-black"
-              } text-white w-[120px] py-[10px] text-[13px]`}
-              disabled={isSaveData}
-              onClick={() => setSetting()}
-              type="button"
-            >
-              {isSaveData ? "Saving ..." : "Save change"}
-            </button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }

@@ -2,7 +2,13 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-function NavBarInForm({saveQuestionTolocalstorage}:{saveQuestionTolocalstorage?:()=>void}) {
+function NavBarInForm({
+  saveQuestionTolocalstorage,
+  hadlesubmit
+}: {
+  saveQuestionTolocalstorage?: () => void;
+  hadlesubmit?:()=>void
+}) {
   return (
     <div>
       <nav>
@@ -20,7 +26,7 @@ function NavBarInForm({saveQuestionTolocalstorage}:{saveQuestionTolocalstorage?:
 
           <div>
             <div className="flex text-[13px] gap-[35px] items-center">
-              <Link  href="/form">
+              <Link href="/form">
                 <div className="flex gap-[6px] font-medium items-center">
                   <Image
                     src="/Icon-form/1.png"
@@ -33,31 +39,40 @@ function NavBarInForm({saveQuestionTolocalstorage}:{saveQuestionTolocalstorage?:
                   <p className="md:block hidden">Quesion</p>
                 </div>
               </Link>
-              <Link onClick={()=>saveQuestionTolocalstorage?.() } href={"/formrespone"}  >
+              <Link
+                onClick={() => saveQuestionTolocalstorage?.()}
+                href={"/form/preview"}
+              >
                 <div className="flex gap-[6px] font-medium items-center">
                   <Image
-                    src="/Icon-form/2.png"
+                    src="/Icon-form/3.png"
                     width={20}
                     height={20}
                     quality={100}
                     alt="question"
                     className="h-[20px] w-[20px]"
                   ></Image>
-                  <p className="md:block hidden">Respone</p>
+                  <p className="md:block hidden">View</p>
                 </div>
               </Link>
-              <Link onClick={()=>saveQuestionTolocalstorage?.()  } href={'/form/preview'}><div className="flex gap-[6px] font-medium items-center">
-                <Image
-                  src="/Icon-form/3.png"
-                  width={20}
-                  height={20}
-                  quality={100}
-                  alt="question"
-                  className="h-[20px] w-[20px]"
-                ></Image>
-                <p className="md:block hidden">View</p>
-              </div></Link>
-              <div className="flex gap-[6px] font-medium items-center">
+              <Link
+                onClick={() => saveQuestionTolocalstorage?.()}
+                href={"/form/setting"}
+              >
+                <div className="flex gap-[6px] font-medium items-center">
+                  <Image
+                    src="/Icon-form/2.svg"
+                    width={20}
+                    height={20}
+                    quality={100}
+                    alt="question"
+                    className="h-[20px] w-[20px]"
+                  ></Image>
+                  <p className="md:block hidden">setting</p>
+                </div>
+              </Link>
+              
+              <div onClick={()=>hadlesubmit?.()} className="flex gap-[6px] font-medium items-center">
                 <Image
                   src="/Icon-form/5.png"
                   width={20}
@@ -72,6 +87,7 @@ function NavBarInForm({saveQuestionTolocalstorage}:{saveQuestionTolocalstorage?:
           </div>
         </div>
       </nav>
+      
     </div>
   );
 }

@@ -195,9 +195,8 @@ function Workspace() {
     if (localStorage.getItem("setting")) {
       localStorage.removeItem("setting");
     }
-    if (localStorage.getItem("formQuestions")){
-      localStorage.removeItem("formQuestions")
-
+    if (localStorage.getItem("formQuestions")) {
+      localStorage.removeItem("formQuestions");
     }
 
     router.push(`/form${theme}`);
@@ -271,9 +270,33 @@ function Workspace() {
     }
   };
 
-  useEffect(() => {
-    console.log("formto", formDataToSearch);
-  }, [formDataToSearch]);
+ 
+
+  const getResponeForm = async (id: string): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+    try {
+
+      const res = await fetch(`http://localhost:5001/recieve/public/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("fail to get" + res.status);
+      }
+      router.push(`/respone/${id}`);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const getPublicForm = async (id: string): Promise<void> => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -281,7 +304,6 @@ function Workspace() {
       return;
     }
     try {
-      console.log("start deleting");
 
       const res = await fetch(`http://localhost:5001/recieve/public/${id}`, {
         method: "GET",
@@ -307,8 +329,10 @@ function Workspace() {
       return;
     }
     try {
-      console.log("start deleting");
-
+      console.log( formData?.[0].archive )
+      if(formData &&formData[Number(id)] ){
+        setActiveForm((prev)=>prev-1)
+      }
       const res = await fetch(`http://localhost:5001/workspace/${id}`, {
         method: "DELETE",
         headers: {
@@ -326,8 +350,10 @@ function Workspace() {
       setFormDataToSearch((prev) =>
         prev ? prev?.filter((item) => item.id !== id) : []
       );
-      settotalForm((prev)=>prev-1)
+      settotalForm((prev) => prev - 1);
+     
       
+
       console.log("Delete successful");
     } catch (error) {
       console.error("Error:", error);
@@ -371,11 +397,11 @@ function Workspace() {
                   type="button"
                   onClick={() => {
                     if (!userId) {
-                      console.error("❌ userId is missing!");
+                      setShowChangeName(false);
                       return;
                     }
                     if (!changeUsername) {
-                      console.error("❌ changeUsername is empty!");
+                      setShowChangeName(false);
                       return;
                     }
 
@@ -934,7 +960,7 @@ function Workspace() {
                     ></input>
                   </div>
                   <div
-                    className="pr-4 mt-2 h-[350px] overflow-y-auto [&::-webkit-scrollbar]:w-2
+                    className="pr-4  py-2 mt-2 h-[350px] overflow-y-auto [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-gray-100
   [&::-webkit-scrollbar-thumb]:rounded-full
@@ -967,12 +993,22 @@ function Workspace() {
                               }
                               className={
                                 item.archive
-                                  ? "bg-red-400 w-[10px] h-[10px] rounded-[50%]"
-                                  : "bg-green-400 w-[10px] h-[10px] rounded-[50%]"
+                               
+                                  ?  "bg-green-400 w-[10px] h-[10px] rounded-[50%]"
+                                  : "bg-red-400 w-[10px] h-[10px] rounded-[50%]"
                               }
                             ></div>
-
-                            <div className="absolute bottom-[-84px] left-[-100px]  ">
+                            <div
+                              style={{
+                                bottom:
+                                  index === 0
+                                    ? "-100px"
+                                    : index + 3 > formData.length && index > 4
+                                    ? "-15px"
+                                    : "-50px",
+                              }}
+                              className="absolute left-[-100px]"
+                            >
                               {item.status && (
                                 <div
                                   ref={menuRef}
@@ -994,7 +1030,20 @@ function Workspace() {
                                         alt="question"
                                         className="h-[15px] mb-[2px] w-auto"
                                       />
-                                      <h2 className="text-[10px]">Coppy Url</h2>
+                                      <h2 className="text-[10px]">Copy Url </h2>
+                                    </div>
+                                    <div  onClick={() => {
+                                        getResponeForm(item.id);
+                                      }} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                      <Image
+                                        src="/Icon-form/33.svg"
+                                        width={20}
+                                        height={20}
+                                        quality={100}
+                                        alt="question"
+                                        className="h-[15px] w-[15px]"
+                                      ></Image>
+                                      <div className="text-[10px]">Respone</div>
                                     </div>
                                     <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
@@ -1006,7 +1055,7 @@ function Workspace() {
                                         className="h-[15px] mb-[2px] w-auto"
                                       />
                                       <h2 className="text-[10px]">
-                                        Archive Form
+                                       {item.archive? "Archive":"public" }
                                       </h2>
                                     </div>
                                     <div

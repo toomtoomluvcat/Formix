@@ -5,8 +5,7 @@ import Image from "next/image";
 import NavBarInForm from "../component/nav";
 import Text from "../component/forms/text";
 import { useRouter } from "next/navigation";
-import { json } from "stream/consumers";
-import { parse } from "path";
+import Link from "next/link";
 
 function Form() {
   const router = useRouter();
@@ -68,7 +67,7 @@ function Form() {
       titleRef.current.textContent = title;
     }
     if (localDescription && descriptionRef.current) {
-      setIsHaveDescription(true)
+      setIsHaveDescription(true);
       descriptionRef.current.textContent = localDescription;
     } else if (descriptionRef.current) {
       descriptionRef.current.textContent = description;
@@ -107,12 +106,24 @@ function Form() {
   const titleRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const [activeForm, setActiveForm] = useState<boolean>(true);
-  const [isHaveDescription,setIsHaveDescription] =useState<boolean>(false)
+  const [isHaveDescription, setIsHaveDescription] = useState<boolean>(false);
+  const [showPublic, setShowPublic] = useState<boolean>(false);
+  const [url,seturl] = useState<string>("http://localhost:3000/publicform/")
 
   const hadleSubmit = async (): Promise<void> => {
+    const setting = localStorage.getItem("setting")
+    const color =setting
+      ? JSON.parse(setting).color
+      : {
+          color1: "#000000",
+          color3: "#C4C4C4",
+          color2: "#fef2f2",
+        };
+    const archive = setting ? JSON.parse(setting) :true
     const data = {
       title,
       description,
+      archive,
       color,
       theme: "0002",
       limitForm: limitForm,
@@ -148,12 +159,12 @@ function Form() {
       },
       body: JSON.stringify(data),
     });
-
+    setActive(-1)
+    setShowPublic(true);
     const responseData = await res.json();
-    console.log(responseData);
-    if (res.ok) {
-      router.push("/workspace");
-    }
+    // if (res.ok) {
+    //   router.push("/workspace");
+    // }
   };
 
   //แพรเอาfunction นี้ไปด้วยนะ
@@ -293,9 +304,58 @@ function Form() {
       )
     );
   };
+  
 
   return (
     <div className="overflow-hidden min-h-screen relative">
+      {showPublic && (
+        <div>
+          <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
+          <div
+            style={{
+              boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
+            }}
+            className="fixed top-1/2 left-1/2 transform rounded-[15px] w-[70vw] max-w-[420px] -translate-x-1/2 -translate-y-1/2 z-40 bg-white"
+          >
+            <Image
+              width={1000}
+              height={1000}
+              alt="changeusername"
+              src={"/Icon-form/39.svg"}
+            ></Image>
+            <div className="mb-[10px] md:mb-[20px] pt-[15px] md:pt-[25px] px-[15px] md:px-[40px]">
+              <p className="font-medium text-[12px] sm:text-[15px]">
+                Your form is now live!
+              </p>
+              <p className="text-[9px] sm:text-[13px] text-[#474747] mt-[4px] sm:mt-[7px] max-w-[350px]">
+                Let it go live! We're here to help you summarize all the data
+                efficiently!
+              </p>
+              <div className="py-[8px] flex gap-x-[5px]">
+                <input
+                value={url}
+                onChange={()=>{return}}
+                  className="grow rounded-[7px] px-[15px] text-[13px] bg-[#f6f6f6]"
+                  type="text"
+                />
+                <Link href="/workspace"
+                  type="button"
+                  className="border-2 border-black py-[10px] w-full text-center  rounded-[7px] text-[10px]"
+                >
+                  Workspace
+                </Link>
+                <button
+                  type="button"
+                  onClick={()=>{ navigator.clipboard.writeText(url);}}
+                  className="bg-black w-full   rounded-[7px] text-white text-[10px]"
+                >
+                  Copy URL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="absolute  z-0 top-[250px] left-[-250px] md:left-[-450px]">
         <svg
           className="w-[324px] h-[301.19px] md:w-[590px] sm:h-[548px]"
@@ -552,9 +612,10 @@ function Form() {
         </svg>
       </div>
       <NavBarInForm
+        hadlesubmit={() => hadleSubmit()}
         saveQuestionTolocalstorage={() => saveQuestionTolocalstorage()}
       />
-      <form className="relative md:mb-[50px] mb-[220px] z-40">
+      <form className="relative md:mb-[50px] mb-[220px] ">
         <div className="mx-auto px-10 rounded-lg max-w-[650px]">
           <div className="max-w-[520px] mt-10 flex justify-center mx-auto">
             <div
@@ -604,7 +665,11 @@ function Form() {
               suppressContentEditableWarning={true}
               role="textbox"
               aria-label="Form description"
-              data-placeholder={isHaveDescription? "":"Enter details or instructions for the form."}
+              data-placeholder={
+                isHaveDescription
+                  ? ""
+                  : "Enter details or instructions for the form."
+              }
             />
           </div>
           {questions.map((item, index) => (
@@ -615,7 +680,7 @@ function Form() {
                 active === item.id ? "question-animate" : ""
               } ${removingId === item.id ? "question-remove" : ""}`}
               style={{
-                zIndex: active === item.id ? 9999 : 0,
+                zIndex: active === item.id ? 999 : 0,
                 position: "relative",
               }}
             >
@@ -650,7 +715,7 @@ function Form() {
 
           <div
             onClick={addQuesion}
-            className="flex items-center bg-white gap-x-2 justify-center border-2 py-[22px]
+            className="flex  items-center bg-white gap-x-2 justify-center border-2 py-[22px]
              rounded-[7px] border-dashed text-[17px] cursor-pointer"
             style={{
               color: `#${color.color2}`,
@@ -668,21 +733,9 @@ function Form() {
             />
             <p>Add question</p>
           </div>
-
-          
         </div>
       </form>
-      <div>
-        <div className="mt-4 flex gap-x-[10px] justify-center">
-          
-          <button
-            onClick={() => hadleSubmit()}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            บันทึก
-          </button>
-        </div>
-      </div>
+      <div></div>
     </div>
   );
 }

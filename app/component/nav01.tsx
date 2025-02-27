@@ -73,6 +73,7 @@ function NavBarInForm() {
           </div>
         </div>
       </nav>
+      
     </div>
   );
 }

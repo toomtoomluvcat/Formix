@@ -124,13 +124,7 @@ function Text({
       wideth: 22,
       height: 22,
     },
-    {
-      value: "mutiple",
-      labelChoice: "Multiple",
-      imgSrc: "/Icon-form/9.png",
-      wideth: 22,
-      height: 16,
-    },
+    
     {
       value: "check",
       labelChoice: "Check",
@@ -150,7 +144,7 @@ function Text({
   return (
     <div className="relative">
       <div style={{backgroundColor:color.color1?? ""}} className=" mb-[20px]  rounded-[20px]">
-        <div className="translate-x-[10px] py-[20px]  border-2  rounded-[20px] px-[30px] bg-white shadow-[0px_0px_3px_0px_rgba(0,0,0,0)]">
+        <div className="translate-x-[10px] py-[20px]  border-2  rounded-[20px] px-[30px] bg-white ">
           <div className="flex justify-between flex-wrap">
             <div className="max-w-[215px] sm:max-w-[300px]">
               <div
@@ -212,10 +206,8 @@ function Text({
               </div>
               {isOpen && (
                 <div
-                  style={{
-                    boxShadow: "0px 0px 1px 0px  rgb(0, 0, 0)",
-                  }}
-                  className="absolute px-[10px] z-40  py-[5px] bg-white rounded-[7px]"
+                  
+                  className="absolute px-[10px] z-40  border-2 py-[5px] bg-white rounded-[7px]"
                 >
                   {options.map((option, optionIndex) => (
                     <div key={optionIndex}>
@@ -241,22 +233,7 @@ function Text({
           <div className="">
             {type === "number" && <InputNumber></InputNumber>}
             {type === "text" && <Inputtext />}
-            {type === "mutiple" && (
-              <InputMutiple
-                color={color}
-                deleteChoiceById={(ChoiceById: number) =>
-                  deleteChoiceById(ChoiceById)
-                }
-                updatelimitAns={(optionsIndex: number, limitAns: number) =>
-                  updatelimitAns(optionsIndex, limitAns)
-                }
-                updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
-                  updatelabelChoice(optionIndex, newlabelChoice)
-                }
-                optionsValue={optionsValue}
-                addlabelChoice={() => addlabelChoice()}
-              ></InputMutiple>
-            )}
+            
             {type === "check" && (
               <InputMutiple
                 color={color}

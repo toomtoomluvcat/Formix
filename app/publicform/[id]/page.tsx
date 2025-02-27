@@ -2,14 +2,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import NavBarInForm from "../../component/nav";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 function Preview() {
-  const router = useRouter();
   const { id } = useParams();
   const [formName, setFormName] = useState<string | null>(null);
+  const [isLimit, setIsLimit] = useState<boolean>(false);
   const [description, setDescription] = useState<string | null>(null);
   const [dropdown, setDropdown] = useState<{ [key: number]: boolean }>({});
   const [answerList, setAnswerList] = useState<
@@ -88,10 +89,10 @@ function Preview() {
       email: "guest@gmail.com",
       answer: answerList.map((ans) => ({
         questionID: ans.id,
-        value: ans.answer?? "กระมงปรือ",
+        value: ans.answer ?? "กระมงปรือ",
       })),
     };
-    console.log('data', data)
+    console.log("data", data);
 
     try {
       const response = await fetch(`http://localhost:5001/response/submit`, {
@@ -176,194 +177,224 @@ function Preview() {
 
   return (
     <div className="relative">
-      <div className="mt-12 max-w-[650px] mx-auto">
-        <div className="mb-8">
-          <h1 className="text-[30px] font-medium text-center">{formName}</h1>
-          <p className="mt-4 text-center text-[#c4c4c4]">{description}</p>
-          <p>{JSON.stringify(answerList)}</p>
-        </div>
-        {questions && (
+      {isLimit ? (
+        <div className="flex mt-[150px] md:mt-[200px] justify-between  px-[15%] items-center ">
           <div>
-            {questions.map((item, questionId) => (
-              <div
-                key={item.id}
-                className="bg-black mx-[15px] mb-4 rounded-[12px]"
-              >
-                <div
-                  style={{
-                    zIndex: dropdown[item.id] ? 50 : 0,
-                  }}
-                  className="relative  border-[2.5px] bg-white py-6 px-6 translate-x-[-5px] translate-y-[-3px] rounded-[12px] border-black"
-                >
-                  <span>{item.title}</span>
-                  {item.required && (
-                    <span className="ml-1 text-red-400">*</span>
-                  )}
-                  {item.type == "text" && (
-                    <div className="mt-2 mr-[30%]">
-                      <input
-                        value={answerList[questionId]?.answer[0] ?? ""}
-                        onChange={(e) => handleInput(item.id, e.target.value)}
-                        type="text"
-                        className="pl-2 border-b-2 pb-[1px] focus:border-b-[2.6px] bg-white
+            <p className="text-[25px]">EROR404</p>
+            <h2 className="text-nowrap text-[35px] font-bold">Page not found</h2>
+            <p className="max-w-[500px] md:max-w-[350px] mt-4">We're sorry. The form you are looking for may have been disabled or the path is incorrect.</p>
+            <button type="button"></button>
+          </div>
+          <Image className="hidden md:block"
+            src="/Icon-form/19.png"
+            alt="sad"
+            width={400}
+            height={400}
+          ></Image>
+        </div>
+      ) : (
+        <div>
+          <div className="mt-12 max-w-[650px] mx-auto">
+            <div className="mb-8">
+              <h1 className="text-[30px] font-medium text-center">
+                {formName}
+              </h1>
+              <p className="mt-4 text-center text-[#c4c4c4]">{description}</p>
+              <p>{JSON.stringify(answerList)}</p>
+            </div>
+            {questions && (
+              <div>
+                {questions.map((item, questionId) => (
+                  <div
+                    key={item.id}
+                    className="bg-black mx-[15px] mb-4 rounded-[12px]"
+                  >
+                    <div
+                      style={{
+                        zIndex: dropdown[item.id] ? 50 : 0,
+                      }}
+                      className="relative  border-[2.5px] bg-white py-6 px-6 translate-x-[-5px] translate-y-[-3px] rounded-[12px] border-black"
+                    >
+                      <span>{item.title}</span>
+                      {item.required && (
+                        <span className="ml-1 text-red-400">*</span>
+                      )}
+                      {item.type == "text" && (
+                        <div className="mt-2 mr-[30%]">
+                          <input
+                            value={answerList[questionId]?.answer[0] ?? ""}
+                            onChange={(e) =>
+                              handleInput(item.id, e.target.value)
+                            }
+                            type="text"
+                            className="pl-2 border-b-2 pb-[1px] focus:border-b-[2.6px] bg-white
                      transition-all duration-500 focus:bg-[#f4f4f4] focus:border-black w-full 
       focus:border-solid focus:text-start focus:outline-none"
-                      ></input>
-                    </div>
-                  )}
-                  {item.type == "number" && (
-                    <div className="mt-2 mr-[30%]">
-                      <input
-                        value={answerList[questionId]?.answer[0] ?? ""}
-                        onChange={(e) => handleInput(item.id, e.target.value)}
-                        type="number"
-                        className="border-b-2 pl-2 pb-[1px] focus:border-b-[2.6px] bg-white
+                          ></input>
+                        </div>
+                      )}
+                      {item.type == "number" && (
+                        <div className="mt-2 mr-[30%]">
+                          <input
+                            value={answerList[questionId]?.answer[0] ?? ""}
+                            onChange={(e) =>
+                              handleInput(item.id, e.target.value)
+                            }
+                            type="number"
+                            className="border-b-2 pl-2 pb-[1px] focus:border-b-[2.6px] bg-white
                      transition-all duration-500 focus:bg-[#f4f4f4] focus:border-black w-full 
       focus:border-solid focus:text-start focus:outline-none"
-                      ></input>
-                    </div>
-                  )}
-
-                  {(item.type == "mutiple" || item.type == "check") && (
-                    <div className="mt-4">
-                      {item.options?.map((option, index) => (
-                        <div key={index} className="flex items-center mb-2">
-                          <label className="flex items-center cursor-pointer relative">
-                            <input
-                              value={option.text}
-                              checked={
-                                answerList[questionId]?.answer.includes(
-                                  option.text
-                                ) ?? false
-                              }
-                              onChange={(e) =>
-                                handleCheckboxChange(
-                                  item.id,
-                                  option.text,
-                                  e.target.checked
-                                )
-                              }
-                              type="checkbox"
-                              className="peer h-4 w-4 cursor-pointer transition-all checked:bg-[#ababab]  checked:border-[#ababab] appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-                              id="check"
-                            />
-                            <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-3 w-3"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                                stroke="currentColor"
-                                strokeWidth="1"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                ></path>
-                              </svg>
-                            </span>
-                          </label>
-                          <p className="ml-2  text-sm">
-                            {option.text} &nbsp;&nbsp;{" "}
-                            <span className=" text-gray-600">
-                              {" "}
-                              {option.limitAns ? `(0/${option?.limitAns})` : ""}
-                            </span>
-                          </p>
+                          ></input>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                  {item.type == "radio" && (
-                    <div className="mt-4">
-                      {item.options?.map((option, index) => (
-                        <div key={index}>
-                          <div className="flex items-center mb-2">
-                            <input
-                              value={option.text}
-                              onChange={(e) =>
-                                handleInput(item.id, e.target.value)
-                              }
-                              type="radio"
-                              className="form-radio accent-[#000000]"
-                              name={`radio-group-${item.id}`}
-                            />
+                      )}
 
-                            <label
-                              htmlFor="disabled-radio-1"
-                              className="ms-2 text-sm "
-                            >
-                              {option.text} &nbsp;&nbsp;{" "}
-                              <span className=" text-gray-600">
-                                {" "}
-                                {option.limitAns
-                                  ? `(0/${option?.limitAns})`
-                                  : ""}
-                              </span>
-                            </label>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {item.type == "dropdown" && (
-                    <div className="relative mt-4 w-fit min-w-[100px]">
-                      <div
-                        onClick={() => handleDropdown(item.id)}
-                        className="flex justify-center border-2 rounded-lg py-[4px]"
-                      >
-                        <span className="text-sm px-4 ml-1">
-                          {answerList[questionId]?.answer.length > 0
-                            ? answerList[questionId]?.answer
-                            : "options"}
-                        </span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          height="24px"
-                          viewBox="0 -960 960 960"
-                          width="24px"
-                          fill="#666666"
-                        >
-                          <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-                        </svg>
-                      </div>
-
-                      {dropdown[item.id] && (
-                        <div className="absolute left-0 top-full px-2 py-2 w-fit bg-white border-2 rounded-lg mt-2 shadow-lg">
+                      {(item.type == "mutiple" || item.type == "check") && (
+                        <div className="mt-4">
                           {item.options?.map((option, index) => (
-                            <div
-                              className="flex hover:bg-gray-100 items-center transition-all duration-[500ms] rounded-lg pl-2 pr-6"
-                              key={index}
-                              onClick={() =>
-                                handleInputDropdown(item.id, option.text)
-                              }
-                            >
-                              <ul className="p-2 rounded-lg text-[0.85em]  cursor-pointer">
-                                {option.text}
-                              </ul>
-                              <p className="text-sm text-gray-600">
-                                {option.limitAns
-                                  ? `(0/${option?.limitAns})`
-                                  : ""}
+                            <div key={index} className="flex items-center mb-2">
+                              <label className="flex items-center cursor-pointer relative">
+                                <input
+                                  value={option.text}
+                                  checked={
+                                    answerList[questionId]?.answer.includes(
+                                      option.text
+                                    ) ?? false
+                                  }
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      item.id,
+                                      option.text,
+                                      e.target.checked
+                                    )
+                                  }
+                                  type="checkbox"
+                                  className="peer h-4 w-4 cursor-pointer transition-all checked:bg-[#ababab]  checked:border-[#ababab] appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
+                                  id="check"
+                                />
+                                <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-3 w-3"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    stroke="currentColor"
+                                    strokeWidth="1"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                      clipRule="evenodd"
+                                    ></path>
+                                  </svg>
+                                </span>
+                              </label>
+                              <p className="ml-2  text-sm">
+                                {option.text} &nbsp;&nbsp;{" "}
+                                <span className=" text-gray-600">
+                                  {" "}
+                                  {option.limitAns
+                                    ? `(0/${option?.limitAns})`
+                                    : ""}
+                                </span>
                               </p>
                             </div>
                           ))}
                         </div>
                       )}
+                      {item.type == "radio" && (
+                        <div className="mt-4">
+                          {item.options?.map((option, index) => (
+                            <div key={index}>
+                              <div className="flex items-center mb-2">
+                                <input
+                                  value={option.text}
+                                  onChange={(e) =>
+                                    handleInput(item.id, e.target.value)
+                                  }
+                                  type="radio"
+                                  className="form-radio accent-[#000000]"
+                                  name={`radio-group-${item.id}`}
+                                />
+
+                                <label
+                                  htmlFor="disabled-radio-1"
+                                  className="ms-2 text-sm "
+                                >
+                                  {option.text} &nbsp;&nbsp;{" "}
+                                  <span className=" text-gray-600">
+                                    {" "}
+                                    {option.limitAns
+                                      ? `(0/${option?.limitAns})`
+                                      : ""}
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {item.type == "dropdown" && (
+                        <div className="relative mt-4 w-fit min-w-[100px]">
+                          <div
+                            onClick={() => handleDropdown(item.id)}
+                            className="flex justify-center border-2 rounded-lg py-[4px]"
+                          >
+                            <span className="text-sm px-4 ml-1">
+                              {answerList[questionId]?.answer.length > 0
+                                ? answerList[questionId]?.answer
+                                : "options"}
+                            </span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="24px"
+                              viewBox="0 -960 960 960"
+                              width="24px"
+                              fill="#666666"
+                            >
+                              <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                            </svg>
+                          </div>
+
+                          {dropdown[item.id] && (
+                            <div className="absolute left-0 top-full px-2 py-2 w-fit bg-white border-2 rounded-lg mt-2 shadow-lg">
+                              {item.options?.map((option, index) => (
+                                <div
+                                  className="flex hover:bg-gray-100 items-center transition-all duration-[500ms] rounded-lg pl-2 pr-6"
+                                  key={index}
+                                  onClick={() =>
+                                    handleInputDropdown(item.id, option.text)
+                                  }
+                                >
+                                  <ul className="p-2 rounded-lg text-[0.85em]  cursor-pointer">
+                                    {option.text}
+                                  </ul>
+                                  <p className="text-sm text-gray-600">
+                                    {option.limitAns
+                                      ? `(0/${option?.limitAns})`
+                                      : ""}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
+            <div className="flex justify-end w-full px-4">
+              <button
+                onClick={() => submitForm()}
+                className="flex mb-6 bg-black text-white rounded-lg py-2 px-4"
+              >
+                submit
+              </button>
+            </div>
           </div>
-        )}
-        <div className="flex justify-end w-full px-4">
-          <button onClick={() => submitForm()} className="flex mb-6 bg-black text-white rounded-lg py-2 px-4">
-            submit
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }
