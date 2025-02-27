@@ -195,6 +195,10 @@ function Workspace() {
     if (localStorage.getItem("setting")) {
       localStorage.removeItem("setting");
     }
+    if (localStorage.getItem("formQuestions")){
+      localStorage.removeItem("formQuestions")
+
+    }
 
     router.push(`/form${theme}`);
   };
@@ -322,7 +326,8 @@ function Workspace() {
       setFormDataToSearch((prev) =>
         prev ? prev?.filter((item) => item.id !== id) : []
       );
-
+      settotalForm((prev)=>prev-1)
+      
       console.log("Delete successful");
     } catch (error) {
       console.error("Error:", error);

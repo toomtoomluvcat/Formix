@@ -5,172 +5,38 @@ import NavBarInForm from "../../component/nav";
 import Link from "next/link";
 
 function Preview() {
-  const [questions, setQuestions] = useState<
-    {
-      id: number;
-      title: string;
-      type: string;
-      required: boolean;
-      options?: Array<{ labelChoice: string; limitAns: number | null }> | null;
-    }[]
-  >([
-    {
-      id: 1,
-      title: "What is your favorite color?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 2,
-      title: "Select your hobbies",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "Reading", limitAns: null },
-        { labelChoice: "Traveling", limitAns: null },
-        { labelChoice: "Cooking", limitAns: null },
-        { labelChoice: "Gaming", limitAns: null },
-        { labelChoice: "Photography", limitAns: null },
-      ],
-    },
-    {
-      id: 3,
-      title: "How old are you?",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 4,
-      title: "Select your favorite fruit",
-      type: "dropdown",
-      required: false,
-      options: [
-        { labelChoice: "Apple", limitAns: null },
-        { labelChoice: "Banana", limitAns: null },
-        { labelChoice: "Orange", limitAns: null },
-        { labelChoice: "Grapes", limitAns: null },
-        { labelChoice: "Pineapple", limitAns: null },
-      ],
-    },
-    {
-      id: 5,
-      title: "Choose your favorite pets",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Dog", limitAns: 1 },
-        { labelChoice: "Cat", limitAns: 1 },
-        { labelChoice: "Rabbit", limitAns: 1 },
-        { labelChoice: "Hamster", limitAns: 1 },
-        { labelChoice: "Bird", limitAns: 1 },
-      ],
-    },
-    {
-      id: 6,
-      title: "What is your preferred mode of transport?",
-      type: "dropdown",
-      required: false,
-      options: [
-        { labelChoice: "Car", limitAns: null },
-        { labelChoice: "Bicycle", limitAns: null },
-        { labelChoice: "Bus", limitAns: null },
-        { labelChoice: "Train", limitAns: null },
-        { labelChoice: "Walk", limitAns: null },
-      ],
-    },
-    {
-      id: 7,
-      title: "Which programming languages do you know?",
-      type: "check",
-      required: true,
-      options: [
-        { labelChoice: "JavaScript", limitAns: null },
-        { labelChoice: "Python", limitAns: null },
-        { labelChoice: "Java", limitAns: null },
-        { labelChoice: "C++", limitAns: null },
-        { labelChoice: "Go", limitAns: null },
-      ],
-    },
-    {
-      id: 8,
-      title: "Rate your experience with our service",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 9,
-      title: "Do you like our website design?",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Yes", limitAns: 1 },
-        { labelChoice: "No", limitAns: 1 },
-      ],
-    },
-    {
-      id: 10,
-      title: "What kind of movies do you prefer?",
-      type: "radio",
-      required: false,
-      options: [
-        { labelChoice: "Action", limitAns: null },
-        { labelChoice: "Comedy", limitAns: null },
-        { labelChoice: "Drama", limitAns: null },
-        { labelChoice: "Horror", limitAns: null },
-        { labelChoice: "Romance", limitAns: null },
-        { labelChoice: "Sci-Fi", limitAns: null },
-      ],
-    },
-    {
-      id: 11,
-      title: "What is your full name?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 12,
-      title: "What is your email address?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 13,
-      title: "Would you like to receive our newsletter?",
-      type: "radio",
-      required: false,
-      options: [
-        { labelChoice: "Yes, please", limitAns: 1 },
-        { labelChoice: "No, thanks", limitAns: 1 },
-      ],
-    },
-    {
-      id: 14,
-      title: "Select the countries you have visited",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "USA", limitAns: null },
-        { labelChoice: "France", limitAns: null },
-        { labelChoice: "Japan", limitAns: null },
-        { labelChoice: "Italy", limitAns: null },
-        { labelChoice: "Thailand", limitAns: null },
-        { labelChoice: "India", limitAns: null },
-      ],
-    },
-    {
-      id: 15,
-      title: "How satisfied are you with our product?",
-      type: "number",
-      required: true,
-    },
-  ]);
-  const [dropdown, setDropdown] = useState<{ show: boolean }[]>();
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
+  const [questions, setQuestions] = useState<
+    | {
+        id: number;
+        title: string;
+        type: string;
+        required: boolean;
+        options?: Array<{ labelChoice: string; limitAns: number | null }>;
+      }[]
+    | null
+  >(null);
+  const [dropdown, setDropdown] = useState<{ show: boolean }[]>();
+  useEffect(() => {
+    const localData = localStorage.getItem("formQuestions");
+    const localTitle = localData ? JSON.parse(localData).title : null;
+    
+    const localQuestion = localData ? JSON.parse(localData).questions : null;
+    const localDescription = localData
+      ? JSON.parse(localData).description
+      : null;
+
+    setTitle(localTitle)
+    setDescription(localDescription)
+    setQuestions(localQuestion)
+  }, []);
   const createDropdown = (): void => {
-    const dropdownQuestions = questions.filter(
+    const dropdownQuestions = questions?.filter(
       (item) => item.type === "dropdown"
     );
-    setDropdown(dropdownQuestions.map(() => ({ show: false })));
+    setDropdown(dropdownQuestions?.map(() => ({ show: false })));
   };
 
   const showDropdown = (indexDropdown: number) => {
@@ -183,17 +49,23 @@ function Preview() {
   useEffect(() => createDropdown, []);
   return (
     <div className="relative">
-      <div className=" bg-black text-white py-1 text-center text-[10px]">This is the preview of your form. <Link className="underline font-medium" href="/form"> Back to form</Link></div>
+      <div className=" bg-black text-white py-1 text-center text-[10px]">
+        This is the preview of your form.{" "}
+        <Link className="underline font-medium" href="/form">
+          {" "}
+          Back to form
+        </Link>
+      </div>
       <NavBarInForm></NavBarInForm>
       <div className="mt-12 max-w-[650px] mx-auto">
         <div className="mb-8">
-          <h1 className="text-[30px] font-medium text-center">Form Name</h1>
+          <h1 className="text-[30px] font-medium text-center">{title}</h1>
           <p className="mt-4 text-center text-[#c4c4c4]">
-            enter description here
+            {description}
           </p>
         </div>
         <div>
-          {questions.map((item) => (
+          {questions?.map((item) => (
             <div
               key={item.id}
               style={{
@@ -283,10 +155,8 @@ function Preview() {
               )}
               {item.type === "dropdown" && (
                 <div className="relative mt-4 max-w-[100px]">
-                  <div className="flex justify-center border-2 rounded-lg py-[4px]">   
-                    <h2 className=" text-[#666666] ">
-                      option
-                    </h2>
+                  <div className="flex justify-center border-2 rounded-lg py-[4px]">
+                    <h2 className=" text-[#666666] ">option</h2>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       height="24px"

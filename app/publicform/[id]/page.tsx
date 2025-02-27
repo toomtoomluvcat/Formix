@@ -181,7 +181,6 @@ function Preview() {
           <h1 className="text-[30px] font-medium text-center">{formName}</h1>
           <p className="mt-4 text-center text-[#c4c4c4]">{description}</p>
 
-          <p>{JSON.stringify(answerList, null, 2)}</p>
         </div>
         {questions && (
           <div>

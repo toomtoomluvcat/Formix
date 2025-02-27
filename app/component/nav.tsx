@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-function NavBarInForm() {
+function NavBarInForm({saveQuestionTolocalstorage}:{saveQuestionTolocalstorage?:()=>void}) {
   return (
     <div>
       <nav>
@@ -20,7 +20,7 @@ function NavBarInForm() {
 
           <div>
             <div className="flex text-[13px] gap-[35px] items-center">
-              <Link href="/form">
+              <Link  href="/form">
                 <div className="flex gap-[6px] font-medium items-center">
                   <Image
                     src="/Icon-form/1.png"
@@ -33,7 +33,7 @@ function NavBarInForm() {
                   <p className="md:block hidden">Quesion</p>
                 </div>
               </Link>
-              <Link href="/formrespone">
+              <Link onClick={()=>saveQuestionTolocalstorage?.() } href={"/formrespone"}  >
                 <div className="flex gap-[6px] font-medium items-center">
                   <Image
                     src="/Icon-form/2.png"
@@ -46,7 +46,7 @@ function NavBarInForm() {
                   <p className="md:block hidden">Respone</p>
                 </div>
               </Link>
-              <Link href={'/form/preview'}><div className="flex gap-[6px] font-medium items-center">
+              <Link onClick={()=>saveQuestionTolocalstorage?.()  } href={'/form/preview'}><div className="flex gap-[6px] font-medium items-center">
                 <Image
                   src="/Icon-form/3.png"
                   width={20}

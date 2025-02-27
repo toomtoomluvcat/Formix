@@ -5,10 +5,12 @@ import Image from "next/image";
 import NavBarInForm from "../component/nav";
 import Text from "../component/forms/text";
 import { useRouter } from "next/navigation";
+import { json } from "stream/consumers";
+import { parse } from "path";
 
 function Form() {
   const router = useRouter();
-useEffect(() => {
+  useEffect(() => {
     async function fetchUserData() {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -23,43 +25,52 @@ useEffect(() => {
             "Content-Type": "application/json",
             "x-auth-token": token,
           },
-        }); 
+        });
 
         if (response.status === 401) {
           localStorage.removeItem("token");
           router.push("/signin");
           return;
         }
-
-        const data = await response.json();
-        console.log("Private Data:", data);
-  } catch (error) {
+      } catch (error) {
         console.error("Error:", error);
       }
 
+      //get setting
 
-  //get setting
-  
-  const setting = localStorage.getItem("setting")?? ""
-  
-  if (setting){
-    
-    setColor(JSON.parse(setting).color)
-    setLimitForm(JSON.parse(setting).limit)
+      const setting = localStorage.getItem("setting") ?? "";
+      const localData = localStorage.getItem("formQuestions");
+      const localquestion = localData ? JSON.parse(localData).questions : null;
 
-  }
+      console.log("first", localquestion);
+      if (setting) {
+        setColor(JSON.parse(setting).color);
+        setLimitForm(JSON.parse(setting).limit);
+      }
 
-}
+      if (localquestion) {
+        setQuestions(localquestion);
+      }
+    }
     fetchUserData();
   }, []);
 
-
-
   useEffect(() => {
-    if (titleRef.current) {
+    const localData = localStorage.getItem("formQuestions");
+    const localTitle = localData ? JSON.parse(localData).title : null;
+    const localDescription = localData
+      ? JSON.parse(localData).description
+      : null;
+
+    if (localTitle && titleRef.current) {
+      titleRef.current.textContent = localTitle;
+    } else if (titleRef.current) {
       titleRef.current.textContent = title;
     }
-    if (descriptionRef.current) {
+    if (localDescription && descriptionRef.current) {
+      setIsHaveDescription(true)
+      descriptionRef.current.textContent = localDescription;
+    } else if (descriptionRef.current) {
       descriptionRef.current.textContent = description;
     }
   }, []);
@@ -68,7 +79,7 @@ useEffect(() => {
     color2: string;
     color3: string;
   }
-  const [limitForm,setLimitForm] = useState<number|null>(null)
+  const [limitForm, setLimitForm] = useState<number | null>(null);
   const [color, setColor] = useState<Color>({
     color1: "#000000",
     color3: "#C4C4C4",
@@ -94,51 +105,66 @@ useEffect(() => {
   };
   const [removingId, setRemovingId] = useState<number | null>(null);
   const titleRef = useRef<HTMLDivElement>(null);
-    const descriptionRef = useRef<HTMLDivElement>(null);
-  const [activeForm,setActiveForm] = useState<boolean>(true);
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [activeForm, setActiveForm] = useState<boolean>(true);
+  const [isHaveDescription,setIsHaveDescription] =useState<boolean>(false)
 
-  const hadleSubmit=async():Promise<void>=>{
-      
+  const hadleSubmit = async (): Promise<void> => {
     const data = {
       title,
       description,
       color,
       theme: "0002",
       limitForm: limitForm,
-      questions:{
-        create: questions.map( q => ({
-          questionID	:q.id,
+      questions: {
+        create: questions.map((q) => ({
+          questionID: q.id,
           title: q.title,
           type: q.type,
           required: q.required,
           limit: 100,
           limitAns: 1,
-          options: q.options 
-          ? { create: q.options.map(opt => ({ text: opt.labelChoice, limitAns: opt.limitAns })) }
-          : undefined,
-        }))
-      }
+          options: q.options
+            ? {
+                create: q.options.map((opt) => ({
+                  text: opt.labelChoice,
+                  limitAns: opt.limitAns,
+                })),
+              }
+            : undefined,
+        })),
+      },
     };
-  const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/signin");
-        return;
-      }
-  const res = await fetch("http://localhost:5001/form/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-auth-token": token, // ส่ง Token ไปด้วย
-    },
-    body: JSON.stringify(data),
-  });
-  
-  const responseData = await res.json();
-  console.log(responseData);
-  if (res.ok){
-    router.push("/workspace")
-  }
-};
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+    const res = await fetch("http://localhost:5001/form/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": token, // ส่ง Token ไปด้วย
+      },
+      body: JSON.stringify(data),
+    });
+
+    const responseData = await res.json();
+    console.log(responseData);
+    if (res.ok) {
+      router.push("/workspace");
+    }
+  };
+
+  //แพรเอาfunction นี้ไปด้วยนะ
+  const saveQuestionTolocalstorage = () => {
+    const formData = {
+      title: titleRef.current?.textContent || "",
+      description: descriptionRef.current?.textContent || "",
+      questions,
+    };
+    localStorage.setItem("formQuestions", JSON.stringify(formData));
+  };
 
   const addlabelChoice = (questionId: number): void => {
     setQuestions((prev) =>
@@ -172,7 +198,9 @@ useEffect(() => {
           ? {
               ...question,
               options: question.options?.map((option, index) =>
-                index === optionIndex ? { ...option, labelChoice: newlabelChoice } : option
+                index === optionIndex
+                  ? { ...option, labelChoice: newlabelChoice }
+                  : option
               ),
             }
           : question
@@ -191,7 +219,9 @@ useEffect(() => {
           ? {
               ...question,
               options: question.options?.map((option, index) =>
-                index === optionIndex ? { ...option, limitAns: newlimitAns } : option
+                index === optionIndex
+                  ? { ...option, limitAns: newlimitAns }
+                  : option
               ),
             }
           : question
@@ -203,7 +233,7 @@ useEffect(() => {
     setQuestions((prev) => [
       ...prev,
       {
-        id:prev.length>0? prev[prev.length-1].id+1 :1,
+        id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1,
         title: "",
         type: "text",
         required: false,
@@ -521,7 +551,9 @@ useEffect(() => {
           />
         </svg>
       </div>
-      <NavBarInForm />
+      <NavBarInForm
+        saveQuestionTolocalstorage={() => saveQuestionTolocalstorage()}
+      />
       <form className="relative md:mb-[50px] mb-[220px] z-40">
         <div className="mx-auto px-10 rounded-lg max-w-[650px]">
           <div className="max-w-[520px] mt-10 flex justify-center mx-auto">
@@ -532,7 +564,7 @@ useEffect(() => {
               }
               className={` font-medium max-w-[450px]  text-center text-[30px] px-4   
       focus:transition-all duration-300 focus:border-b-2 
-      focus:border-solid focus:text-start focus:outline-none inline-block mb-6
+      focus:border-solid focus:text-start focus:outline-none inline-block mb-4
        ${!title ? "placeholder" : ""}`}
               onFocus={(e) => {
                 e.target.style.borderColor = color.color1;
@@ -558,7 +590,7 @@ useEffect(() => {
               className={`text-center text-[15px] px-4
                focus:border-b-2 focus:transition-all 
                duration-300 focus:border-b-2 focus:border-black
-                focus:border-solid focus:outline-none mb-4 py-[3px]ฃ  ${
+                focus:border-solid focus:outline-none mb-8 py-[3px]ฃ  ${
                   !description ? "placeholder" : ""
                 }`}
               onFocus={(e) => {
@@ -572,10 +604,10 @@ useEffect(() => {
               suppressContentEditableWarning={true}
               role="textbox"
               aria-label="Form description"
-              data-placeholder="Enter details or instructions for the form."
+              data-placeholder={isHaveDescription? "":"Enter details or instructions for the form."}
             />
           </div>
-          {questions.map((item,index) => (
+          {questions.map((item, index) => (
             <div
               key={index}
               onClick={() => onActice(item.id)}
@@ -599,9 +631,10 @@ useEffect(() => {
                 updatelimitAns={(optionsIndex: number, limitAns: number) =>
                   updatelimitAns(item.id, optionsIndex, limitAns)
                 }
-                updatelabelChoice={(optionIndex: number, newlabelChoice: string) =>
-                  updatelabelChoice(item.id, optionIndex, newlabelChoice)
-                }
+                updatelabelChoice={(
+                  optionIndex: number,
+                  newlabelChoice: string
+                ) => updatelabelChoice(item.id, optionIndex, newlabelChoice)}
                 addlabelChoice={() => addlabelChoice(item.id)}
                 optionsValue={item.options}
                 addChangeType={(newType: string) =>
@@ -636,87 +669,20 @@ useEffect(() => {
             <p>Add question</p>
           </div>
 
-          <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
-            {JSON.stringify(questions, null, 2)}
-          </div>
+          
         </div>
       </form>
       <div>
         <div className="mt-4 flex gap-x-[10px] justify-center">
+          
           <button
-            style={{
-              backgroundColor: "#FFB6C1", // สีพาสเทลชมพู
-              color: "#333",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#FFB6C1", "#F8D7DA", "#D3A9B7")}
+            onClick={() => hadleSubmit()}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Theme 1
+            บันทึก
           </button>
-          <button
-            style={{
-              backgroundColor: "#FFD700", // สีทอง
-              color: "#333",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#FFD700", "#FFFACD", "#F0E68C")}
-          >
-            Theme 2
-          </button>
-          <button
-            style={{
-              backgroundColor: "#8A2BE2", // สีม่วง
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#8A2BE2", "#9370DB", "#D8BFD8")}
-          >
-            Theme 3
-          </button>
-          <button
-            style={{
-              backgroundColor: "#00CED1", // สีฟ้า
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#00CED1", "#AFEEEE", "#20B2AA")}
-          >
-            Theme 4
-          </button>
-          <button
-            style={{
-              backgroundColor: "#32CD32", // สี
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#32CD32", "#98FB98", "#8FBC8F")}
-          >
-            Theme 5
-          </button>
-          <button
-        onClick={()=>hadleSubmit()}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-        บันทึก
-        </button>
         </div>
       </div>
-
     </div>
   );
 }

@@ -12,7 +12,7 @@ import DynamicBarChart from "../component/graph/bar";
 import DynamicPieChart from "../component/graph/circle";
 
 function formrespone() {
-  const [display, setDisplay] = useState<number>(1);
+  const [display, setDisplay] = useState<number>(2);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<
     {
@@ -49,16 +49,29 @@ function formrespone() {
     { position: 2, color1: "#8EB15C", color2: "#B1CF86", color3: "#D2E6B5" },
     { position: 3, color1: "#FF8B00", color2: "#FED700", color3: "#FEFACD" },
   ];
+  const [ivdRespone, setivdRespone] = useState<
+    { time: number; email: string; question: string; answer: string[] }[] | null
+  >([
+    {
+      time: 1700000000,
+      email: "user1@example.com",
+      question: "คุณชอบสีอะไร?",
+      answer: ["สีน้ำเงิน", "สีแดง"],
+    },
+    {
+      time: 1700000001,
+      email: "user2@example.com",
+      question: "สัตว์เลี้ยงตัวโปรดของคุณคืออะไร?",
+      answer: ["แมว", "สุนัข"],
+    },
+    {
+      time: 1700000002,
+      email: "user3@example.com",
+      question: "คุณชอบกินอาหารประเภทไหน?",
+      answer: ["อาหารไทย", "อาหารญี่ปุ่น"],
+    },
+  ]);
   const [displayArchive, setDisplayArchive] = useState();
-
-  // const hadleSendData: MouseEventHandler<HTMLDivElement> = (color: {
-  //   position: number;
-  //   color1: string;
-  //   color2: string;
-  //   color3: string;
-  // },limit:number,archive:boolean) => {
-  //   sessionStorage.setItem("color":"")
-  // };
   const setData = [
     [
       { name: "Software Development", value: 5 },
@@ -109,7 +122,7 @@ function formrespone() {
       { name: "Environmental Law", value: 3 },
     ],
   ];
-  
+
   const updateColor = (
     newPosition: number,
     newcolor1: string,
@@ -288,181 +301,196 @@ function formrespone() {
       {display === 1 && (
         <div className="">
           <div className="max-w-[800px] mx-auto px-[30px] flex flex-col gap-[45px]  mt-[50px]">
-            {setData.map((item,index)=>(
-            <div key={index} className=" bg-black rounded-lg">
-              <div
-                className="  translate-y-[-15px] z-40 bg-white border-2
+            {setData.map((item, index) => (
+              <div key={index} className=" bg-black rounded-lg">
+                <div
+                  className="  translate-y-[-15px] z-40 bg-white border-2
                bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6"
-              >
-                <div className="fle justify-between items-start ">
-                  <div className="">
-                    <div className="flex items-center mb-1">
-                      <div className="flex justify-between mx-auto w-full px-[30px] md:px-[70px]  items-center gap-x-[15px]">
-                        <div className="flex  items-center gap-x-[15px]">
-                          <Image
-                            src="/Icon-form/16.png"
-                            width={1000}
-                            height={1000}
-                            quality={100}
-                            alt="question"
-                            className="w-[20px] h-[20px] sm:w-[30px] sm:h-[30px]"
-                          />
-                          <div>
-                            <p className="text-[8px] sm:text-[11px] font-medium">
-                              question {index+1}
-                            </p>
-                            <p className="text-[#4C4C4C] text-[11px] mt-[2px] sm:text-[13px]">
-                              dog is cat right?
-                            </p>
-                          </div>
-                        </div>
-
-                        
-                        <div
-                          ref={dropdownRef}
-                          style={{
-                            boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-                          }}
-                          className="relative rounded-[4px] flex justify-center py-[4px]"
-                        >
-                          <div
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="flex items-center justify-center px-4 gap-x-2"
-                          >
+                >
+                  <div className="fle justify-between items-start ">
+                    <div className="">
+                      <div className="flex items-center mb-1">
+                        <div className="flex justify-between mx-auto w-full px-[30px] md:px-[70px]  items-center gap-x-[15px]">
+                          <div className="flex  items-center gap-x-[15px]">
                             <Image
-                              src={options[chart]?.imgSrc}
+                              src="/Icon-form/16.png"
                               width={1000}
                               height={1000}
                               quality={100}
                               alt="question"
-                              className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
+                              className="w-[20px] h-[20px] sm:w-[30px] sm:h-[30px]"
                             />
-                            <p className="text-[11px] sm:text-[12px]">
-                              {options[chart]?.label}
-                            </p>
-
-                            <Image
-                              src="/Icon-form/18.png"
-                              width={1000}
-                              height={1000}
-                              quality={100}
-                              alt="question"
-                              className={
-                                isOpen
-                                  ? "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] rotate-180 transition-all duration-[700ms]"
-                                  : "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] transition-all duration-1000"
-                              }
-                            />
-                          </div>
-                          {isOpen && (
-                            <div
-                              style={{
-                                boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-                              }}
-                              className="absolute px-[10px] translate-y-[32px] z-40 py-[5px] bg-white rounded-[7px]"
-                            >
-                              {options.map((option, optionIndex) => (
-                                <div key={optionIndex}>
-                                  <div
-                                    onClick={() => (
-                                      setIsOpen(false), setChart(optionIndex)
-                                    )}
-                                    className="py-[4px]  px-[5px] text-[0.85rem]  hover:bg-[#E5e5e5] transition-all duration-500
-                          items-center rounded-[4px] my-[2px] w-[110px] sm:w-[140px] flex gap-x-[8px]"
-                                  >
-                                    <Image
-                                      className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
-                                      src={option.imgSrc}
-                                      width={option.wideth}
-                                      height={20}
-                                      alt={option.label}
-                                    />
-                                    <p className="text-[11px] sm:text-[12px]">
-                                      {option.label}
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
+                            <div>
+                              <p className="text-[8px] sm:text-[11px] font-medium">
+                                question {index + 1}
+                              </p>
+                              <p className="text-[#4C4C4C] text-[11px] mt-[2px] sm:text-[13px]">
+                                dog is cat right?
+                              </p>
                             </div>
-                          )}
+                          </div>
+
+                          <div
+                            ref={dropdownRef}
+                            style={{
+                              boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
+                            }}
+                            className="relative rounded-[4px] flex justify-center py-[4px]"
+                          >
+                            <div
+                              onClick={() => setIsOpen(!isOpen)}
+                              className="flex items-center justify-center px-4 gap-x-2"
+                            >
+                              <Image
+                                src={options[chart]?.imgSrc}
+                                width={1000}
+                                height={1000}
+                                quality={100}
+                                alt="question"
+                                className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
+                              />
+                              <p className="text-[11px] sm:text-[12px]">
+                                {options[chart]?.label}
+                              </p>
+
+                              <Image
+                                src="/Icon-form/18.png"
+                                width={1000}
+                                height={1000}
+                                quality={100}
+                                alt="question"
+                                className={
+                                  isOpen
+                                    ? "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] rotate-180 transition-all duration-[700ms]"
+                                    : "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] transition-all duration-1000"
+                                }
+                              />
+                            </div>
+                            {isOpen && (
+                              <div
+                                style={{
+                                  boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
+                                }}
+                                className="absolute px-[10px] translate-y-[32px] z-40 py-[5px] bg-white rounded-[7px]"
+                              >
+                                {options.map((option, optionIndex) => (
+                                  <div key={optionIndex}>
+                                    <div
+                                      onClick={() => (
+                                        setIsOpen(false), setChart(optionIndex)
+                                      )}
+                                      className="py-[4px]  px-[5px] text-[0.85rem]  hover:bg-[#E5e5e5] transition-all duration-500
+                          items-center rounded-[4px] my-[2px] w-[110px] sm:w-[140px] flex gap-x-[8px]"
+                                    >
+                                      <Image
+                                        className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
+                                        src={option.imgSrc}
+                                        width={option.wideth}
+                                        height={20}
+                                        alt={option.label}
+                                      />
+                                      <p className="text-[11px] sm:text-[12px]">
+                                        {option.label}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                {options[chart]?.label === "Circle" && (
-                  <DynamicPieChart
-                    color={[
-                      "#222831",
-                      "#2C323A",
-                      "#393E46",
-                      "#4E5965",
-                      "#5E6B75",
-                      "#6D9886",
-                      "#7FA395",
-                      "#89B9A8",
-                      "#A1D1C2",
-                      "#F2E7D5",
-                      "#E5D1B8",
-                      "#DCC9B6",
-                      "#F7F7F7",
-                      "#EDEDED",
-                      "#DADADA",
-                      "#C3C3C3",
-                      "#B0B0B0",
-                    ]}
-                    theme={"0001"}
-                    data={setData[index]}
-                  ></DynamicPieChart>
-                )}
-                {options[chart]?.label === "Bar" && (
-                  <div className="mt-4">
-                    <DynamicBarChart
-                    color={[
-                      "#222831",
-                      "#2C323A",
-                      "#393E46",
-                      "#4E5965",
-                      "#5E6B75",
-                      "#6D9886",
-                      "#7FA395",
-                      "#89B9A8",
-                      "#A1D1C2",
-                      "#F2E7D5",
-                      "#E5D1B8",
-                      "#DCC9B6",
-                      "#F7F7F7",
-                      "#EDEDED",
-                      "#DADADA",
-                      "#C3C3C3",
-                      "#B0B0B0",
-                    ]}
+                  {options[chart]?.label === "Circle" && (
+                    <DynamicPieChart
+                      color={[
+                        "#222831",
+                        "#2C323A",
+                        "#393E46",
+                        "#4E5965",
+                        "#5E6B75",
+                        "#6D9886",
+                        "#7FA395",
+                        "#89B9A8",
+                        "#A1D1C2",
+                        "#F2E7D5",
+                        "#E5D1B8",
+                        "#DCC9B6",
+                        "#F7F7F7",
+                        "#EDEDED",
+                        "#DADADA",
+                        "#C3C3C3",
+                        "#B0B0B0",
+                      ]}
                       theme={"0001"}
                       data={setData[index]}
-                    ></DynamicBarChart>
-                  </div>
-                )}
+                    ></DynamicPieChart>
+                  )}
+                  {options[chart]?.label === "Bar" && (
+                    <div className="mt-4">
+                      <DynamicBarChart
+                        color={[
+                          "#222831",
+                          "#2C323A",
+                          "#393E46",
+                          "#4E5965",
+                          "#5E6B75",
+                          "#6D9886",
+                          "#7FA395",
+                          "#89B9A8",
+                          "#A1D1C2",
+                          "#F2E7D5",
+                          "#E5D1B8",
+                          "#DCC9B6",
+                          "#F7F7F7",
+                          "#EDEDED",
+                          "#DADADA",
+                          "#C3C3C3",
+                          "#B0B0B0",
+                        ]}
+                        theme={"0001"}
+                        data={setData[index]}
+                      ></DynamicBarChart>
+                    </div>
+                  )}
 
-                <div className="py-6 px-16" id="chart"></div>
+                  <div className="py-6 px-16" id="chart"></div>
+                </div>
               </div>
-            </div>))}
+            ))}
           </div>
         </div>
       )}
       {display == 2 && (
-        <div className="flex flex-col justify-center items-center mt-[100px]">
-          <Image
-            src="/Icon-form/19.png"
-            width={1000}
-            height={1000}
-            quality={100}
-            alt="question"
-            className=" sm:w-[274px] h-auto w-[200px] "
-          />
-          <h2 className="mt-[45px] font-medium text-[25px]">No Respone yet</h2>
-          <h2 className="mt-[10px] text-[13px] max-w-[250px]  text-center">
-            Your form has no responses. Create it and share widely
-          </h2>
+        <div>
+          {ivdRespone ? (
+            <div className="max-w-[1260px] mx-auto mt-6 px-8">
+              {ivdRespone?.map((item, index) => (
+                <div key={index} className="w-full border-2 rounded-lg mb-4 md:px-10 py-4 p-6">
+                  <div>{item.email}</div>
+                  <div>{item.answer.join(", ")}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col justify-center items-center mt-[100px]">
+              <Image
+                src="/Icon-form/19.png"
+                width={1000}
+                height={1000}
+                quality={100}
+                alt="question"
+                className=" sm:w-[274px] h-auto w-[200px] "
+              />
+              <h2 className="mt-[45px] font-medium text-[25px]">
+                No Respone yet
+              </h2>
+              <h2 className="mt-[10px] text-[13px] max-w-[250px]  text-center">
+                Your form has no responses. Create it and share widely
+              </h2>
+            </div>
+          )}
         </div>
       )}
       {display == 3 && (
