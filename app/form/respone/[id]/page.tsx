@@ -14,6 +14,7 @@ import Image from "next/image";
 import DynamicBarChart from "@/app/component/graph/bar";
 import DynamicPieChart from "@/app/component/graph/circle";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function formrespone() {
     const { id } = useParams();
@@ -208,6 +209,50 @@ function formrespone() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      const token = localStorage.getItem("token");
+      const expDate = localStorage.getItem("expDate");
+      if((!token && Number(expDate ?? 0) > Date.now()) || !expDate ) {
+        router.push("/signin");
+        return;
+      }
+    }
+
+    fetchUserData();
+
+
+  }, []);
+
+  async function getDashboard(formID: string) {
+  const token = localStorage.getItem("token");
+  const router = useRouter();
+  
+  if (!token) {
+    router.push("/signin");
+    return;
+  }
+  try {
+    const response = await fetch(`http://localhost:5001/dashboard/${formID}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    console.log("📊 Dashboard Data:", result);
+    return result;
+  } catch (error) {
+    console.error("❌ Error fetching dashboard data:", error);
+  }
+}
 
   return (
     <div className="relative">
