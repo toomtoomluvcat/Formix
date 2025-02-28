@@ -52,9 +52,6 @@ function Form() {
       }
     }
     fetchUserData();
-  }, []);
-
-  useEffect(() => {
     const localData = localStorage.getItem("formQuestions");
     const localTitle = localData ? JSON.parse(localData).title : null;
     const localDescription = localData
@@ -73,6 +70,8 @@ function Form() {
       descriptionRef.current.textContent = description;
     }
   }, []);
+
+  
   interface Color {
     color1: string;
     color2: string;

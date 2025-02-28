@@ -9,10 +9,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import NavBarInForm from "../../component/nav";
+import NavBarInForm from "@/app/component/nav";
 import Image from "next/image";
-import DynamicBarChart from "../../component/graph/bar";
-import DynamicPieChart from "../../component/graph/circle";
+import DynamicBarChart from "@/app/component/graph/bar";
+import DynamicPieChart from "@/app/component/graph/circle";
 import { useParams } from "next/navigation";
 
 function formrespone() {
@@ -287,9 +287,7 @@ function formrespone() {
 
                           <div
                             ref={dropdownRef}
-                            style={{
-                              boxShadow: "0px 0px 1px 0px rgba(0,0,0,0.34)",
-                            }}
+                           
                             className="relative rounded-[4px] flex justify-center py-[4px]"
                           >
                             <div

@@ -4,13 +4,98 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import NavBarInForm from "../component/nav01";
 import Text from "../component/forms/text01";
-
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 function Form() {
+
+  const router = useRouter();
   useEffect(() => {
-    if (titleRef.current) {
+    async function fetchUserData() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5001/posts/private", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+        });
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          router.push("/signin");
+          return;
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+
+      //get setting
+
+      const setting = localStorage.getItem("setting") ?? "";
+      const localData = localStorage.getItem("formQuestions");
+      const localquestion = localData ? JSON.parse(localData).questions : null;
+
+      console.log("first", localquestion);
+      if (setting) {
+        setColor(JSON.parse(setting).color);
+        setLimitForm(JSON.parse(setting).limit);
+      }
+
+      if (localquestion) {
+        setQuestions(localquestion);
+      }
+    }
+    fetchUserData();
+    const setting = localStorage.getItem("setting");
+    const localColor = setting
+      ? JSON.parse(setting).color
+      : {
+          color1: "rgb(247, 248, 243)",
+          color2: "rgb(48, 34, 68)",
+          color3: "rgb(224, 83, 125)",
+          color4: "rgb(77, 120, 231)",
+          color5: "rgb(106, 165, 218)",
+          color6: "rgb(28, 215, 147)",
+          color7: "rgb(254, 216, 60)",
+          color8: "rgb(255, 147, 86)",
+          color9: "rgb(228, 228, 228)",
+          color10: "rgb(58, 44, 77)",
+        };
+    const localData = localStorage.getItem("formQuestions");
+    const localTitle = localData ? JSON.parse(localData).title : null;
+    const localDescription = localData
+      ? JSON.parse(localData).description
+      : null;
+
+    if (localColor) {
+      setColor({
+        color1: localColor.color1 || color.color1,
+        color2: localColor.color2 || color.color2,
+        color3: localColor.color3 || color.color3,
+        color4: localColor.color4 || color.color4,
+        color5: localColor.color5 || color.color5,
+        color6: localColor.color6 || color.color6,
+        color7: localColor.color7 || color.color7,
+        color8: localColor.color8 || color.color8,
+        color9: localColor.color9 || color.color9,
+        color10: localColor.color10 || color.color10,
+      });
+    }
+    if (localTitle && titleRef.current) {
+      titleRef.current.textContent = localTitle;
+    } else if (titleRef.current) {
       titleRef.current.textContent = title;
     }
-    if (descriptionRef.current) {
+    if (localDescription && descriptionRef.current) {
+      setIsHaveDescription(true);
+      descriptionRef.current.textContent = localDescription;
+    } else if (descriptionRef.current) {
       descriptionRef.current.textContent = description;
     }
   }, []);
@@ -26,7 +111,8 @@ function Form() {
     color9: string | null;
     color10: string | null;
   }
-
+  const [isHaveDescription, setIsHaveDescription] = useState<boolean>();
+  const [limitForm, setLimitForm] = useState<number>();
   const [color, setColor] = useState<Color>({
     color1: "rgb(247, 248, 243)",
     color2: "rgb(48, 34, 68)",
@@ -85,6 +171,9 @@ function Form() {
   const titleRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
 
+  useEffect(()=>{
+    console.log('color: ', color)
+  },[color])
   const addlabelChoice = (questionId: number): void => {
     setQuestions((prev) =>
       prev.map((question) =>
@@ -216,12 +305,111 @@ function Form() {
     setTitle(title);
   }, []);
 
+  const saveQuestionTolocalstorage = () => {
+    const formData = {
+      title: titleRef.current?.textContent || "",
+      description: descriptionRef.current?.textContent || "",
+      questions,
+    };
+    localStorage.setItem("formQuestions", JSON.stringify(formData));
+    console.log("formData", formData);
+  };
+
   return (
     <div
       style={{ backgroundColor: `${color.color1}` }}
       className="overflow-hidden min-h-screen relative"
     >
-      <NavBarInForm />
+      <NavBarInForm
+        saveQuestionTolocalstorage={() => saveQuestionTolocalstorage()}
+      />
+      {false && (
+        <div className="relative">
+          <div className="fixed inset-0 bg-black  opacity-50 z-40"></div>
+          <div
+            style={{
+              filter: "drop-shadow(2px 4px 0px rgb(0, 0, 0))",
+            }}
+            className="fixed border-black border-[3.5px] top-1/2 left-1/2 transform rounded-[15px] w-[70vw] max-w-[420px] -translate-x-1/2 -translate-y-1/2 z-40 bg-white"
+          >
+            <Image
+              width={1000}
+              height={1000}
+              alt="changeusername"
+              src={"/Icon-form/50.png"}
+            ></Image>
+            <svg
+              className="absolute z-50 top-[-15px] left-[-15px]"
+              width="50"
+              height="50"
+              viewBox="0 0 61 61"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <ellipse
+                cx="26.1091"
+                cy="37.0574"
+                rx="19.3708"
+                ry="11.7909"
+                fill="rgb(77, 120, 231)"
+              />
+              <ellipse
+                cx="31.1613"
+                cy="24.4243"
+                rx="14.3176"
+                ry="10.9487"
+                fill="rgb(77, 120, 231)"
+              />
+              <ellipse
+                cx="42.1121"
+                cy="39.5841"
+                rx="13.4754"
+                ry="10.9487"
+                fill="rgb(77, 120, 231)"
+              />
+              <path
+                d="M16.4238 50.5327C12.5496 50.5327 9.26503 49.1851 6.56995 46.4901C3.87488 43.795 2.52734 40.5104 2.52734 36.6362C2.52734 33.3516 3.54852 30.4565 5.59088 27.9509C7.63325 25.4453 10.1915 23.8346 13.2655 23.1187C14.3183 19.3288 16.4028 16.2126 19.5189 13.7702C22.6351 11.3278 26.2356 10.1066 30.3203 10.1066C35.3314 10.1066 39.532 11.8436 42.9219 15.3177C46.3118 18.7919 48.0067 22.9503 48.0067 27.793C51.165 28.1299 53.639 29.4353 55.4287 31.7093C57.2184 33.9832 58.1132 36.4467 58.1132 39.0997C58.1132 42.258 57.0078 44.953 54.797 47.1849C52.5862 49.4167 49.9017 50.5327 46.7434 50.5327H16.4238ZM16.4238 45.4794H46.7434C48.512 45.4794 50.007 44.8688 51.2282 43.6476C52.4494 42.4264 53.06 40.9315 53.06 39.1628C53.06 37.3942 52.4494 35.8993 51.2282 34.6781C50.007 33.4569 48.512 32.8463 46.7434 32.8463H42.9535V27.793C42.9535 24.2978 41.7217 21.3185 39.2583 18.855C36.7948 16.3916 33.8155 15.1598 30.3203 15.1598C27.6673 15.1598 25.3091 15.8862 23.2457 17.3391C21.1823 18.7919 19.6663 20.6553 18.6978 22.9292C21.9824 23.4767 24.7406 25.0242 26.9725 27.5719C29.2044 30.1196 30.3203 33.141 30.3203 36.6362H25.267C25.267 34.1938 24.4038 32.1093 22.6772 30.3828C20.9507 28.6563 18.8662 27.793 16.4238 27.793C13.9814 27.793 11.8969 28.6563 10.1704 30.3828C8.44387 32.1093 7.58061 34.1938 7.58061 36.6362C7.58061 39.0786 8.44387 41.1631 10.1704 42.8896C11.8969 44.6161 13.9814 45.4794 16.4238 45.4794Z"
+                fill="black"
+              />
+            </svg>
+            <div className="mb-[10px] md:mb-[20px] pt-[15px] md:pt-[25px] px-[15px] md:px-[40px]">
+              <p className="font-medium font-press-gothic text-[1.2em] sm:text-[1.7em]">
+                Your form is now live!
+              </p>
+              <p className="text-[9px] sm:text-[13px] text-[#474747] mt-[4px] sm:mt-[7px] max-w-[350px]">
+                Let it go live! We're here to help you summarize all the data
+                efficiently!
+              </p>
+              <div className="py-[8px] flex gap-x-[5px]">
+                <input
+                  value={""}
+                  onChange={() => {
+                    return;
+                  }}
+                  className=" w-[60%] rounded-[7px] py-[10px] px-[15px] text-[13px] bg-[#f6f6f6]"
+                  type="text"
+                />
+                <Link
+                  href="/workspace"
+                  type="button"
+                  className="border-2  border-black py-[10px] w-[20%] text-center  rounded-[7px] text-[10px]"
+                >
+                  Workspace
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText("");
+                  }}
+                  className="bg-black w-[20%] py-[10px]   rounded-[7px] text-white text-[10px]"
+                >
+                  Copy URL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="absolute top-20 right-[14vw]">
         <svg
           width="35"
@@ -232,7 +420,7 @@ function Form() {
         >
           <path
             d="M58.2724 33.6738L55.892 43.989L50.3376 49.5433L40.8159 56.6846L21.7724 55.8912L9.87024 43.989L5.10938 38.4346V18.5977C8.54778 15.9528 15.5833 10.5042 16.2181 9.86943C16.8529 9.23465 24.9463 5.37306 28.9137 3.52161C30.7652 5.63755 34.6268 10.1868 35.2615 11.4564C35.8963 12.726 39.2289 15.1593 40.8159 16.2173L46.3702 19.3912L48.7507 23.3586C49.8086 24.9455 52.0833 28.2781 52.7181 28.9129C53.3529 29.5477 56.6855 32.3513 58.2724 33.6738Z"
-            fill="#FF9356"
+            fill={color.color8?? ""}
             stroke="black"
             strokeWidth="1.58696"
           />
@@ -897,7 +1085,6 @@ function Form() {
       </svg>
       {/* circle red */}
       <svg
-    
         className="absolute bottom-[-150px] left-1/3"
         width="225"
         height="325"
@@ -910,7 +1097,7 @@ function Form() {
           cy="162.953"
           r="118.5"
           transform="rotate(-30.2141 162.035 162.953)"
-          fill={color.color6?? ""}
+          fill={color.color6 ?? ""}
         />
         <circle
           cx="162.035"
@@ -946,7 +1133,7 @@ function Form() {
         </defs>
       </svg>
 
-      <form className="relative md:mb-[200px] mt-[70px] mb-[250px] z-40">
+      <form className="relative md:mb-[200px] mt-[70px] mb-[250px] ">
         <div className="mx-auto px-10 rounded-lg max-w-[650px]">
           <div className="w-fit max-w-[520px] mt-10 flex justify-center relative mx-auto">
             <svg
@@ -1071,7 +1258,11 @@ function Form() {
               suppressContentEditableWarning={true}
               role="textbox"
               aria-label="Form description"
-              data-placeholder="Enter details or instructions for the form."
+              data-placeholder={
+                isHaveDescription
+                  ? ""
+                  : "Enter details or instructions for the form."
+              }
             />
           </div>
           {questions.map((item) => (
@@ -1137,79 +1328,11 @@ function Form() {
             </p>
           </button>
 
-          {/* <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
-            {JSON.stringify(questions, null, 2)}
-          </div> */}
+          
         </div>
       </form>
       <div>
-        {/* <div className="mt-4 flex gap-x-[10px] justify-center">
-          <button
-            style={{
-              backgroundColor: "#FFB6C1", // สีพาสเทลชมพู
-              color: "#333",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#FFB6C1", "#F8D7DA", "#D3A9B7")}
-          >
-            Theme 1
-          </button>
-          <button
-            style={{
-              backgroundColor: "#FFD700", // สีทอง
-              color: "#333",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#FFD700", "#FFFACD", "#F0E68C")}
-          >
-            Theme 2
-          </button>
-          <button
-            style={{
-              backgroundColor: "#8A2BE2", // สีม่วง
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#8A2BE2", "#9370DB", "#D8BFD8")}
-          >
-            Theme 3
-          </button>
-          <button
-            style={{
-              backgroundColor: "#00CED1", // สีฟ้า
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#00CED1", "#AFEEEE", "#20B2AA")}
-          >
-            Theme 4
-          </button>
-          <button
-            style={{
-              backgroundColor: "#32CD32", // สี
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onClick={() => changeTheme("#32CD32", "#98FB98", "#8FBC8F")}
-          >
-            Theme 5
-          </button>
-        </div> */}
+        
       </div>
     </div>
   );

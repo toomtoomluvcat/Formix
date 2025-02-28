@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import NavBarInForm from "../../component/nav";
+import NavBarInForm from "@/app/component/nav";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 

@@ -3,6 +3,7 @@ import React, { ChangeEvent, useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { checkIsAppPPREnabled } from "next/dist/server/lib/experimental/ppr";
 
 function Workspace() {
   const [username, setUsername] = useState<string | null>(null);
@@ -33,6 +34,7 @@ function Workspace() {
     | null
   >(null);
   const [showMarket, setShowMarket] = useState<boolean>(false);
+  const [isCoppy,setIsCoppy] = useState<boolean>(false);
   const [formDataToSearch, setFormDataToSearch] = useState<
     | {
         id: string;
@@ -50,6 +52,7 @@ function Workspace() {
   const accountMoblieRef = useRef<HTMLDivElement | null>(null);
   const notifyref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  
 
   useEffect(() => {}, []);
 
@@ -66,7 +69,6 @@ function Workspace() {
 
     fetchUserData();
     if (savedUsername) {
-      console.log("Loaded username from localStorage:", savedUsername);
       setUsername(savedUsername);
     }
   }, []);
@@ -90,15 +92,11 @@ function Workspace() {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
-      console.log("result", result);
       if (result.name) {
-        console.log("Setting username:", result.name);
         setUsername(result.name);
-        localStorage.setItem("username", result.name);
       } else {
         console.warn("No username found in API response");
       }
-      console.log("result", result.forms);
       setFormDataToSearch(result.forms);
       setFormData(result.forms);
       settotalForm(result.totalForm);
@@ -270,16 +268,47 @@ function Workspace() {
     }
   };
 
- 
+  const getResponeForm = async (theme: string, id: string): Promise<void> => {
+    console.log("theme", theme);
+    const path = theme === "0002" ? "form" : "form01";
+    console.log("path", path);
+    const token = localStorage.getItem("token");
 
-  const getResponeForm = async (id: string): Promise<void> => {
+    setTimeout(() => {
+      if (!token) {
+        router.push(`/signin`);
+        return;
+      }
+    }, 6000);
+
+    try {
+      const res = await fetch(`http://localhost:5001/recieve/public/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token ?? "524545445",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("fail to get" + res.status);
+      }
+      router.push(`${path}/respone/${id}`);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  
+
+
+  const getPublicForm = async (theme: string, id: string): Promise<void> => {
+    const path = theme === "0002" ? "form" : "form01";
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
       return;
     }
     try {
-
       const res = await fetch(`http://localhost:5001/recieve/public/${id}`, {
         method: "GET",
         headers: {
@@ -291,20 +320,25 @@ function Workspace() {
       if (!res.ok) {
         throw new Error("fail to get" + res.status);
       }
-      router.push(`/respone/${id}`);
+      setIsCoppy(true)
+      setTimeout(() => {
+        setIsCoppy(false)
+      }, 2500);
+      const mainURL = window.location.origin;
+      await navigator.clipboard.writeText(mainURL + "/" + path + "/publicform/" + id);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const getPublicForm = async (id: string): Promise<void> => {
+  const pushPublicForm = async (theme: string, id: string): Promise<void> => {
+    const path = theme === "0002" ? "form" : "form01";
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
       return;
     }
     try {
-
       const res = await fetch(`http://localhost:5001/recieve/public/${id}`, {
         method: "GET",
         headers: {
@@ -316,7 +350,9 @@ function Workspace() {
       if (!res.ok) {
         throw new Error("fail to get" + res.status);
       }
-      router.push(`/publicform/${id}`);
+      
+      const mainURL = window.location.origin;
+      router.push(mainURL + "/" + path + "/publicform/" + id);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -329,9 +365,9 @@ function Workspace() {
       return;
     }
     try {
-      console.log( formData?.[0].archive )
-      if(formData &&formData[Number(id)] ){
-        setActiveForm((prev)=>prev-1)
+      console.log(formData?.[0].archive);
+      if (formData && formData[Number(id)]) {
+        setActiveForm((prev) => prev - 1);
       }
       const res = await fetch(`http://localhost:5001/workspace/${id}`, {
         method: "DELETE",
@@ -351,8 +387,6 @@ function Workspace() {
         prev ? prev?.filter((item) => item.id !== id) : []
       );
       settotalForm((prev) => prev - 1);
-     
-      
 
       console.log("Delete successful");
     } catch (error) {
@@ -971,7 +1005,7 @@ function Workspace() {
                     {formData?.map((item, index) => (
                       <div className="  flex flex-col " key={index}>
                         <div className="flex mt-2 justify-between items-center ">
-                          <div className="flex gap-x-2 items-center">
+                          <div onClick={()=>pushPublicForm(item.proflieId,item.id)} className="flex gap-x-2 items-center">
                             <Image
                               src={`/Icon-form/${item.proflieId}.svg`}
                               width={1000}
@@ -993,8 +1027,7 @@ function Workspace() {
                               }
                               className={
                                 item.archive
-                               
-                                  ?  "bg-green-400 w-[10px] h-[10px] rounded-[50%]"
+                                  ? "bg-green-400 w-[10px] h-[10px] rounded-[50%]"
                                   : "bg-red-400 w-[10px] h-[10px] rounded-[50%]"
                               }
                             ></div>
@@ -1017,10 +1050,11 @@ function Workspace() {
                                 >
                                   <div className="w-[120px] bg-white px-[5px]  bg-white  py-[8px] rounded-[7px] ] gap-x-[5px] flex flex-col gap-y-[5px] border-2 items-center">
                                     <div
+                                    aria-disabled={!isCoppy}
                                       onClick={() => {
-                                        getPublicForm(item.id);
+                                        getPublicForm(item.proflieId,item.id);
                                       }}
-                                      className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]"
+                                      className="flex items-center w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]"
                                     >
                                       <Image
                                         src={`/Icon-form/44.svg`}
@@ -1030,11 +1064,14 @@ function Workspace() {
                                         alt="question"
                                         className="h-[15px] mb-[2px] w-auto"
                                       />
-                                      <h2 className="text-[10px]">Copy Url </h2>
+                                      <h2 className="text-[10px]">{ isCoppy? "successfully":"Copy Url"} </h2>
                                     </div>
-                                    <div  onClick={() => {
-                                        getResponeForm(item.id);
-                                      }} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                    <div
+                                      onClick={() => {
+                                        getResponeForm(item.proflieId, item.id);
+                                      }}
+                                      className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]"
+                                    >
                                       <Image
                                         src="/Icon-form/33.svg"
                                         width={20}
@@ -1055,7 +1092,7 @@ function Workspace() {
                                         className="h-[15px] mb-[2px] w-auto"
                                       />
                                       <h2 className="text-[10px]">
-                                       {item.archive? "Archive":"public" }
+                                        {item.archive ? "Archive" : "public"}
                                       </h2>
                                     </div>
                                     <div

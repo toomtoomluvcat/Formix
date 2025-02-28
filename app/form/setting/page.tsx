@@ -119,9 +119,9 @@ function formrespone() {
   }, []);
 
   const hadleSubmit = async (): Promise<void> => {
+    
     const localData = localStorage.getItem("formQuestions");
     const localTitle = localData ? JSON.parse(localData).title : null;
-
     const localQuestion = localData ? JSON.parse(localData).questions : null;
     const localDescription = localData
       ? JSON.parse(localData).description
@@ -164,6 +164,8 @@ function formrespone() {
             })),
           },
     };
+
+
     const token = localStorage.getItem("token");
     if (!token) {
       return;
@@ -172,7 +174,7 @@ function formrespone() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-auth-token": token, // ส่ง Token ไปด้วย
+        "x-auth-token": token, 
       },
       body: JSON.stringify(data),
     });
