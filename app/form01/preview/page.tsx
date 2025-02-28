@@ -60,6 +60,8 @@ function Preview() {
     );
   };
 
+
+  
   const hadleSubmit = async (): Promise<void> => {
     const localData = localStorage.getItem("formQuestions");
     const localTitle = localData ? JSON.parse(localData).title : null;
@@ -86,9 +88,7 @@ function Preview() {
         };
     const archive = setting ? JSON.parse(setting) : true;
 
-    useEffect(()=>{
-      console.log('color', color)
-    },[color])
+    
     const data = {
       title: localTitle,
       description: localDescription,
@@ -133,7 +133,6 @@ function Preview() {
     const responseData = await res.json();
   };
   useEffect(() => {
-    console.log('start')
     const setting = localStorage.getItem("setting");
     const localColor = setting
       ? JSON.parse(setting).color

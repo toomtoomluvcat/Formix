@@ -78,6 +78,21 @@ function formrespone() {
 
   useEffect(() => {
     const setting = localStorage.getItem("setting");
+    const localColor = setting
+      ? JSON.parse(setting).color
+      : {
+          color1: "rgb(247, 248, 243)",
+          color2: "rgb(48, 34, 68)",
+          color3: "rgb(224, 83, 125)",
+          color4: "rgb(77, 120, 231)",
+          color5: "rgb(106, 165, 218)",
+          color6: "rgb(28, 215, 147)",
+          color7: "rgb(254, 216, 60)",
+          color8: "rgb(255, 147, 86)",
+          color9: "rgb(228, 228, 228)",
+          color10: "rgb(58, 44, 77)",
+        };
+    setColor(localColor)
     const limit = setting ? JSON.parse(setting).limit : 0;
     const archive = setting ? JSON.parse(setting).archive : false;
 
