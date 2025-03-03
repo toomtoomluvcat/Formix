@@ -195,6 +195,7 @@ function formrespone() {
       setIsOpen(false);
     }
   };
+  const router = useRouter();
 
  
 
@@ -227,7 +228,6 @@ function formrespone() {
 
   async function getDashboard(formID: string) {
   const token = localStorage.getItem("token");
-  const router = useRouter();
   
   if (!token) {
     router.push("/signin");

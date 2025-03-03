@@ -358,6 +358,44 @@ function Workspace() {
     }
   };
 
+  const handleExport = async (formID: string): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:5001/dashboard/form/${formID}/export`, {
+        method: "GET",
+        headers: {
+          "x-auth-token": token,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to export, status: " + response.status);
+      }
+  
+      // แปลง response เป็นไฟล์ blob
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+  
+      // สร้างลิงก์ดาวน์โหลดไฟล์
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `form_${formID}_responses.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      
+      console.log("Export successful");
+    } catch (error) {
+      console.error("Error exporting form:", error);
+    }
+  };
+
+
   const hadleDelete = async (id: string): Promise<void> => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -1119,6 +1157,20 @@ function Workspace() {
                                       />
                                       <h2 className="text-[10px]">Delete</h2>
                                     </div>
+                                    <button
+                                      onClick={() => handleExport(item.id)}
+                                      className="border-2 h-auto px-3 py-1 rounded-md flex items-center gap-x-2 text-gray-700 text-sm transition-all hover:bg-gray-200"
+                                    >
+                                      <Image
+                                        src={"/Icon-form/20.png"}
+                                        width={1000}
+                                        height={1000}
+                                        quality={100}
+                                        alt="export"
+                                        className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
+                                      />
+                                      Export
+                                    </button>
                                   </div>
                                 </div>
                               )}
