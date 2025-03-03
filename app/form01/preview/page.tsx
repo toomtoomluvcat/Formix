@@ -246,7 +246,7 @@ function Preview() {
           <p className="mt-2 text-center text-[#c4c4c4]">{description}</p>
         </div>
         <div>
-          {questions.map((item) => (
+          {questions?.map((item) => (
             <div key={item.id}>
               {item.title && (
                 <div

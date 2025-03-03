@@ -34,7 +34,7 @@ function Workspace() {
     | null
   >(null);
   const [showMarket, setShowMarket] = useState<boolean>(false);
-  const [isCoppy,setIsCoppy] = useState<boolean>(false);
+  const [isCoppy, setIsCoppy] = useState<boolean>(false);
   const [formDataToSearch, setFormDataToSearch] = useState<
     | {
         id: string;
@@ -52,7 +52,6 @@ function Workspace() {
   const accountMoblieRef = useRef<HTMLDivElement | null>(null);
   const notifyref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
-  
 
   useEffect(() => {}, []);
 
@@ -298,8 +297,6 @@ function Workspace() {
       console.error("Error:", error);
     }
   };
-  
-
 
   const getPublicForm = async (theme: string, id: string): Promise<void> => {
     const path = theme === "0002" ? "form" : "form01";
@@ -320,12 +317,14 @@ function Workspace() {
       if (!res.ok) {
         throw new Error("fail to get" + res.status);
       }
-      setIsCoppy(true)
+      setIsCoppy(true);
       setTimeout(() => {
-        setIsCoppy(false)
+        setIsCoppy(false);
       }, 2500);
       const mainURL = window.location.origin;
-      await navigator.clipboard.writeText(mainURL + "/" + path + "/publicform/" + id);
+      await navigator.clipboard.writeText(
+        mainURL + "/" + path + "/publicform/" + id
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -350,7 +349,7 @@ function Workspace() {
       if (!res.ok) {
         throw new Error("fail to get" + res.status);
       }
-      
+
       const mainURL = window.location.origin;
       router.push(mainURL + "/" + path + "/publicform/" + id);
     } catch (error) {
@@ -364,23 +363,26 @@ function Workspace() {
       router.push("/signin");
       return;
     }
-  
+
     try {
-      const response = await fetch(`http://localhost:5001/dashboard/form/${formID}/export`, {
-        method: "GET",
-        headers: {
-          "x-auth-token": token,
-        },
-      });
-  
+      const response = await fetch(
+        `http://localhost:5001/dashboard/form/${formID}/export`,
+        {
+          method: "GET",
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to export, status: " + response.status);
       }
-  
+
       // แปลง response เป็นไฟล์ blob
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-  
+
       // สร้างลิงก์ดาวน์โหลดไฟล์
       const a = document.createElement("a");
       a.href = url;
@@ -388,25 +390,22 @@ function Workspace() {
       document.body.appendChild(a);
       a.click();
       a.remove();
-      
+
       console.log("Export successful");
     } catch (error) {
       console.error("Error exporting form:", error);
     }
   };
-
-
-  const hadleDelete = async (id: string): Promise<void> => {
+  useEffect(() => {
+    console.log(activeForm);
+  }, [activeForm]);
+  const hadleDelete = async (id: string,index:number): Promise<void> => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
       return;
     }
     try {
-      console.log(formData?.[0].archive);
-      if (formData && formData[Number(id)]) {
-        setActiveForm((prev) => prev - 1);
-      }
       const res = await fetch(`http://localhost:5001/workspace/${id}`, {
         method: "DELETE",
         headers: {
@@ -417,16 +416,21 @@ function Workspace() {
 
       if (!res.ok) {
         throw new Error("Failed to delete, status: " + res.status);
-      }
-      setFormData((prev) =>
-        prev ? prev?.filter((item) => item.id !== id) : []
-      );
-      setFormDataToSearch((prev) =>
-        prev ? prev?.filter((item) => item.id !== id) : []
-      );
-      settotalForm((prev) => prev - 1);
+      } else {
+        setFormData((prev) =>
+          prev ? prev?.filter((item) => item.id !== id) : []
+        );
+        setFormDataToSearch((prev) =>
+          prev ? prev?.filter((item) => item.id !== id) : []
+        );
 
-      console.log("Delete successful");
+        settotalForm((prev) => prev - 1);
+       
+        if (formData && formData[index]) {
+          setActiveForm((prev) => prev - 1);
+        }
+
+      }
     } catch (error) {
       console.error("Error:", error);
     }
@@ -1043,7 +1047,12 @@ function Workspace() {
                     {formData?.map((item, index) => (
                       <div className="  flex flex-col " key={index}>
                         <div className="flex mt-2 justify-between items-center ">
-                          <div onClick={()=>pushPublicForm(item.proflieId,item.id)} className="flex gap-x-2 items-center">
+                          <div
+                            onClick={() =>
+                              pushPublicForm(item.proflieId, item.id)
+                            }
+                            className="flex gap-x-2 items-center"
+                          >
                             <Image
                               src={`/Icon-form/${item.proflieId}.svg`}
                               width={1000}
@@ -1088,9 +1097,9 @@ function Workspace() {
                                 >
                                   <div className="w-[120px] bg-white px-[5px]  bg-white  py-[8px] rounded-[7px] ] gap-x-[5px] flex flex-col gap-y-[5px] border-2 items-center">
                                     <div
-                                    aria-disabled={!isCoppy}
+                                      aria-disabled={!isCoppy}
                                       onClick={() => {
-                                        getPublicForm(item.proflieId,item.id);
+                                        getPublicForm(item.proflieId, item.id);
                                       }}
                                       className="flex items-center w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]  hover:bg-[#D9D9D9] transition-all duration-[400ms]"
                                     >
@@ -1102,24 +1111,11 @@ function Workspace() {
                                         alt="question"
                                         className="h-[15px] mb-[2px] w-auto"
                                       />
-                                      <h2 className="text-[10px]">{ isCoppy? "successfully":"Copy Url"} </h2>
+                                      <h2 className="text-[10px]">
+                                        {isCoppy ? "successfully" : "Copy Url"}{" "}
+                                      </h2>
                                     </div>
-                                    <div
-                                      onClick={() => {
-                                        getResponeForm(item.proflieId, item.id);
-                                      }}
-                                      className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]"
-                                    >
-                                      <Image
-                                        src="/Icon-form/33.svg"
-                                        width={20}
-                                        height={20}
-                                        quality={100}
-                                        alt="question"
-                                        className="h-[15px] w-[15px]"
-                                      ></Image>
-                                      <div className="text-[10px]">Respone</div>
-                                    </div>
+
                                     <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
                                         src={`/Icon-form/46.svg`}
@@ -1135,7 +1131,7 @@ function Workspace() {
                                     </div>
                                     <div
                                       onClick={() => {
-                                        hadleDelete(item.id),
+                                        hadleDelete(item.id,index),
                                           setFormData((prev) =>
                                             prev
                                               ? prev.map((item) => ({
@@ -1157,24 +1153,31 @@ function Workspace() {
                                       />
                                       <h2 className="text-[10px]">Delete</h2>
                                     </div>
-                                    <button
-                                      onClick={() => handleExport(item.id)}
-                                      className="border-2 h-auto px-3 py-1 rounded-md flex items-center gap-x-2 text-gray-700 text-sm transition-all hover:bg-gray-200"
-                                    >
-                                      <Image
-                                        src={"/Icon-form/20.png"}
-                                        width={1000}
-                                        height={1000}
-                                        quality={100}
-                                        alt="export"
-                                        className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
-                                      />
-                                      Export
-                                    </button>
                                   </div>
                                 </div>
                               )}
                             </div>
+                            <Image
+                              onClick={() => {
+                                getResponeForm(item.proflieId, item.id);
+                              }}
+                              src="/Icon-form/33.svg"
+                              width={20}
+                              height={20}
+                              quality={100}
+                              alt="question"
+                              className="h-[15px] w-[15px]"
+                            ></Image>
+
+                            <Image
+                              onClick={() => handleExport(item.id)}
+                              src={"/Icon-form/49.svg"}
+                              width={1000}
+                              height={1000}
+                              quality={100}
+                              alt="export"
+                              className=" w-[15px] h-[15px]"
+                            />
                             <Image
                               onClick={() => handleShowOptionsForms(index)}
                               src={`/Icon-form/42.svg`}

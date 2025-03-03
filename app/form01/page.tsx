@@ -240,8 +240,8 @@ function Form() {
   };
 
   const addQuesion = (): void => {
-    setQuestions((prev) => [
-      ...prev,
+    setQuestions((prev) =>prev? [
+       ...prev,
       {
         id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1,
         title: "",
@@ -249,8 +249,8 @@ function Form() {
         required: false,
         options: [{ labelChoice: "options 1", limitAns: null }],
       },
-    ]);
-    setActive(questions.length + 1);
+    ]:[]);
+    setActive(questions?.length + 1);
   };
 
   const addChangeType = (id: number, newType: string): void => {
@@ -1343,7 +1343,6 @@ function Form() {
               contentEditable="true"
               suppressContentEditableWarning={true}
               role="textbox"
-              data-placeholder="Enter title"
             />
           </div>
           <div className="max-w-[520px] flex justify-center mx-auto">
@@ -1379,7 +1378,7 @@ function Form() {
               }
             />
           </div>
-          {questions.map((item) => (
+          {questions?.map((item) => (
             <div
               key={item.id}
               onClick={() => onActice(item.id)}
