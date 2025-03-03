@@ -56,17 +56,18 @@ function Form() {
     const localColor = setting
       ? JSON.parse(setting).color
       : {
-          color1: "rgb(247, 248, 243)",
-          color2: "rgb(48, 34, 68)",
-          color3: "rgb(224, 83, 125)",
-          color4: "rgb(77, 120, 231)",
-          color5: "rgb(106, 165, 218)",
-          color6: "rgb(28, 215, 147)",
-          color7: "rgb(254, 216, 60)",
-          color8: "rgb(255, 147, 86)",
-          color9: "rgb(228, 228, 228)",
-          color10: "rgb(58, 44, 77)",
-        };
+        color1: "#F7F8F3",
+        color2: "#302244",
+        color3: "#E0537D",
+        color4: "#4D78E7",
+        color5: "#6AA5DA",
+        color6: "#1CD793",
+        color7: "#FED83C",
+        color8: "#FF9356",
+        color9: "#E4E4E4",
+        color10: "#3A2C4D"
+      }
+      ;
     const localData = localStorage.getItem("formQuestions");
     const localTitle = localData ? JSON.parse(localData).title : null;
     const localDescription = localData
@@ -153,6 +154,7 @@ function Form() {
   };
 
   const [title, setTitle] = useState<string>("Unitled Forms");
+  const [showPublic,setShowPublic] = useState<boolean>(false);
   const [description, setDescription] = useState<string>("");
   const [questions, setQuestions] = useState<
     {
@@ -314,16 +316,128 @@ function Form() {
     localStorage.setItem("formQuestions", JSON.stringify(formData));
     console.log("formData", formData);
   };
+  
 
+
+   const hadleSubmit = async (): Promise<void> => {
+      const localData = localStorage.getItem("formQuestions");
+      const localTitle = localData ? JSON.parse(localData).title : null;
+      const localQuestion = localData ? JSON.parse(localData).questions : null;
+      const localDescription = localData
+        ? JSON.parse(localData).description
+        : null;
+      setQuestions(localQuestion);
+  
+      const setting = localStorage.getItem("setting");
+      const color = setting
+        ? JSON.parse(setting)
+        : {
+            color1: "rgb(247, 248, 243)",
+            color2: "rgb(48, 34, 68)",
+            color3: "rgb(224, 83, 125)",
+            color4: "rgb(77, 120, 231)",
+            color5: "rgb(106, 165, 218)",
+            color6: "rgb(28, 215, 147)",
+            color7: "rgb(254, 216, 60)",
+            color8: "rgb(255, 147, 86)",
+            color9: "rgb(228, 228, 228)",
+            color10: "rgb(58, 44, 77)",
+          };
+      const archive = setting ? JSON.parse(setting).archive : true;
+      const data = {
+        title: localTitle,
+        description: localDescription,
+        color,
+        archive: archive,
+        theme: "0001",
+        limitForm: JSON.parse(localStorage.getItem("setting") || '{"limit":0}')
+          .limit,
+        questions: {
+          create: questions?.map((q) => ({
+            questionID: q.id,
+            title: q.title,
+            type: q.type,
+            required: q.required,
+            limit: 100,
+            limitAns: 1,
+            options: q.options
+              ? {
+                  create: q.options.map((opt) => ({
+                    text: opt.labelChoice,
+                    limitAns: opt.limitAns,
+                  })),
+                }
+              : undefined,
+          })),
+        },
+      };
+  
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return;
+      }
+      const res = await fetch("http://localhost:5001/form/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+        body: JSON.stringify(data),
+      });
+      setShowPublic(true);
+      const responseData = await res.json();
+    };
+    useEffect(() => {
+      const setting = localStorage.getItem("setting");
+      const localColor = setting
+        ? JSON.parse(setting).color
+        : {
+            color1: "#F7F8F3",
+            color2: "#302244",
+            color3: "#E0537D",
+            color4: "#4D78E7",
+            color5: "#6AA5DA",
+            color6: "#1CD793",
+            color7: "#FED83C",
+            color8: "#FF9356",
+            color9: "#E4E4E4",
+            color10: "#3A2C4D",
+          };
+      const localData = localStorage.getItem("formQuestions");
+      const localTitle = localData ? JSON.parse(localData).title : null;
+      if (localColor) {
+        setColor({
+          color1: localColor.color1 || color.color1,
+          color2: localColor.color2 || color.color2,
+          color3: localColor.color3 || color.color3,
+          color4: localColor.color4 || color.color4,
+          color5: localColor.color5 || color.color5,
+          color6: localColor.color6 || color.color6,
+          color7: localColor.color7 || color.color7,
+          color8: localColor.color8 || color.color8,
+          color9: localColor.color9 || color.color9,
+          color10: localColor.color10 || color.color10,
+        });
+      }
+      const localQuestion = localData ? JSON.parse(localData).questions : null;
+      const localDescription = localData
+        ? JSON.parse(localData).description
+        : null;
+      setTitle(localTitle);
+      setDescription(localDescription);
+      setQuestions(localQuestion);
+    }, []);
+  
   return (
     <div
       style={{ backgroundColor: `${color.color1}` }}
       className="overflow-hidden min-h-screen relative"
     >
       <NavBarInForm
+      hadlesubmit={()=>hadleSubmit()}
         saveQuestionTolocalstorage={() => saveQuestionTolocalstorage()}
       />
-      {false && (
+      {showPublic && (
         <div className="relative">
           <div className="fixed inset-0 bg-black  opacity-50 z-40"></div>
           <div

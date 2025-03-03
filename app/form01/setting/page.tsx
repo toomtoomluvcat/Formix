@@ -60,7 +60,7 @@ function formrespone() {
   const [letDel, setLetDel] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isArchive, setIsArchive] = useState<boolean>(true);
-  const [showPublic,setShowPublic] = useState<boolean>(false);
+  const [showPublic, setShowPublic] = useState<boolean>(false);
   const [questions, setQuestions] = useState<
     | {
         id: number;
@@ -76,29 +76,7 @@ function formrespone() {
     setHoveredIndex(index);
   };
 
-  useEffect(() => {
-    const setting = localStorage.getItem("setting");
-    const localColor = setting
-      ? JSON.parse(setting).color
-      : {
-          color1: "rgb(247, 248, 243)",
-          color2: "rgb(48, 34, 68)",
-          color3: "rgb(224, 83, 125)",
-          color4: "rgb(77, 120, 231)",
-          color5: "rgb(106, 165, 218)",
-          color6: "rgb(28, 215, 147)",
-          color7: "rgb(254, 216, 60)",
-          color8: "rgb(255, 147, 86)",
-          color9: "rgb(228, 228, 228)",
-          color10: "rgb(58, 44, 77)",
-        };
-    setColor(localColor)
-    const limit = setting ? JSON.parse(setting).limit : 0;
-    const archive = setting ? JSON.parse(setting).archive : false;
-
-    setAmount(limit);
-    setIsChecked(archive);
-  }, []);
+ 
 
   const hadleSubmit = async (): Promise<void> => {
     const localData = localStorage.getItem("formQuestions");
@@ -113,12 +91,24 @@ function formrespone() {
     const color = setting
       ? JSON.parse(setting)
       : {
-          color1: "#000000",
-          color3: "#C4C4C4",
-          color2: "#fef2f2",
-        };
-    const archive = setting ? JSON.parse(setting) : true;
-
+        color1: "#F7F8F3",
+        color2: "#302244",
+        color3: "#E0537D",
+        color4: "#4D78E7",
+        color5: "#6AA5DA",
+        color6: "#1CD793",
+        color7: "#FED83C",
+        color8: "#FF9356",
+        color9: "#E4E4E4",
+        color10: "#3A2C4D"
+      }
+      ;
+    const archive = setting ? JSON.parse(setting).archive : true;
+    if (setting) {
+      console.log(JSON.parse(setting).archive);
+    } else {
+      console.log("ไม่มีอะไรเลย");
+    }
     const data = {
       title: localTitle,
       description: localDescription,
@@ -154,7 +144,7 @@ function formrespone() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-auth-token": token, 
+        "x-auth-token": token,
       },
       body: JSON.stringify(data),
     });
@@ -228,11 +218,9 @@ function formrespone() {
     <div
       style={{ backgroundColor: color.color1 }}
       className="relative min-h-screen"
-    > 
-    {showPublic && (
+    >
+      {showPublic && (
         <div className="relative">
-          
-
           <div className="fixed inset-0 bg-black  opacity-50 z-40"></div>
           <div
             style={{
@@ -245,42 +233,41 @@ function formrespone() {
               height={1000}
               alt="changeusername"
               src={"/Icon-form/50.png"}
+            ></Image>
+            <svg
+              className="absolute z-50 top-[-15px] left-[-15px]"
+              width="50"
+              height="50"
+              viewBox="0 0 61 61"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              
-            </Image>
-            <svg className="absolute z-50 top-[-15px] left-[-15px]"
-            width="50"
-            height="50"
-            viewBox="0 0 61 61"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <ellipse
-              cx="26.1091"
-              cy="37.0574"
-              rx="19.3708"
-              ry="11.7909"
-              fill="rgb(77, 120, 231)"
-            />
-            <ellipse
-              cx="31.1613"
-              cy="24.4243"
-              rx="14.3176"
-              ry="10.9487"
-              fill="rgb(77, 120, 231)"
-            />
-            <ellipse
-              cx="42.1121"
-              cy="39.5841"
-              rx="13.4754"
-              ry="10.9487"
-              fill="rgb(77, 120, 231)"
-            />
-            <path
-              d="M16.4238 50.5327C12.5496 50.5327 9.26503 49.1851 6.56995 46.4901C3.87488 43.795 2.52734 40.5104 2.52734 36.6362C2.52734 33.3516 3.54852 30.4565 5.59088 27.9509C7.63325 25.4453 10.1915 23.8346 13.2655 23.1187C14.3183 19.3288 16.4028 16.2126 19.5189 13.7702C22.6351 11.3278 26.2356 10.1066 30.3203 10.1066C35.3314 10.1066 39.532 11.8436 42.9219 15.3177C46.3118 18.7919 48.0067 22.9503 48.0067 27.793C51.165 28.1299 53.639 29.4353 55.4287 31.7093C57.2184 33.9832 58.1132 36.4467 58.1132 39.0997C58.1132 42.258 57.0078 44.953 54.797 47.1849C52.5862 49.4167 49.9017 50.5327 46.7434 50.5327H16.4238ZM16.4238 45.4794H46.7434C48.512 45.4794 50.007 44.8688 51.2282 43.6476C52.4494 42.4264 53.06 40.9315 53.06 39.1628C53.06 37.3942 52.4494 35.8993 51.2282 34.6781C50.007 33.4569 48.512 32.8463 46.7434 32.8463H42.9535V27.793C42.9535 24.2978 41.7217 21.3185 39.2583 18.855C36.7948 16.3916 33.8155 15.1598 30.3203 15.1598C27.6673 15.1598 25.3091 15.8862 23.2457 17.3391C21.1823 18.7919 19.6663 20.6553 18.6978 22.9292C21.9824 23.4767 24.7406 25.0242 26.9725 27.5719C29.2044 30.1196 30.3203 33.141 30.3203 36.6362H25.267C25.267 34.1938 24.4038 32.1093 22.6772 30.3828C20.9507 28.6563 18.8662 27.793 16.4238 27.793C13.9814 27.793 11.8969 28.6563 10.1704 30.3828C8.44387 32.1093 7.58061 34.1938 7.58061 36.6362C7.58061 39.0786 8.44387 41.1631 10.1704 42.8896C11.8969 44.6161 13.9814 45.4794 16.4238 45.4794Z"
-              fill="black"
-            />
-          </svg>
+              <ellipse
+                cx="26.1091"
+                cy="37.0574"
+                rx="19.3708"
+                ry="11.7909"
+                fill="rgb(77, 120, 231)"
+              />
+              <ellipse
+                cx="31.1613"
+                cy="24.4243"
+                rx="14.3176"
+                ry="10.9487"
+                fill="rgb(77, 120, 231)"
+              />
+              <ellipse
+                cx="42.1121"
+                cy="39.5841"
+                rx="13.4754"
+                ry="10.9487"
+                fill="rgb(77, 120, 231)"
+              />
+              <path
+                d="M16.4238 50.5327C12.5496 50.5327 9.26503 49.1851 6.56995 46.4901C3.87488 43.795 2.52734 40.5104 2.52734 36.6362C2.52734 33.3516 3.54852 30.4565 5.59088 27.9509C7.63325 25.4453 10.1915 23.8346 13.2655 23.1187C14.3183 19.3288 16.4028 16.2126 19.5189 13.7702C22.6351 11.3278 26.2356 10.1066 30.3203 10.1066C35.3314 10.1066 39.532 11.8436 42.9219 15.3177C46.3118 18.7919 48.0067 22.9503 48.0067 27.793C51.165 28.1299 53.639 29.4353 55.4287 31.7093C57.2184 33.9832 58.1132 36.4467 58.1132 39.0997C58.1132 42.258 57.0078 44.953 54.797 47.1849C52.5862 49.4167 49.9017 50.5327 46.7434 50.5327H16.4238ZM16.4238 45.4794H46.7434C48.512 45.4794 50.007 44.8688 51.2282 43.6476C52.4494 42.4264 53.06 40.9315 53.06 39.1628C53.06 37.3942 52.4494 35.8993 51.2282 34.6781C50.007 33.4569 48.512 32.8463 46.7434 32.8463H42.9535V27.793C42.9535 24.2978 41.7217 21.3185 39.2583 18.855C36.7948 16.3916 33.8155 15.1598 30.3203 15.1598C27.6673 15.1598 25.3091 15.8862 23.2457 17.3391C21.1823 18.7919 19.6663 20.6553 18.6978 22.9292C21.9824 23.4767 24.7406 25.0242 26.9725 27.5719C29.2044 30.1196 30.3203 33.141 30.3203 36.6362H25.267C25.267 34.1938 24.4038 32.1093 22.6772 30.3828C20.9507 28.6563 18.8662 27.793 16.4238 27.793C13.9814 27.793 11.8969 28.6563 10.1704 30.3828C8.44387 32.1093 7.58061 34.1938 7.58061 36.6362C7.58061 39.0786 8.44387 41.1631 10.1704 42.8896C11.8969 44.6161 13.9814 45.4794 16.4238 45.4794Z"
+                fill="black"
+              />
+            </svg>
             <div className="mb-[10px] md:mb-[20px] pt-[15px] md:pt-[25px] px-[15px] md:px-[40px]">
               <p className="font-medium font-press-gothic text-[1.2em] sm:text-[1.7em]">
                 Your form is now live!
@@ -415,7 +402,7 @@ function formrespone() {
         </div>
       )}
 
-      <NavBarInForm hadlesubmit={()=>hadleSubmit()} />
+      <NavBarInForm hadlesubmit={() => hadleSubmit()} />
 
       <div className="mx-auto px-[30px] max-w-[700px] flex flex-col gap-y-[15px]  mt-[70px]">
         <div
