@@ -289,7 +289,7 @@ function Preview() {
                                 </span>
                               </label>
                               <p className="ml-2  text-sm">
-                                {option.text} &nbsp;&nbsp;{" "}
+                              {index+1 !== item.options?.length? option.text :""} &nbsp;&nbsp;{" "}
                                 <span className=" text-gray-600">
                                   {" "}
                                   {option.limitAns
@@ -320,7 +320,7 @@ function Preview() {
                                   htmlFor="disabled-radio-1"
                                   className="ms-2 text-sm "
                                 >
-                                  {option.text} &nbsp;&nbsp;{" "}
+                                  {index+1 !== item.options?.length? option.text :""} &nbsp;&nbsp;{" "}
                                   <span className=" text-gray-600">
                                     {" "}
                                     {option.limitAns
@@ -364,9 +364,9 @@ function Preview() {
                                   onClick={() =>
                                     handleInputDropdown(item.id, option.text)
                                   }
-                                >
+                                > 
                                   <ul className="p-2 rounded-lg text-[0.85em]  cursor-pointer">
-                                    {option.text}
+                                    {index+1 !== item.options?.length? option.text :""}
                                   </ul>
                                   <p className="text-sm text-gray-600">
                                     {option.limitAns

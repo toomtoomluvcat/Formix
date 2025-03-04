@@ -267,6 +267,9 @@ function Workspace() {
     }
   };
 
+  const changeArchiveForm = async(index:number):Promise<void>=>{
+    setFormData((prev)=> prev? prev?.map((item,idOfItem)=>idOfItem==index? {...item,archive:!item.archive}:item):[])
+  }
   const getResponeForm = async (theme: string, id: string): Promise<void> => {
     console.log("theme", theme);
     const path = theme === "0002" ? "form" : "form01";
@@ -1116,7 +1119,7 @@ function Workspace() {
                                       </h2>
                                     </div>
 
-                                    <div className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                    <div onClick={()=>changeArchiveForm(index)} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
                                         src={`/Icon-form/46.svg`}
                                         width={1000}

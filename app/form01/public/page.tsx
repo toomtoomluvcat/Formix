@@ -24,214 +24,8 @@ function Preview() {
       required: boolean;
       options?: Array<{ labelChoice: string; limitAns: number | null }> | null;
     }[]
-  >([
-    {
-      id: 1,
-      title: "What is your favorite color?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 3,
-      title: "Select your hobbies",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "Reading", limitAns: null },
-        { labelChoice: "Traveling", limitAns: null },
-        { labelChoice: "Cooking", limitAns: null },
-        { labelChoice: "Gaming", limitAns: null },
-        { labelChoice: "Photography", limitAns: null },
-      ],
-    },
-    {
-      id: 50,
-      title: "How old are you?",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 4,
-      title: "Select your favorite fruit",
-      type: "dropdown",
-      required: false,
-      options: [
-        { labelChoice: "Apple", limitAns: null },
-        { labelChoice: "Banana", limitAns: null },
-        { labelChoice: "Orange", limitAns: null },
-        { labelChoice: "Grapes", limitAns: null },
-        { labelChoice: "Pineapple", limitAns: null },
-      ],
-    },
-    {
-      id: 5,
-      title: "Choose your favorite pets",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Dog", limitAns: 1 },
-        { labelChoice: "Cat", limitAns: 1 },
-        { labelChoice: "Rabbit", limitAns: 1 },
-        { labelChoice: "Hamster", limitAns: 1 },
-        { labelChoice: "Bird", limitAns: 1 },
-      ],
-    },
-    {
-      id: 6,
-      title: "What is your preferred mode of transport?",
-      type: "dropdown",
-      required: false,
-      options: [
-        { labelChoice: "Car", limitAns: null },
-        { labelChoice: "Bicycle", limitAns: null },
-        { labelChoice: "Bus", limitAns: null },
-        { labelChoice: "Train", limitAns: null },
-        { labelChoice: "Walk", limitAns: null },
-      ],
-    },
-    {
-      id: 7,
-      title: "Which programming languages do you know?",
-      type: "check",
-      required: true,
-      options: [
-        { labelChoice: "JavaScript", limitAns: null },
-        { labelChoice: "Python", limitAns: null },
-        { labelChoice: "Java", limitAns: null },
-        { labelChoice: "C++", limitAns: null },
-        { labelChoice: "Go", limitAns: null },
-      ],
-    },
-    {
-      id: 8,
-      title: "Rate your experience with our service",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 9,
-      title: "Do you like our website design?",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Yes", limitAns: 1 },
-        { labelChoice: "No", limitAns: 1 },
-      ],
-    },
-    {
-      id: 10,
-      title: "What kind of movies do you prefer?",
-      type: "radio",
-      required: false,
-      options: [
-        { labelChoice: "Action", limitAns: null },
-        { labelChoice: "Comedy", limitAns: null },
-        { labelChoice: "Drama", limitAns: null },
-        { labelChoice: "Horror", limitAns: null },
-        { labelChoice: "Romance", limitAns: null },
-        { labelChoice: "Sci-Fi", limitAns: null },
-      ],
-    },
-    {
-      id: 11,
-      title: "What is your full name?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 12,
-      title: "What is your email address?",
-      type: "text",
-      required: true,
-    },
-    {
-      id: 13,
-      title: "Would you like to receive our newsletter?",
-      type: "radio",
-      required: false,
-      options: [
-        { labelChoice: "Yes, please", limitAns: 1 },
-        { labelChoice: "No, thanks", limitAns: 1 },
-      ],
-    },
-    {
-      id: 14,
-      title: "Select the countries you have visited",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "USA", limitAns: null },
-        { labelChoice: "France", limitAns: null },
-        { labelChoice: "Japan", limitAns: null },
-        { labelChoice: "Italy", limitAns: null },
-        { labelChoice: "Thailand", limitAns: null },
-        { labelChoice: "India", limitAns: null },
-      ],
-    },
-    {
-      id: 15,
-      title: "How satisfied are you with our product?",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 16,
-      title: "What is your favorite sport?",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Football", limitAns: 1 },
-        { labelChoice: "Basketball", limitAns: 1 },
-        { labelChoice: "Tennis", limitAns: 1 },
-        { labelChoice: "Swimming", limitAns: 1 },
-        { labelChoice: "Running", limitAns: 1 },
-      ],
-    },
-    {
-      id: 17,
-      title: "Which social media platforms do you use?",
-      type: "check",
-      required: false,
-      options: [
-        { labelChoice: "Facebook", limitAns: null },
-        { labelChoice: "Instagram", limitAns: 7 },
-        { labelChoice: "Twitter", limitAns: 6 },
-        { labelChoice: "LinkedIn", limitAns: null },
-        { labelChoice: "TikTok", limitAns: null },
-      ],
-    },
-    {
-      id: 18,
-      title: "What is your highest level of education?",
-      type: "dropdown",
-      required: true,
-      options: [
-        { labelChoice: "High School", limitAns: 5 },
-        { labelChoice: "Bachelor's Degree", limitAns: 8 },
-        { labelChoice: "Master's Degree", limitAns: 9 },
-        { labelChoice: "PhD", limitAns: null },
-        { labelChoice: "Other", limitAns: null },
-      ],
-    },
-    {
-      id: 19,
-      title: "How many hours do you spend online per day?",
-      type: "number",
-      required: true,
-    },
-    {
-      id: 20,
-      title: "Would you recommend our service to others?",
-      type: "radio",
-      required: true,
-      options: [
-        { labelChoice: "Definitely", limitAns: 1 },
-        { labelChoice: "Maybe", limitAns: 1 },
-        { labelChoice: "Not sure", limitAns: 1 },
-        { labelChoice: "No", limitAns: 1 },
-      ],
-    },
-  ]);
+  >([]);
+
   useEffect(() => {
     generateAnswer();
   }, []);
@@ -430,9 +224,7 @@ function Preview() {
                           {option.labelChoice}
                         </p>
                       </div>
-                      <p className="text-gray-400  text-sm ml-2">
-                       
-                      </p>
+                      <p className="text-gray-400  text-sm ml-2"></p>
                     </div>
                   ))}
                 </div>
@@ -477,8 +269,6 @@ function Preview() {
                     }}
                     className="flex justify-center  px-[15px] border-[3px] border-black items-center rounded-[19px] py-[4px]"
                   >
-                   
-                    
                     <span className=" font-press-gothic ml-1 text-[1.1em]">
                       {answerList[questionId]?.answer.length > 0
                         ? answerList[questionId]?.answer
@@ -505,19 +295,21 @@ function Preview() {
                       className="absolute border-black border-[3px]  bg-white rounded-lg px-2 py-4 mt-2 z-30 ml-2"
                     >
                       {item.options?.map((option, index) => (
-                        <div onClick={() =>
-                          handleInputDropdown(item.id, option.labelChoice)
-                        }
+                        <div
+                          onClick={() =>
+                            handleInputDropdown(item.id, option.labelChoice)
+                          }
                           className="flex py-[4px] items-center gap-x-[20px] text-[0.85em] transition-all duration-300 rounded-lg pl-4 pr-6 hover:bg-gray-200"
                           key={index}
                         >
-                          <ul
-                           
-                            className=""
-                          >
-                            {option.labelChoice}
-                          </ul>
-                          <p>{option.limitAns ? `(0/${option?.limitAns})` : ""}</p>
+                          {index+1 == item.options?.length ? (
+                            <ul className="">{option.labelChoice} {index}</ul>
+                          ) : (
+                            <div></div>
+                          )}
+                          <p>
+                            {option.limitAns ? `(0/${option?.limitAns})` : ""}
+                          </p>
                         </div>
                       ))}
                     </div>
