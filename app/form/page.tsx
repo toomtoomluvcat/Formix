@@ -145,6 +145,7 @@ function Form() {
         })),
       },
     };
+    console.log('data:', data)
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
@@ -154,19 +155,16 @@ function Form() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-auth-token": token, // ส่ง Token ไปด้วย
+        "x-auth-token": token, 
       },
       body: JSON.stringify(data),
     });
     setActive(-1)
     setShowPublic(true);
     const responseData = await res.json();
-    // if (res.ok) {
-    //   router.push("/workspace");
-    // }
+    
   };
 
-  //แพรเอาfunction นี้ไปด้วยนะ
   const saveQuestionTolocalstorage = () => {
     const formData = {
       title: titleRef.current?.textContent || "",

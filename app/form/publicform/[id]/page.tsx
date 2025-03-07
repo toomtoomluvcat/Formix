@@ -89,7 +89,7 @@ function Preview() {
       email: "guest@gmail.com",
       answer: answerList.map((ans) => ({
         questionID: ans.id,
-        value: ans.answer ?? "กระมงปรือ",
+        value: ans.answer,
       })),
     };
     console.log("data", data);

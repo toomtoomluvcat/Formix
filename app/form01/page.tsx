@@ -318,75 +318,69 @@ function Form() {
   };
   
 
-
-   const hadleSubmit = async (): Promise<void> => {
-      const localData = localStorage.getItem("formQuestions");
-      const localTitle = localData ? JSON.parse(localData).title : null;
-      const localQuestion = localData ? JSON.parse(localData).questions : null;
-      const localDescription = localData
-        ? JSON.parse(localData).description
-        : null;
-      setQuestions(localQuestion);
-  
-      const setting = localStorage.getItem("setting");
-      const color = setting
-        ? JSON.parse(setting)
-        : {
-            color1: "rgb(247, 248, 243)",
-            color2: "rgb(48, 34, 68)",
-            color3: "rgb(224, 83, 125)",
-            color4: "rgb(77, 120, 231)",
-            color5: "rgb(106, 165, 218)",
-            color6: "rgb(28, 215, 147)",
-            color7: "rgb(254, 216, 60)",
-            color8: "rgb(255, 147, 86)",
-            color9: "rgb(228, 228, 228)",
-            color10: "rgb(58, 44, 77)",
-          };
-      const archive = setting ? JSON.parse(setting).archive : true;
-      const data = {
-        title: localTitle,
-        description: localDescription,
-        color,
-        archive: archive,
-        theme: "0001",
-        limitForm: JSON.parse(localStorage.getItem("setting") || '{"limit":0}')
-          .limit,
-        questions: {
-          create: questions?.map((q) => ({
-            questionID: q.id,
-            title: q.title,
-            type: q.type,
-            required: q.required,
-            limit: 100,
-            limitAns: 1,
-            options: q.options
-              ? {
-                  create: q.options.map((opt) => ({
-                    text: opt.labelChoice,
-                    limitAns: opt.limitAns,
-                  })),
-                }
-              : undefined,
-          })),
-        },
+  const hadleSubmit = async (): Promise<void> => {
+    const setting = localStorage.getItem("setting")
+    const color =setting
+      ? JSON.parse(setting).color
+      : {
+        color1: "rgb(247, 248, 243)",
+        color2: "rgb(48, 34, 68)",
+        color3: "rgb(224, 83, 125)",
+        color4: "rgb(77, 120, 231)",
+        color5: "rgb(106, 165, 218)",
+        color6: "rgb(28, 215, 147)",
+        color7: "rgb(254, 216, 60)",
+        color8: "rgb(255, 147, 86)",
+        color9: "rgb(228, 228, 228)",
+        color10: "rgb(58, 44, 77)",
       };
-  
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-      const res = await fetch("http://localhost:5001/form/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": token,
-        },
-        body: JSON.stringify(data),
-      });
-      setShowPublic(true);
-      const responseData = await res.json();
+    const archive = setting ? JSON.parse(setting)?.archive ?? true : true;        
+    const data = {
+      title:title || "Unitled Forms",
+      description:description || "",
+      archive,
+      color,
+      theme: "0001",
+      limitForm: limitForm,
+      questions: {
+        create: questions.map((q) => ({
+          questionID: q.id,
+          title: q.title,
+          type: q.type,
+          required: q.required,
+          limit: 100,
+          limitAns: 1,
+          options: q.options
+            ? {
+                create: q.options.map((opt) => ({
+                  text: opt.labelChoice,
+                  limitAns: opt.limitAns,
+                })),
+              }
+            : undefined,
+        })),
+      },
     };
+    console.log('data:', data)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+    const res = await fetch("http://localhost:5001/form/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-auth-token": token, 
+      },
+      body: JSON.stringify(data),
+    });
+    setActive(-1)
+    setShowPublic(true);
+    const responseData = await res.json();
+    
+  };
+   
     useEffect(() => {
       const setting = localStorage.getItem("setting");
       const localColor = setting

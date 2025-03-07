@@ -1,12 +1,15 @@
 "use client";
 
-import React, { ChangeEvent, useEffect, useState } from "react";
-import NavBarInForm from "../../component/nav01";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { v4 as uuidv4 } from "uuid";
+import NavBarInForm from "@/app/component/nav";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 
 function Preview() {
+  const { id } = useParams();
+  const [formName, setFormName] = useState<string>();
+  const [description, setDescription] = useState<string>();
   const [dropdown, setDropdown] = useState<{ [key: number]: boolean }>({});
   const [answerList, setAnswerList] = useState<
     {
@@ -28,9 +31,9 @@ function Preview() {
 
   useEffect(() => {
     generateAnswer();
-  }, []);
+  }, [questions]);
   const generateAnswer = (): void => {
-    if (questions.length > 0) {
+    if (questions !== null) {
       for (let i = 0; i < questions.length; i++) {
         setAnswerList((prev) => [
           ...prev,
@@ -47,6 +50,37 @@ function Preview() {
       }
     }
   };
+
+  async function formPublic() {
+    try {
+      const response = await fetch(
+        `http://localhost:5001/recieve/public/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      setFormName(result.title);
+      setDescription(result.description);
+
+      setQuestions(result.questions);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+  useEffect(() => {
+    formPublic();
+    console.log(id);
+  }, []);
+
   const handleInput = (inputIndex: number, value: string): void => {
     setAnswerList((prev) =>
       prev.map((item) =>
@@ -107,6 +141,34 @@ function Preview() {
     color10: "rgb(58, 44, 77)",
   });
 
+  async function submitForm() {
+    const data = {
+      formID: id,
+      email: "guest@gmail.com",
+      answer: answerList.map((ans) => ({
+        questionID: ans.id,
+        value: ans.answer,
+      })),
+    };
+    console.log("data", data);
+
+    try {
+      const response = await fetch(`http://localhost:5001/response/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   return (
     <div className="relative">
       <div>{JSON.stringify(questions)}</div>
@@ -116,13 +178,10 @@ function Preview() {
             style={{ color: color.color2 ?? "" }}
             className="text-[45px] font-press-gothic font-medium text-center"
           >
-            FORM NAME
+            {formName}
           </h1>
-          <p className="mt-2 text-center text-[#c4c4c4]">
-            enter description here
-          </p>
+          <p className="mt-2 text-center text-[#c4c4c4]">{description}</p>
         </div>
-
         <div>
           {questions.map((item, questionId) => (
             <div
@@ -302,8 +361,10 @@ function Preview() {
                           className="flex py-[4px] items-center gap-x-[20px] text-[0.85em] transition-all duration-300 rounded-lg pl-4 pr-6 hover:bg-gray-200"
                           key={index}
                         >
-                          {index+1 == item.options?.length ? (
-                            <ul className="">{option.labelChoice} {index}</ul>
+                          {index + 1 == item.options?.length ? (
+                            <ul className="">
+                              {option.labelChoice} {index}
+                            </ul>
                           ) : (
                             <div></div>
                           )}
@@ -319,6 +380,16 @@ function Preview() {
             </div>
           ))}
         </div>
+        <div className="flex w-full justify-end">
+          <button 
+          onClick={()=>submitForm()}
+            className="px-[15px] py-[12px]  text-white rounded-lg  mx-4 text-[0.8em]"
+            style={{ backgroundColor: color.color2 ?? "" }}
+            type="button"
+          >
+            submit
+          </button>
+        </div>{" "}
       </div>
     </div>
   );

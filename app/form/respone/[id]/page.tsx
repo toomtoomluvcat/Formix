@@ -34,15 +34,12 @@ function formrespone() {
   const [isSaveData, setIsSaveData] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [amount, setAmount] = useState<number | null>(0);
   const [color, setColor] = useState<{
     position: number;
     color1: string;
     color2: string;
     color3: string;
   }>({ position: 0, color1: "#000000", color2: "#c4c4c4", color3: "#f6f6f6" });
-  const [delForm, setDelForm] = useState<boolean>(false);
-  const [isDel, setIsdel] = useState<string>("");
   const [letDel, setLetDel] = useState<boolean>(false);
   const colorArray: {
     position: number;
@@ -62,34 +59,8 @@ function formrespone() {
         data: { question: string; answer: string }[];
       }[]
     | null
-  >([
-    {
-      time: 1700000000,
-      email: "user1@example.com",
-      data: [
-        { question: "What is your favorite color?", answer: "Blue" },
-        { question: "What is your favorite animal?", answer: "Dog" },
-      ],
-    },
-    {
-      time: 1700000001,
-      email: "user2@example.com",
-      data: [
-        { question: "What is your favorite hobby?", answer: "Reading" },
-        { question: "What is your favorite food?", answer: "Pizza" },
-      ],
-    },
-    {
-      time: 1700000002,
-      email: "user3@example.com",
-      data: [
-        { question: "Where do you live?", answer: "Thailand" },
-        { question: "What is your favorite season?", answer: "Summer" },
-      ],
-    },
-  ]);
+  >([]);
 
-  const [displayArchive, setDisplayArchive] = useState();
   const setData = [
     [
       { name: "Software Development", value: 5 },
@@ -140,9 +111,7 @@ function formrespone() {
       { name: "Environmental Law", value: 3 },
     ],
   ];
-  const [isShow, setIsShow] = useState<boolean[]>(
-    ivdRespone?.map(() => false) || []
-  );
+  const [isShow, setIsShow] = useState<boolean[]>([]);
 
   const updateColor = (
     newPosition: number,
@@ -158,20 +127,8 @@ function formrespone() {
       color3: newcolor3,
     }));
   };
-  const increaseAmount = (): void => {
-    if (amount === null || amount === 0) {
-      setAmount(1);
-    } else {
-      setAmount(amount + 1);
-    }
-  };
-  useEffect(() => {
-    if (isDel === "delete my form") {
-      setLetDel(true);
-    } else {
-      setLetDel(false);
-    }
-  }, [isDel]);
+  
+ 
 
   const showIvdRes = (position: number) => {
     setIsShow((prev) =>
@@ -179,40 +136,16 @@ function formrespone() {
     );
   };
 
-  const decreaseAmount = (): void => {
-    if (amount === null || amount === 0) {
-      setAmount(0);
-    } else if (amount > 0) {
-      setAmount(amount - 1);
-    }
-  };
+  
 
-  const handleClickOutside = (event: MouseEvent): void => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsOpen(false);
-    }
-  };
   const router = useRouter();
 
+ 
+
   useEffect(() => {
-    const setting = localStorage.getItem("setting") ?? "";
-    if (setting) {
-      setColor(JSON.parse(setting).color);
-      setAmount(JSON.parse(setting).limit);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    if (!id) {
+      router.push("/workspace")
     };
-  }, []);
-
-  useEffect(() => {
-
-    if (!id) return;
-    console.log('id', id)
 
     async function fetchUserData() {
       const token = localStorage.getItem("token");
@@ -238,15 +171,15 @@ function formrespone() {
 
         console.log("Fetched Data:", data);
         console.log("Responses:", data.responses);
-        const formattedResponses = data.responses?.map((resp: any) => ({
-          time: new Date(resp.createdAt).getTime(),
-          email: resp.email || "Anonymous",
-          data: (resp.answers ?? []).map((ans: any) => ({
-            question: ans.questionTitle,
-            answer: ans.value,
-          })),
-        })) ?? [];
-
+        const formattedResponses =
+          data.responses?.map((resp: any) => ({
+            time: new Date(resp.createdAt).getTime(),
+            email: resp.email || "Anonymous",
+            data: (resp.answers ?? []).map((ans: any) => ({
+              question: ans.questionTitle,
+              answer: ans.value,
+            })),
+          })) ?? [];
         setIvDRespone(formattedResponses ?? []);
       } catch (error) {
         console.error("Error fetching responses:", error);
@@ -255,6 +188,10 @@ function formrespone() {
 
     fetchUserData();
   }, [id]);
+  
+  useEffect(()=>{
+    setIsShow(ivdRespone?.map(() => false) || []);
+  },[ivdRespone])
 
   //   async function getDashboard(formID: string) {
   //   const token = localStorage.getItem("token");
@@ -302,7 +239,7 @@ function formrespone() {
       </nav>
 
       <div className="flex max-w-[370px] justify-between gap-x-[15px] mx-auto items-center text-[13px] mt-[50px] px-[20px]">
-        <h2
+      <h2
           onClick={() => setDisplay(1)}
           className={
             display === 1
@@ -310,7 +247,7 @@ function formrespone() {
               : "w-[170px] hover:bg-[#FCFCFC] transition-all duration-[300ms] text-center py-[6px] rounded-[7px] border-2"
           }
         >
-          all response
+         All Response
         </h2>
         <h2
           onClick={() => setDisplay(2)}
@@ -320,11 +257,12 @@ function formrespone() {
               : "w-[170px] hover:bg-[#FCFCFC] transition-all duration-[300ms] text-center py-[6px] rounded-[7px] border-2"
           }
         >
-          individual
+            Individual
         </h2>
+        
       </div>
 
-      {display === 1 && (
+      {display === 2 && (
         <div className="">
           <div className="max-w-[800px] mx-auto px-[30px] flex flex-col gap-[45px]  mt-[50px]">
             {setData.map((item, index) => (
@@ -485,7 +423,7 @@ function formrespone() {
           </div>
         </div>
       )}
-      {display == 2 && (
+      {display == 1 && (
         <div className="mt-10">
           {ivdRespone?.map((item, index) => (
             <div
