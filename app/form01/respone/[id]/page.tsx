@@ -646,7 +646,7 @@ function formrespone() {
                   className="overflow-hidden"
                 >
                   <div className="text-[13px]  text-white mb-2">
-                    timeStamp:{" "}
+                    timeStamp:
                     {new Date(item.time).toLocaleString("th-TH", {
                       hour: "2-digit",
                       minute: "2-digit",
