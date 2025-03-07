@@ -17,7 +17,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 function formrespone() {
-    const { id } = useParams();
+  const { id } = useParams();
   const [display, setDisplay] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [options, setOptions] = useState<
@@ -197,8 +197,6 @@ function formrespone() {
   };
   const router = useRouter();
 
- 
-
   useEffect(() => {
     const setting = localStorage.getItem("setting") ?? "";
     if (setting) {
@@ -212,52 +210,84 @@ function formrespone() {
   }, []);
 
   useEffect(() => {
+
+    if (!id) return;
+    console.log('id', id)
+
     async function fetchUserData() {
       const token = localStorage.getItem("token");
       const expDate = localStorage.getItem("expDate");
-      if((!token && Number(expDate ?? 0) > Date.now()) || !expDate ) {
+      if (!token || !expDate || Number(expDate) < Date.now()) {
         router.push("/signin");
         return;
+      }
+      try {
+        const response = await fetch(
+          `http://localhost:5001/dashboard/form/${id}/responses`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": token,
+            },
+          }
+        );
+        if (!response.ok) throw new Error("Failed to fetch user data");
+
+        const data = await response.json();
+
+        console.log("Fetched Data:", data);
+        console.log("Responses:", data.responses);
+        const formattedResponses = data.responses?.map((resp: any) => ({
+          time: new Date(resp.createdAt).getTime(),
+          email: resp.email || "Anonymous",
+          data: (resp.answers ?? []).map((ans: any) => ({
+            question: ans.questionTitle,
+            answer: ans.value,
+          })),
+        })) ?? [];
+
+        setIvDRespone(formattedResponses ?? []);
+      } catch (error) {
+        console.error("Error fetching responses:", error);
       }
     }
 
     fetchUserData();
+  }, [id]);
 
+  //   async function getDashboard(formID: string) {
+  //   const token = localStorage.getItem("token");
 
-  }, []);
+  //   if (!token) {
+  //     router.push("/signin");
+  //     return;
+  //   }
+  //   try {
+  //     const response = await fetch(`http://localhost:5001/dashboard/${formID}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "x-auth-token": token,
+  //       },
+  //     });
 
-  async function getDashboard(formID: string) {
-  const token = localStorage.getItem("token");
-  
-  if (!token) {
-    router.push("/signin");
-    return;
-  }
-  try {
-    const response = await fetch(`http://localhost:5001/dashboard/${formID}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "x-auth-token": token,
-      },
-    });
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const result = await response.json();
-    console.log("📊 Dashboard Data:", result);
-    return result;
-  } catch (error) {
-    console.error("❌ Error fetching dashboard data:", error);
-  }
-}
+  //     const result = await response.json();
+  //     console.log("📊 Dashboard Data:", result);
+  //     return result;
+  //   } catch (error) {
+  //     console.error("❌ Error fetching dashboard data:", error);
+  //   }
+  // }
 
   return (
     <div className="relative">
       <nav>
-       <div className="flex justify-between max-w-[1280px] mx-auto mt-6 px-[30px]">
+        <div className="flex justify-between max-w-[1280px] mx-auto mt-6 px-[30px]">
           <Link href={"/"}>
             <Image
               src="/Icon-form/FORMIX LOGO.png"
@@ -268,12 +298,9 @@ function formrespone() {
               className="h-[23px]  w-[70px]"
             />
           </Link>
-
-         
         </div>
       </nav>
 
-     
       <div className="flex max-w-[370px] justify-between gap-x-[15px] mx-auto items-center text-[13px] mt-[50px] px-[20px]">
         <h2
           onClick={() => setDisplay(1)}
@@ -295,7 +322,6 @@ function formrespone() {
         >
           individual
         </h2>
-        
       </div>
 
       {display === 1 && (
@@ -332,7 +358,6 @@ function formrespone() {
 
                           <div
                             ref={dropdownRef}
-                           
                             className="relative rounded-[4px] flex justify-center py-[4px]"
                           >
                             <div
@@ -533,7 +558,6 @@ function formrespone() {
           ))}
         </div>
       )}
-      
     </div>
   );
 }
