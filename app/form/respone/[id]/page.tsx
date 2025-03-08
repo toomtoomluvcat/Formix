@@ -30,6 +30,7 @@ function formrespone() {
     { imgSrc: "/Icon-form/16.png", wideth: 20, label: "Circle" },
     { imgSrc: "/Icon-form/17.png", wideth: 20, label: "Bar" },
   ]);
+  const [data,setDataChart] = useState<[[{name:string,value:number}][][]]>([[]]);
   const [chart, setChart] = useState<number>(0);
   const [isSaveData, setIsSaveData] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -150,12 +151,14 @@ function formrespone() {
     async function fetchUserData() {
       const token = localStorage.getItem("token");
       const expDate = localStorage.getItem("expDate");
+    
       if (!token || !expDate || Number(expDate) < Date.now()) {
         router.push("/signin");
         return;
       }
+    
       try {
-        const response = await fetch(
+        const responseRes = await fetch(
           `http://localhost:5001/dashboard/form/${id}/responses`,
           {
             method: "GET",
@@ -165,14 +168,12 @@ function formrespone() {
             },
           }
         );
-        if (!response.ok) throw new Error("Failed to fetch user data");
-
-        const data = await response.json();
-
-        console.log("Fetched Data:", data);
-        console.log("Responses:", data.responses);
+    
+        if (!responseRes.ok) throw new Error("Failed to fetch responses");
+    
+        const responseData = await responseRes.json();
         const formattedResponses =
-          data.responses?.map((resp: any) => ({
+          responseData.responses?.map((resp: any) => ({
             time: new Date(resp.createdAt).getTime(),
             email: resp.email || "Anonymous",
             data: (resp.answers ?? []).map((ans: any) => ({
@@ -180,46 +181,39 @@ function formrespone() {
               answer: ans.value,
             })),
           })) ?? [];
-        setIvDRespone(formattedResponses ?? []);
+    
+        setIvDRespone(formattedResponses);
+    
+        const graphRes = await fetch(
+          `http://localhost:5001/dashboard/form/${id}/graph`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": token,
+            },
+          }
+        );
+    
+        if (!graphRes.ok) throw new Error("Failed to fetch graph data");
+    
+        const graphData = await graphRes.json();
+    
+        setDataChart(graphData);
       } catch (error) {
-        console.error("Error fetching responses:", error);
+        console.error("Error fetching data:", error);
       }
     }
-
+    
     fetchUserData();
+    
   }, [id]);
   
   useEffect(()=>{
     setIsShow(ivdRespone?.map(() => false) || []);
   },[ivdRespone])
 
-  //   async function getDashboard(formID: string) {
-  //   const token = localStorage.getItem("token");
 
-  //   if (!token) {
-  //     router.push("/signin");
-  //     return;
-  //   }
-  //   try {
-  //     const response = await fetch(`http://localhost:5001/dashboard/${formID}`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "x-auth-token": token,
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const result = await response.json();
-  //     console.log("📊 Dashboard Data:", result);
-  //     return result;
-  //   } catch (error) {
-  //     console.error("❌ Error fetching dashboard data:", error);
-  //   }
-  // }
 
   return (
     <div className="relative">
