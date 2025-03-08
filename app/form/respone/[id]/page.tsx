@@ -30,7 +30,7 @@ function formrespone() {
     { imgSrc: "/Icon-form/16.png", wideth: 20, label: "Circle" },
     { imgSrc: "/Icon-form/17.png", wideth: 20, label: "Bar" },
   ]);
-  const [data,setDataChart] = useState<[[{name:string,value:number}][][]]>([[]]);
+  const [dataChart,setDataChart] = useState<{name:string,value:number}[][]>();
   const [chart, setChart] = useState<number>(0);
   const [isSaveData, setIsSaveData] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -198,8 +198,8 @@ function formrespone() {
         if (!graphRes.ok) throw new Error("Failed to fetch graph data");
     
         const graphData = await graphRes.json();
-    
-        setDataChart(graphData);
+        console.log("grap"+JSON.stringify(graphData))
+        setDataChart(graphData.setData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -208,6 +208,12 @@ function formrespone() {
     fetchUserData();
     
   }, [id]);
+
+  useEffect(()=>{
+    
+    console.log(JSON.stringify(dataChart,null,2))
+
+  },[dataChart])
   
   useEffect(()=>{
     setIsShow(ivdRespone?.map(() => false) || []);
@@ -259,7 +265,7 @@ function formrespone() {
       {display === 2 && (
         <div className="">
           <div className="max-w-[800px] mx-auto px-[30px] flex flex-col gap-[45px]  mt-[50px]">
-            {setData.map((item, index) => (
+            {dataChart?.map((item, index) => (
               <div key={index} className=" bg-black rounded-lg">
                 <div
                   className="  translate-y-[-15px] z-40 bg-white border-2
@@ -379,7 +385,7 @@ function formrespone() {
                         "#B0B0B0",
                       ]}
                       theme={"0001"}
-                      data={setData[index]}
+                      data={item}
                     ></DynamicPieChart>
                   )}
                   {options[chart]?.label === "Bar" && (
@@ -405,7 +411,7 @@ function formrespone() {
                           "#B0B0B0",
                         ]}
                         theme={"0001"}
-                        data={setData[index]}
+                        data={item}
                       ></DynamicBarChart>
                     </div>
                   )}
