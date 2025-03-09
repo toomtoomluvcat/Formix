@@ -21,7 +21,7 @@ function formrespone() {
   const [showPublic,setShowPublic] = useState<boolean>(false);
   const [chart, setChart] = useState<number>(0);
   const [isSaveData, setIsSaveData] = useState<boolean>(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [amount, setAmount] = useState<number | null>(0);
   const [color, setColor] = useState<{
@@ -95,7 +95,7 @@ function formrespone() {
 
   const setSetting = (): void => {
     const setting = {
-      limit: amount,
+      limit: amount==0? 99999:amount,
       archive: isChecked,
       color: color,
     };
@@ -151,8 +151,7 @@ function formrespone() {
               title: q.title,
               type: q.type,
               required: q.required,
-              limit: 100,
-              limitAns: 1,
+              limitForm: 999999,
               options: q.options
                 ? {
                     create: q.options.map((opt) => ({
@@ -262,12 +261,12 @@ function formrespone() {
                   <div
                     className={`box block h-[20px] w-10 rounded-full bg-black transition-all duration-300 ease-in-out`}
                     style={{
-                      backgroundColor: isChecked ? `#000000` : `#C4C4C4`,
+                      backgroundColor: !isChecked ? `#000000` : `#C4C4C4`,
                     }}
                   ></div>
                   <div
                     className={`absolute left-1 top-1 flex h-[12px] translate-y-[0px] w-[12px] items-center justify-center rounded-full bg-white transition-all duration-300 ease-in-out ${
-                      isChecked ? "translate-x-[21px]" : ""
+                      ! isChecked ? "translate-x-[21px]" : ""
                     }`}
                   ></div>
                 </div>

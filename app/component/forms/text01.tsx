@@ -139,19 +139,13 @@ function Text({
       height: 22,
     },
     {
-      value: "mutiple",
-      labelChoice: "Multiple",
+      value: "check",
+      labelChoice: "check",
       imgSrc: "/Icon-form/Theme2/I05.png",
       wideth: 22,
       height: 16,
     },
-    {
-      value: "check",
-      labelChoice: "Check",
-      imgSrc: "/Icon-form/Theme2/I06.png",
-      wideth: 22,
-      height: 10,
-    },
+    
     {
       value: "dropdown",
       labelChoice: "Dropdown",

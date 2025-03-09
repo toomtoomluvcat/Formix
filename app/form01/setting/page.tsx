@@ -27,7 +27,7 @@ function formrespone() {
     { imgSrc: "/Icon-form/theme2/I14.png", wideth: 20, label: "Bar" },
   ]);
   const [chart, setChart] = useState<number>(0);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [amount, setAmount] = useState<number | null>(0);
   const [color, setColor] = useState<ColorState>({
@@ -72,9 +72,7 @@ function formrespone() {
     | null
   >(null);
 
-  const handleMouseEnter = (index: number) => {
-    setHoveredIndex(index);
-  };
+
 
  
 
@@ -104,18 +102,14 @@ function formrespone() {
       }
       ;
     const archive = setting ? JSON.parse(setting).archive : true;
-    if (setting) {
-      console.log(JSON.parse(setting).archive);
-    } else {
-      console.log("ไม่มีอะไรเลย");
-    }
+
     const data = {
       title: localTitle,
       description: localDescription,
       color,
       archive: archive,
       theme: "0001",
-      limitForm: JSON.parse(localStorage.getItem("setting") || '{"limit":0}')
+      limitForm: JSON.parse(localStorage.getItem("setting") || '{"limit":99999}')
         .limit,
       questions: {
         create: questions?.map((q) => ({
@@ -154,7 +148,7 @@ function formrespone() {
 
   const setSetting = (): void => {
     const setting = {
-      limit: amount,
+      limit: amount==0? 99999:amount,
       archive: isChecked,
       color: color,
     };
@@ -456,7 +450,7 @@ function formrespone() {
             <div className="relative">
               <input
                 type="checkbox"
-                checked={isChecked}
+                checked={!isChecked}
                 onChange={() => setIsChecked((prev) => !prev)}
                 className="sr-only"
               />
@@ -465,14 +459,14 @@ function formrespone() {
                   className={`border-[3px] border-black  box block h-[22px] w-12 rounded-full transition-all duration-300 ease-in-out`}
                   style={{
                     filter: "drop-shadow(0px 2px 0px #000000)",
-                    backgroundColor: isChecked
+                    backgroundColor: !isChecked
                       ? `${color.color4}`
                       : `${color.color5}`,
                   }}
                 ></div>
                 <div
                   className={`absolute left-1 border-2 border-black top-1 flex h-[14px] translate-y-[0px] w-[14px] items-center justify-center rounded-full bg-white transition-all duration-300 ease-in-out ${
-                    isChecked ? "translate-x-[23px]" : ""
+                    !isChecked ? "translate-x-[23px]" : ""
                   }`}
                 ></div>
               </div>
