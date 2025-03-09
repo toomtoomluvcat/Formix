@@ -21,6 +21,7 @@ function formrespone() {
   const router = useRouter();
   const { id } = useParams();
   const [isShow, setIsShow] = useState<boolean[]>([]);
+  const [dataChart,setDataChart] = useState<{name:string,value:number}[][]>();
 
   const showIvdRes = (position: number) => {
     setIsShow((prev) =>
@@ -137,12 +138,14 @@ function formrespone() {
     async function fetchUserData() {
       const token = localStorage.getItem("token");
       const expDate = localStorage.getItem("expDate");
+    
       if (!token || !expDate || Number(expDate) < Date.now()) {
         router.push("/signin");
         return;
       }
+    
       try {
-        const response = await fetch(
+        const responseRes = await fetch(
           `http://localhost:5001/dashboard/form/${id}/responses`,
           {
             method: "GET",
@@ -152,14 +155,12 @@ function formrespone() {
             },
           }
         );
-        if (!response.ok) throw new Error("Failed to fetch user data");
-
-        const data = await response.json();
-
-        console.log("Fetched Data:", data);
-        console.log("Responses:", data.responses);
+    
+        if (!responseRes.ok) throw new Error("Failed to fetch responses");
+    
+        const responseData = await responseRes.json();
         const formattedResponses =
-          data.responses?.map((resp: any) => ({
+          responseData.responses?.map((resp: any) => ({
             time: new Date(resp.createdAt).getTime(),
             email: resp.email || "Anonymous",
             data: (resp.answers ?? []).map((ans: any) => ({
@@ -167,13 +168,32 @@ function formrespone() {
               answer: ans.value,
             })),
           })) ?? [];
-        setIvDRespone(formattedResponses ?? []);
+    
+        setIvDRespone(formattedResponses);
+    
+        const graphRes = await fetch(
+          `http://localhost:5001/dashboard/form/${id}/graph`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": token,
+            },
+          }
+        );
+    
+        if (!graphRes.ok) throw new Error("Failed to fetch graph data");
+    
+        const graphData = await graphRes.json();
+        console.log("grap"+JSON.stringify(graphData))
+        setDataChart(graphData.setData);
       } catch (error) {
-        console.error("Error fetching responses:", error);
+        console.error("Error fetching data:", error);
       }
     }
-
+    
     fetchUserData();
+    
   }, [id]);
 
   useEffect(() => {
