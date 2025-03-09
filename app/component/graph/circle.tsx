@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 interface PieData {
-  name: string;
+  name: string[];
   value: number;
 }
 

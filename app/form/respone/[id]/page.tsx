@@ -30,7 +30,7 @@ function formrespone() {
     { imgSrc: "/Icon-form/16.png", wideth: 20, label: "Circle" },
     { imgSrc: "/Icon-form/17.png", wideth: 20, label: "Bar" },
   ]);
-  const [dataChart,setDataChart] = useState<{name:string,value:number}[][]>();
+  const [dataChart, setDataChart] = useState<{ question: string; data: { name: string[]; value: number }[] }[]>([]);
   const [chart, setChart] = useState<number>(0);
   const [isSaveData, setIsSaveData] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -144,6 +144,7 @@ function formrespone() {
  
 
   useEffect(() => {
+    
     if (!id) {
       router.push("/workspace")
     };
@@ -198,7 +199,6 @@ function formrespone() {
         if (!graphRes.ok) throw new Error("Failed to fetch graph data");
     
         const graphData = await graphRes.json();
-        console.log("grap"+JSON.stringify(graphData))
         setDataChart(graphData.setData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -209,11 +209,14 @@ function formrespone() {
     
   }, [id]);
 
-  useEffect(()=>{
-    
-    console.log(JSON.stringify(dataChart,null,2))
-
-  },[dataChart])
+  useEffect(() => {
+    if (dataChart && dataChart[0] && dataChart[0].data) {
+      console.log(JSON.stringify(dataChart[0].data, null, 2));
+    } else {
+      console.log('Data is not available or not properly initialized');
+    }
+  }, [dataChart]);
+  
   
   useEffect(()=>{
     setIsShow(ivdRespone?.map(() => false) || []);
@@ -385,7 +388,7 @@ function formrespone() {
                         "#B0B0B0",
                       ]}
                       theme={"0001"}
-                      data={item}
+                      data={item?.data ?? []}
                     ></DynamicPieChart>
                   )}
                   {options[chart]?.label === "Bar" && (
@@ -411,7 +414,7 @@ function formrespone() {
                           "#B0B0B0",
                         ]}
                         theme={"0001"}
-                        data={item}
+                        data={item?.data ?? []}
                       ></DynamicBarChart>
                     </div>
                   )}

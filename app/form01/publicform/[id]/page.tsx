@@ -187,7 +187,7 @@ function Preview() {
       </div>
     ) : (
       <div>
-      {false ? (
+      {true? (
         <div className="flex mt-[150px] md:mt-[170px] justify-between  px-[15%] items-center ">
           <div>
             <p className="text-[2.7em] font-press-gothic">EROR404</p>

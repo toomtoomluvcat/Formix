@@ -8,12 +8,12 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 function Preview() {
-  const { id } = useParams<{id:string}>();
-  const [archive,setIsArchive] = useState<boolean>();
+  const { id } = useParams<{ id: string }>();
+  const [archive, setIsArchive] = useState<boolean>();
   const [formName, setFormName] = useState<string | null>(null);
   const [isLimit, setIsLimit] = useState<number>();
   const [description, setDescription] = useState<string | null>(null);
-  const [erorr,setEror] = useState<string>();
+  const [erorr, setEror] = useState<string>();
   const [dropdown, setDropdown] = useState<{ [key: number]: boolean }>({});
   const [alreadySubmit, setAlreadySubmit] = useState<boolean>(false);
   const [answerList, setAnswerList] = useState<
@@ -75,7 +75,7 @@ function Preview() {
 
       const result = await response.json();
       setIsArchive(result.archive);
-      setAlreadySubmit(localStorage.getItem(id)!==null)
+      setAlreadySubmit(localStorage.getItem(id) !== null);
       setColor(result.color);
       setFormName(result.title);
       setDescription(result.description);
@@ -89,16 +89,20 @@ function Preview() {
   }, []);
 
   async function submitForm() {
-
     if (questions) {
-      console.log('start')
-      const requiredQuestions = questions.filter(q => q.required);
+      console.log("start");
+      const requiredQuestions = questions.filter((q) => q.required);
       for (const requiredQ of requiredQuestions) {
-        const answer = answerList.find(ans => ans.id === requiredQ.id);
-        
-        if (!answer||answer?.answer.toString()=="" || answer.answer.length === 0) {
-          setEror("You still have some questions that need to be answered")
-          return;         }
+        const answer = answerList.find((ans) => ans.id === requiredQ.id);
+
+        if (
+          !answer ||
+          answer?.answer.toString() == "" ||
+          answer.answer.length === 0
+        ) {
+          setEror("You still have some questions that need to be answered");
+          return;
+        }
       }
     }
     const data = {
@@ -123,9 +127,9 @@ function Preview() {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       } else {
-        localStorage.setItem(id,"1");
+        localStorage.setItem(id, "1");
         setAlreadySubmit(true);
-        setEror("")
+        setEror("");
       }
     } catch (error) {
       console.log("error", error);
@@ -175,35 +179,53 @@ function Preview() {
     color1: string | null;
     color2: string | null;
     color3: string | null;
-   
   }
   const [color, setColor] = useState<Color>({
     color1: "#000000",
     color3: "#C4C4C4",
     color2: "#fef2f2",
-    
   });
-
-  
 
   return (
     <div className="relative">
       {alreadySubmit ? (
         <div className="mx-[30px] mt-[50px]">
-          <div style={{ filter: `drop-shadow(0px 6px 0px ${color.color1})`}} className="max-w-[650px] border-2 px-8 pt-6 pb-8 mx-auto rounded-lg bg-white">
-            <p style={{color:color.color1?? ""}} className=" font-bold text-[1.4em] mb-2">Your form has been successfully submitted.</p>
-            <p className="text-[0.8em] mb-2 text-gray-800"> the information in your form has been successfully saved in the system, and the submission process has been completed without any issues</p>
-            <p onClick={()=>{formPublic(),localStorage.removeItem(id),setAlreadySubmit(false)}} className="text-blue-800 underline text-[0.8em]">send another answer</p>
+          <div
+            style={{ filter: `drop-shadow(0px 6px 0px ${color.color1})` }}
+            className="max-w-[650px] border-2 px-8 pt-6 pb-8 mx-auto rounded-lg bg-white"
+          >
+            <p
+              style={{ color: color.color1 ?? "" }}
+              className=" font-bold text-[1.4em] mb-2"
+            >
+              Your form has been successfully submitted.
+            </p>
+            <p className="text-[0.8em] mb-2 text-gray-800">
+              {" "}
+              the information in your form has been successfully saved in the
+              system, and the submission process has been completed without any
+              issues
+            </p>
+            <p
+              onClick={() => {
+                formPublic(),
+                  localStorage.removeItem(id),
+                  setAlreadySubmit(false);
+              }}
+              className="text-blue-800 underline text-[0.8em]"
+            >
+              send another answer
+            </p>
           </div>
         </div>
       ) : (
         <div>
-          {!(archive&&isLimit) ? (
+          {false ? (
             <div className="flex mt-[150px] md:mt-[200px] justify-between  px-[15%] items-center ">
               <div>
                 <p className="text-[25px]">EROR404</p>
                 <h2 className="text-nowrap text-[35px] font-bold">
-                  Page not found 
+                  Page not found
                 </h2>
                 <p className="max-w-[500px] md:max-w-[350px] mt-4">
                   We're sorry. The form you are looking for may have been
@@ -224,7 +246,7 @@ function Preview() {
               <div className="mt-12 max-w-[650px] mx-auto">
                 <div className="mb-8">
                   <h1 className="text-[30px] font-medium text-center">
-                    {formName} 
+                    {formName}
                   </h1>
                   <p className="mt-4 text-center text-[#c4c4c4]">
                     {description}
@@ -232,7 +254,7 @@ function Preview() {
                 </div>
                 {questions && (
                   <div>
-                    {questions.map((item, questionId) => (
+                    {questions?.map((item, questionId) => (
                       <div
                         key={item.id}
                         className="bg-black mx-[15px] mb-4 rounded-[12px]"
@@ -281,56 +303,60 @@ function Preview() {
                               {item.options?.map((option, index) => (
                                 <div
                                   key={index}
-                                  className="flex items-center mb-2"
+                                  
                                 >
-                                  <label className="flex items-center cursor-pointer relative">
-                                    <input
-                                      value={option.text}
-                                      checked={
-                                        answerList[questionId]?.answer.includes(
-                                          option.text
-                                        ) ?? false
-                                      }
-                                      onChange={(e) =>
-                                        handleCheckboxChange(
-                                          item.id,
-                                          option.text,
-                                          e.target.checked
-                                        )
-                                      }
-                                      type="checkbox"
-                                      className="peer h-4 w-4 cursor-pointer transition-all checked:bg-[#ababab]  checked:border-[#ababab] appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-                                      id="check"
-                                    />
-                                    <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-3 w-3"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeWidth="1"
-                                      >
-                                        <path
-                                          fillRule="evenodd"
-                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                          clipRule="evenodd"
-                                        ></path>
-                                      </svg>
-                                    </span>
-                                  </label>
-                                  <p className="ml-2  text-sm">
-                                    {index + 1 !== item.options?.length
-                                      ? option.text
-                                      : ""}{" "}
-                                    &nbsp;&nbsp;{" "}
-                                    <span className=" text-gray-600">
-                                      {" "}
-                                      {option.limitAns
-                                        ? `(0/${option?.limitAns})`
-                                        : ""}
-                                    </span>
-                                  </p>
+                                  {index + 1 !== item.options?.length ? (
+                                    <div className="flex items-center mb-2">
+                                      <label className="flex items-center cursor-pointer relative">
+                                        <input
+                                          value={option.text}
+                                          checked={
+                                            answerList[
+                                              questionId
+                                            ]?.answer.includes(option.text) ??
+                                            false
+                                          }
+                                          onChange={(e) =>
+                                            handleCheckboxChange(
+                                              item.id,
+                                              option.text,
+                                              e.target.checked
+                                            )
+                                          }
+                                          type="checkbox"
+                                          className="peer h-4 w-4 cursor-pointer transition-all checked:bg-[#ababab]  checked:border-[#ababab] appearance-none rounded border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
+                                          id="check"
+                                        />
+
+                                        <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-3 w-3"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                            stroke="currentColor"
+                                            strokeWidth="1"
+                                          >
+                                            <path
+                                              fillRule="evenodd"
+                                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                              clipRule="evenodd"
+                                            ></path>
+                                          </svg>
+                                        </span>
+                                      </label>
+
+                                      <p className="ml-2  text-sm">
+                                        {option.text}
+                                        <span className=" text-gray-600">
+                                          {" "}
+                                          {option.limitAns
+                                            ? `(0/${option?.limitAns})`
+                                            : ""}
+                                        </span>
+                                      </p>
+                                    </div>
+                                  ) : null}
                                 </div>
                               ))}
                             </div>
@@ -426,9 +452,12 @@ function Preview() {
                     ))}
                   </div>
                 )}
-                 {<p className="text-[0.8em] text-end px-[30px] mb-4 text-red-400">{erorr}</p>}
+                {
+                  <p className="text-[0.8em] text-end px-[30px] mb-4 text-red-400">
+                    {erorr}
+                  </p>
+                }
                 <div className="flex justify-end w-full px-4">
-                 
                   <button
                     onClick={() => submitForm()}
                     className="flex mb-6 bg-black text-white rounded-lg py-2 px-4"

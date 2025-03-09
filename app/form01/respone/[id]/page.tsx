@@ -20,8 +20,10 @@ import { div } from "framer-motion/client";
 function formrespone() {
   const router = useRouter();
   const { id } = useParams();
+  const [dataChart, setDataChart] = useState<
+    { question: string; data: { name: string[]; value: number }[] }[]
+  >([]);
   const [isShow, setIsShow] = useState<boolean[]>([]);
-  const [dataChart,setDataChart] = useState<{name:string,value:number}[][]>();
 
   const showIvdRes = (position: number) => {
     setIsShow((prev) =>
@@ -138,12 +140,12 @@ function formrespone() {
     async function fetchUserData() {
       const token = localStorage.getItem("token");
       const expDate = localStorage.getItem("expDate");
-    
+
       if (!token || !expDate || Number(expDate) < Date.now()) {
         router.push("/signin");
         return;
       }
-    
+
       try {
         const responseRes = await fetch(
           `http://localhost:5001/dashboard/form/${id}/responses`,
@@ -155,9 +157,9 @@ function formrespone() {
             },
           }
         );
-    
+
         if (!responseRes.ok) throw new Error("Failed to fetch responses");
-    
+
         const responseData = await responseRes.json();
         const formattedResponses =
           responseData.responses?.map((resp: any) => ({
@@ -168,9 +170,9 @@ function formrespone() {
               answer: ans.value,
             })),
           })) ?? [];
-    
+
         setIvDRespone(formattedResponses);
-    
+
         const graphRes = await fetch(
           `http://localhost:5001/dashboard/form/${id}/graph`,
           {
@@ -181,19 +183,17 @@ function formrespone() {
             },
           }
         );
-    
+
         if (!graphRes.ok) throw new Error("Failed to fetch graph data");
-    
+
         const graphData = await graphRes.json();
-        console.log("grap"+JSON.stringify(graphData))
         setDataChart(graphData.setData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-    
+
     fetchUserData();
-    
   }, [id]);
 
   useEffect(() => {
@@ -416,177 +416,153 @@ function formrespone() {
       {display === 1 && (
         <div className="">
           <div className="max-w-[800px] mx-auto px-[30px]  mt-[50px]">
-            <div
-              style={{ backgroundColor: color.color2 }}
-              className="  z-40
+            {dataChart?.map((item, index) => (
+              <div
+                key={index}
+                style={{ backgroundColor: color.color2 }}
+                className="  z-40
                rounded-lg shadow p-4 md:p-6"
-            >
-              <div className="fle justify-between items-start ">
-                <div className="">
-                  <div className="flex items-center mb-1">
-                    <div className="flex justify-between mx-auto w-full px-[30px] md:px-[70px] items-center gap-x-[15px]">
-                      <div className="flex items-center gap-x-[15px]">
-                        <Image
-                          src="/Icon-form/theme2/I13.png"
-                          width={1000}
-                          height={1000}
-                          quality={100}
-                          alt="question"
-                          className="w-[30px] h-[30px] sm:w-[40px] sm:h-[40px]"
-                        />
-                        <div>
-                          <p
-                            style={{
-                              fontSize: "1em",
-                              transition: "all 0.3s ease",
-                              color: "white",
-                              WebkitTextStroke: "0.15em black",
-                              paintOrder: "stroke fill",
-                              textShadow: `
+              >
+                <div className="fle justify-between items-start ">
+                  <div className="">
+                    <div className="flex items-center mb-1">
+                      <div className="flex justify-between mx-auto w-full px-[30px] md:px-[70px] items-center gap-x-[15px]">
+                        <div className="flex items-center gap-x-[15px]">
+                          <Image
+                            src="/Icon-form/theme2/I13.png"
+                            width={1000}
+                            height={1000}
+                            quality={100}
+                            alt="question"
+                            className="w-[30px] h-[30px] sm:w-[40px] sm:h-[40px]"
+                          />
+                          <div>
+                            <p
+                              style={{
+                                fontSize: "1em",
+                                transition: "all 0.3s ease",
+                                color: "white",
+                                WebkitTextStroke: "0.15em black",
+                                paintOrder: "stroke fill",
+                                textShadow: `
       2px 0px 0px rgb(0, 0, 0), 
       2px 2px 0px rgb(0, 0, 0),
       1px 2px 0px rgb(0, 0, 0),
       0px 1px 0px rgb(0, 0, 0)
     `,
-                            }}
-                            className=" font-press-gothic text-white sm:text-[1em] font-medium"
-                          >
-                            Question 1
-                          </p>
-                          <p
-                            style={{
-                              fontSize: "1.7em",
-                              transition: "all 0.3s ease",
-                              color: "white",
-                              WebkitTextStroke: "0.1em black",
-                              paintOrder: "stroke fill",
-                              textShadow: `
+                              }}
+                              className=" font-press-gothic text-white sm:text-[1em] font-medium"
+                            >
+                              Question 1
+                            </p>
+                            <p
+                              style={{
+                                fontSize: "1.7em",
+                                transition: "all 0.3s ease",
+                                color: "white",
+                                WebkitTextStroke: "0.1em black",
+                                paintOrder: "stroke fill",
+                                textShadow: `
       0px 0px 0px rgb(0, 0, 0), 
       2px 3px 0px rgb(0, 0, 0),
       -1px 3px 0px rgb(0, 0, 0),
       0px 2px 0px rgb(0, 0, 0)
     `,
-                            }}
-                            className=" translate-y-[-5px] font-press-gothic text-white sm:text-[1.5em]"
-                          >
-                            dog is cat right?
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        ref={dropdownRef}
-                        style={{
-                          backgroundColor: `rgb(254, 216, 60)`,
-                          filter: "drop-shadow(0px 3.5px 0px #000000)",
-                        }}
-                        className="relative py-[5px] px-[10px] border-[3.2px] border-black rounded-[25px] w-[100px] sm:w-[140px] cursor-pointer"
-                      >
-                        <div
-                          onClick={() => setIsOpen(!isOpen)}
-                          className="flex items-center justify-center px-4 gap-x-2"
-                        >
-                          <Image
-                            src={options[chart]?.imgSrc}
-                            width={1000}
-                            height={1000}
-                            quality={100}
-                            alt="question"
-                            className="sm:w-[15px]  sm:h-[15px] w-[12px] h-[12px]"
-                          />
-                          <p className="text-[0.8em] mt-[1px] font-press-gothic sm:text-[1em]">
-                            {options[chart]?.label}
-                          </p>
-
-                          <Image
-                            src="/Icon-form/18.png"
-                            width={1000}
-                            height={1000}
-                            quality={100}
-                            alt="question"
-                            className={
-                              isOpen
-                                ? "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] rotate-180 transition-all duration-[700ms]"
-                                : "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] transition-all duration-1000"
-                            }
-                          />
-                        </div>
-                        {isOpen && (
-                          <div
-                            style={{
-                              boxShadow: "0px 0px 1px 0px rgb(0, 0, 0)",
-                            }}
-                            className="absolute px-[10px] translate-x-[-12px] bottom-[48px] z-40 py-[10px] border-[3px] border-black bg-white rounded-[18px]"
-                          >
-                            {options.map((option, optionIndex) => (
-                              <div key={optionIndex}>
-                                <div
-                                  onClick={() => (
-                                    setIsOpen(false), setChart(optionIndex)
-                                  )}
-                                  className="py-[4px] px-[5px] z-41 items-center transition-all duration-[300ms] rounded-[4px] my-[2px] w-[140px] flex gap-x-[8px]" // Tailwind CSS ของคุณ
-                                  style={{
-                                    backgroundColor:
-                                      hoveredIndex === optionIndex
-                                        ? `${color.color7}`
-                                        : "transparent",
-                                  }}
-                                  onMouseEnter={() =>
-                                    handleMouseEnter(optionIndex)
-                                  }
-                                  onMouseLeave={handleMouseLeave}
-                                >
-                                  <Image
-                                    className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
-                                    src={option.imgSrc}
-                                    width={option.wideth}
-                                    height={20}
-                                    alt={option.label}
-                                  />
-                                  <p className="text-[0.8em] font-press-gothic sm:text-[1em]">
-                                    {option.label}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
+                              }}
+                              className=" translate-y-[-5px] font-press-gothic text-white sm:text-[1.5em]"
+                            >
+                              dog is cat right?
+                            </p>
                           </div>
-                        )}
+                        </div>
+                        <div
+                          ref={dropdownRef}
+                          style={{
+                            backgroundColor: `rgb(254, 216, 60)`,
+                            filter: "drop-shadow(0px 3.5px 0px #000000)",
+                          }}
+                          className="relative py-[5px] px-[10px] border-[3.2px] border-black rounded-[25px] w-[100px] sm:w-[140px] cursor-pointer"
+                        >
+                          <div
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="flex items-center justify-center px-4 gap-x-2"
+                          >
+                            <Image
+                              src={options[chart]?.imgSrc}
+                              width={1000}
+                              height={1000}
+                              quality={100}
+                              alt="question"
+                              className="sm:w-[15px]  sm:h-[15px] w-[12px] h-[12px]"
+                            />
+                            <p className="text-[0.8em] mt-[1px] font-press-gothic sm:text-[1em]">
+                              {options[chart]?.label}
+                            </p>
+
+                            <Image
+                              src="/Icon-form/18.png"
+                              width={1000}
+                              height={1000}
+                              quality={100}
+                              alt="question"
+                              className={
+                                isOpen
+                                  ? "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] rotate-180 transition-all duration-[700ms]"
+                                  : "sm:w-[30px] sm:h-[30px] w-[20px] h-[20px] transition-all duration-1000"
+                              }
+                            />
+                          </div>
+                          {isOpen && (
+                            <div
+                              style={{
+                                boxShadow: "0px 0px 1px 0px rgb(0, 0, 0)",
+                              }}
+                              className="absolute px-[10px] translate-x-[-12px] bottom-[48px] z-40 py-[10px] border-[3px] border-black bg-white rounded-[18px]"
+                            >
+                              {options.map((option, optionIndex) => (
+                                <div key={optionIndex}>
+                                  <div
+                                    onClick={() => (
+                                      setIsOpen(false), setChart(optionIndex)
+                                    )}
+                                    className="py-[4px] px-[5px] z-41 items-center transition-all duration-[300ms] rounded-[4px] my-[2px] w-[140px] flex gap-x-[8px]" // Tailwind CSS ของคุณ
+                                    style={{
+                                      backgroundColor:
+                                        hoveredIndex === optionIndex
+                                          ? `${color.color7}`
+                                          : "transparent",
+                                    }}
+                                    onMouseEnter={() =>
+                                      handleMouseEnter(optionIndex)
+                                    }
+                                    onMouseLeave={handleMouseLeave}
+                                  >
+                                    <Image
+                                      className="sm:w-[15px] sm:h-[15px] w-[12px] h-[12px]"
+                                      src={option.imgSrc}
+                                      width={option.wideth}
+                                      height={20}
+                                      alt={option.label}
+                                    />
+                                    <p className="text-[0.8em] font-press-gothic sm:text-[1em]">
+                                      {option.label}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mx-auto flex justify-center">
-                <div className="h-[2px] w-[78%] mt-2 bg-white " />
-              </div>
-              {options[chart]?.label === "Circle" && (
-                <DynamicPieChart
-                  color={[
-                    "rgb(58, 44, 77)",
-                    "rgb(224, 83, 125)",
-                    "rgb(255, 147, 86)",
-                    "rgb(254, 216, 60)",
-                    "rgb(28, 215, 147)",
-                    "rgb(106, 165, 218)",
-                    "rgb(77, 120, 231)",
-                    "#0088FE",
-                    "#00C49F",
-                    "#FFBB28",
-                    "#FF8042",
-                    "#8884D8",
-                    "#82CA9D",
-                    "#F06292",
-                    "#BA68C8",
-                    "#4DD0E1",
-                    "#DCE775",
-                  ]}
-                  theme={"0002"}
-                  data={setData}
-                ></DynamicPieChart>
-              )}
-              {options[chart]?.label === "Bar" && (
-                <div className="mt-4">
-                  <DynamicBarChart
+                <div className="mx-auto flex justify-center">
+                  <div className="h-[2px] w-[78%] mt-2 bg-white " />
+                </div>
+                {options[chart]?.label === "Circle" && (
+                  <DynamicPieChart
                     color={[
                       "rgb(58, 44, 77)",
                       "rgb(224, 83, 125)",
@@ -607,89 +583,120 @@ function formrespone() {
                       "#DCE775",
                     ]}
                     theme={"0002"}
-                    data={setData}
-                  ></DynamicBarChart>
-                </div>
-              )}
-            </div>
+                    data={item.data}
+                  ></DynamicPieChart>
+                )}
+                {options[chart]?.label === "Bar" && (
+                  <div className="mt-4">
+                    <DynamicBarChart
+                      color={[
+                        "rgb(58, 44, 77)",
+                        "rgb(224, 83, 125)",
+                        "rgb(255, 147, 86)",
+                        "rgb(254, 216, 60)",
+                        "rgb(28, 215, 147)",
+                        "rgb(106, 165, 218)",
+                        "rgb(77, 120, 231)",
+                        "#0088FE",
+                        "#00C49F",
+                        "#FFBB28",
+                        "#FF8042",
+                        "#8884D8",
+                        "#82CA9D",
+                        "#F06292",
+                        "#BA68C8",
+                        "#4DD0E1",
+                        "#DCE775",
+                      ]}
+                      theme={"0002"}
+                      data={item.data}
+                    ></DynamicBarChart>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}
       {display == 2 && (
         <div>
-          {ivdRespone?.length !==0 ? (
+          {ivdRespone?.length !== 0 ? (
             <div className="mt-10">
-            {ivdRespone?.map((item, index) => (
-                
-              <div key={index} className="mx-4" >
-              <div
-                className="max-w-[700px] mx-auto mt-4 rounded-lg mb-4  md:px-10 py-4 p-6"
-                style={{
-                  backgroundColor: color.color2,
-                }}
-              >
-                <div
-                  onClick={() => showIvdRes(index)}
-                  className="flex justify-between items-center mb-2 cursor-pointer"
-                >
-                  <div>
-                    <div className="text-[22px] text-white font-press-gothic"> Response {index + 1}</div>
-                    <div className="text-[13px] text-white">{item.email ?? "guess"}</div>
-                  </div>
-                  <svg
-                    className={`w-[0.7rem] h-4 ml-2 text-white transition-transform duration-300 ${
-                      isShow[index] ? "rotate-180" : "rotate-0"
-                    }`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
+              {ivdRespone?.map((item, index) => (
+                <div key={index} className="mx-4">
+                  <div
+                    className="max-w-[700px] mx-auto mt-4 rounded-lg mb-4  md:px-10 py-4 p-6"
+                    style={{
+                      backgroundColor: color.color2,
+                    }}
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </div>
-  
-                {/* Section ที่ต้องการให้มี Animation */}
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={
-                    isShow[index]
-                      ? { opacity: 1, height: "auto" }
-                      : { opacity: 0, height: 0 }
-                  }
-                  transition={{ duration: 0.3 }}
-                  className="overflow-hidden"
-                >
-                  <div className="text-[13px]  text-white mb-2">
-                    timeStamp:
-                    {new Date(item.time).toLocaleString("th-TH", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-  
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-  
-                      timeZone: "Asia/Bangkok",
-                    })}
-                  </div>
-  
-                  {item.data?.map((datum, number) => (
-                    <div key={number} className="text-white">
-                      {datum.question}: {datum.answer? datum.answer : "-"}
+                    <div
+                      onClick={() => showIvdRes(index)}
+                      className="flex justify-between items-center mb-2 cursor-pointer"
+                    >
+                      <div>
+                        <div className="text-[22px] text-white font-press-gothic">
+                          {" "}
+                          Response {index + 1}
+                        </div>
+                        <div className="text-[13px] text-white">
+                          {item.email ?? "guess"}
+                        </div>
+                      </div>
+                      <svg
+                        className={`w-[0.7rem] h-4 ml-2 text-white transition-transform duration-300 ${
+                          isShow[index] ? "rotate-180" : "rotate-0"
+                        }`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 10 6"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="m1 1 4 4 4-4"
+                        />
+                      </svg>
                     </div>
-                  ))}
-                </motion.div>
-              </div>
-              </div>
-            ))}
-          </div>
+
+                    {/* Section ที่ต้องการให้มี Animation */}
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={
+                        isShow[index]
+                          ? { opacity: 1, height: "auto" }
+                          : { opacity: 0, height: 0 }
+                      }
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="text-[13px]  text-white mb-2">
+                        timeStamp:
+                        {new Date(item.time).toLocaleString("th-TH", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+
+                          timeZone: "Asia/Bangkok",
+                        })}
+                      </div>
+
+                      {item.data?.map((datum, number) => (
+                        <div key={number} className="text-white">
+                          {datum.question}: {datum.answer ? datum.answer : "-"}
+                        </div>
+                      ))}
+                    </motion.div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="flex flex-col justify-center items-center mt-[100px]">
               <Image
@@ -701,7 +708,7 @@ function formrespone() {
                 className=" sm:w-[150px] h-auto w-[120px] "
               />
               <h2 className="mt-[45px] font-medium font-press-gothic text-[1.8em] sm:text-[2.5em]">
-                No Respone yet 
+                No Respone yet
               </h2>
               <h2 className="mt-[10px] text-[1em] sm:text-[1.2em] text-[#808080] max-w-[250px]  font-press-gothic text-center">
                 Your form has no responses. Create it and share widely

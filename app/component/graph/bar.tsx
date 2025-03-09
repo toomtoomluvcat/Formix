@@ -14,7 +14,7 @@ import {
 
 
 interface BarData {
-  name: string;
+  name: string[];
   value: number;
 }
 
