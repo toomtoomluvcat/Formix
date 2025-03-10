@@ -471,7 +471,7 @@ function formrespone() {
                               }}
                               className=" translate-y-[-5px] font-press-gothic text-white sm:text-[1.5em]"
                             >
-                              dog is cat right?
+                              {item.question}
                             </p>
                           </div>
                         </div>

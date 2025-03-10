@@ -292,7 +292,7 @@ function formrespone() {
                                 question {index + 1}
                               </p>
                               <p className="text-[#4C4C4C] text-[11px] mt-[2px] sm:text-[13px]">
-                                แก้ที
+                              {item.question}
                               </p>
                             </div>
                           </div>
