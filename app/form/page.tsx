@@ -41,7 +41,6 @@ function Form() {
       const localData = localStorage.getItem("formQuestions");
       const localquestion = localData ? JSON.parse(localData).questions : null;
 
-      console.log("first", localquestion);
       if (setting) {
         setColor(JSON.parse(setting).color);
         setLimitForm(JSON.parse(setting).limit);
@@ -145,7 +144,6 @@ function Form() {
         })),
       },
     };
-    console.log('data:', data)
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
@@ -159,9 +157,12 @@ function Form() {
       },
       body: JSON.stringify(data),
     });
+    
+    const responseData = await res.json();
+    seturl(window.location.origin+"/form/publicform/"+responseData.form.id);
+    
     setActive(-1)
     setShowPublic(true);
-    const responseData = await res.json();
     
   };
 

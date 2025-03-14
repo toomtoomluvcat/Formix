@@ -5,14 +5,16 @@ import Image from "next/image";
 import NavBarInForm from "@/app/component/nav";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import formrespone from "../../setting/page";
 
 function Preview() {
   const { id } = useParams<{ id: string }>();
   const [formName, setFormName] = useState<string>();
-  const [islimit,setIsLimit]= useState<number>(0);
+  const [isLimit,setIsLimit]= useState<number>(0);
   const [isArchive,setIsArchive] =useState<boolean>();
   const [alreadySubmit, setAlreadySubmit] = useState<boolean>();
   const [description, setDescription] = useState<string>();
+  const [formLimit,setFormLimit] =useState<number>(0);
   const [dropdown, setDropdown] = useState<{ [key: number]: boolean }>({});
   const [answerList, setAnswerList] = useState<
     {
@@ -21,14 +23,13 @@ function Preview() {
       answer: string[];
     }[]
   >([]);
-
   const [questions, setQuestions] = useState<
     {
       id: number;
       title: string;
       type: string;
       required: boolean;
-      options?: Array<{ text: string; limitAns: number | null }> | null;
+      options?: Array<{ text: string; limitAns: number | null ;responseCount:number}> | null;
     }[]
   >([]);
 
@@ -71,12 +72,15 @@ function Preview() {
       }
 
       const result = await response.json();
-
+      
       setAlreadySubmit(localStorage.getItem(id) !== null);
+      setFormLimit(result.limitForm)
+      setIsLimit(result.totalResponses)
       setColor(result.color);
       setFormName(result.title);
       setDescription(result.description);
       setQuestions(result.questions);
+    
     } catch (error) {
       console.log("error", error);
     }
@@ -174,7 +178,10 @@ function Preview() {
       console.log("error", error);
     }
   }
-
+  useEffect(()=>{
+    console.log(isLimit);
+    console.log(formrespone)
+  },[isLimit])
   return (
     <div className="relative">
     {alreadySubmit ? (
@@ -187,7 +194,7 @@ function Preview() {
       </div>
     ) : (
       <div>
-      {true? (
+      {(isLimit ?? 0) > formLimit ? (
         <div className="flex mt-[150px] md:mt-[170px] justify-between  px-[15%] items-center ">
           <div>
             <p className="text-[2.7em] font-press-gothic">EROR404</p>
@@ -284,6 +291,7 @@ function Preview() {
                                 filter: "drop-shadow(0px 2px 0px #000000)",
                               }}
                               id={`check-${item.id}-${index}`}
+                              
                               value={option.text}
                               checked={
                                 answerList[questionId]?.answer.includes(

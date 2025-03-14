@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 
 function Preview() {
   const { id } = useParams<{ id: string }>();
+  const [formLimit,setFormLimit] =useState<number>(0);
   const [archive, setIsArchive] = useState<boolean>();
   const [formName, setFormName] = useState<string | null>(null);
   const [isLimit, setIsLimit] = useState<number>();
@@ -80,6 +81,8 @@ function Preview() {
       setFormName(result.title);
       setDescription(result.description);
       setQuestions(result.questions);
+      setFormLimit(result.limitForm)
+      setIsLimit(result.totalResponses)
     } catch (error) {
       console.log("error", error);
     }
@@ -220,7 +223,7 @@ function Preview() {
         </div>
       ) : (
         <div>
-          {false ? (
+          {(isLimit ?? 0) > formLimit ? (
             <div className="flex mt-[150px] md:mt-[200px] justify-between  px-[15%] items-center ">
               <div>
                 <p className="text-[25px]">EROR404</p>

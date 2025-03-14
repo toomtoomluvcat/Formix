@@ -267,9 +267,43 @@ function Workspace() {
     }
   };
 
-  const changeArchiveForm = async(index:number):Promise<void>=>{
-    setFormData((prev)=> prev? prev?.map((item,idOfItem)=>idOfItem==index? {...item,archive:!item.archive}:item):[])
-  }
+  const changeArchiveForm = async (index: number, formId: string): Promise<void> => {
+   
+
+    try {
+      const token = localStorage.getItem("token")
+      
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
+      const response = await fetch(`http://localhost:5001/workspace/${formId}/toggleArchive`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json",
+          "x-auth-token": token,
+          
+         },
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", errorData);
+        throw new Error(`Failed to update archive status: ${errorData.error || 'Unknown error'}`);
+      }
+  
+      setFormData((prev) =>
+        prev
+          ? prev.map((item, idOfItem) =>
+              idOfItem === index ? { ...item, archive: !item.archive } : item
+            )
+          : []
+      );
+    } catch (error) {
+      console.error("❌ Error toggling archive status:", error);
+    }
+  };
+  
+
   const getResponeForm = async (theme: string, id: string): Promise<void> => {
     console.log("theme", theme);
     const path = theme === "0002" ? "form" : "form01";
@@ -1119,7 +1153,7 @@ function Workspace() {
                                       </h2>
                                     </div>
 
-                                    <div onClick={()=>changeArchiveForm(index)} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
+                                    <div onClick={()=>changeArchiveForm(index,item.id)} className="flex w-full gap-x-[5px] px-[7px] py-[5px] rounded-[5px]   hover:bg-[#D9D9D9] transition-all duration-[400ms]">
                                       <Image
                                         src={`/Icon-form/46.svg`}
                                         width={1000}

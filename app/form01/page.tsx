@@ -100,6 +100,7 @@ function Form() {
       descriptionRef.current.textContent = description;
     }
   }, []);
+  const [url,seturl] = useState<string>("")
   interface Color {
     color1: string | null;
     color2: string | null;
@@ -361,7 +362,7 @@ function Form() {
         })),
       },
     };
-    console.log('data:', data)
+   
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/signin");
@@ -375,9 +376,11 @@ function Form() {
       },
       body: JSON.stringify(data),
     });
+  
+    const responseData = await res.json();
+    seturl(window.location.origin+"/form01/publicform/"+responseData.form.id);
     setActive(-1)
     setShowPublic(true);
-    const responseData = await res.json();
     
   };
    
@@ -490,7 +493,7 @@ function Form() {
               </p>
               <div className="py-[8px] flex gap-x-[5px]">
                 <input
-                  value={""}
+                  value={url}
                   onChange={() => {
                     return;
                   }}
@@ -507,7 +510,7 @@ function Form() {
                 <button
                   type="button"
                   onClick={() => {
-                    navigator.clipboard.writeText("");
+                    navigator.clipboard.writeText(url);
                   }}
                   className="bg-black w-[20%] py-[10px]   rounded-[7px] text-white text-[10px]"
                 >
