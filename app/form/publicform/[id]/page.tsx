@@ -353,9 +353,6 @@ function Preview() {
                                         {option.text}
                                         <span className=" text-gray-600">
                                           {" "}
-                                          {option.limitAns
-                                            ? `(0/${option?.limitAns})`
-                                            : ""}
                                         </span>
                                       </p>
                                     </div>
@@ -387,12 +384,6 @@ function Preview() {
                                         ? option.text
                                         : ""}{" "}
                                       &nbsp;&nbsp;{" "}
-                                      <span className=" text-gray-600">
-                                        {" "}
-                                        {option.limitAns
-                                          ? `(0/${option?.limitAns})`
-                                          : ""}
-                                      </span>
                                     </label>
                                   </div>
                                 </div>
@@ -440,9 +431,6 @@ function Preview() {
                                           : ""}
                                       </ul>
                                       <p className="text-sm text-gray-600">
-                                        {option.limitAns
-                                          ? `(0/${option?.limitAns})`
-                                          : ""}
                                       </p>
                                     </div>
                                   ))}

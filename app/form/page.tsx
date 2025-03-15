@@ -132,7 +132,6 @@ function Form() {
           type: q.type,
           required: q.required,
           limit: 100,
-          limitAns: 1,
           options: q.options
             ? {
                 create: q.options.map((opt) => ({
