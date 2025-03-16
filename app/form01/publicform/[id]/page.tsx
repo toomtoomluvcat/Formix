@@ -15,6 +15,7 @@ function Preview() {
   const [alreadySubmit, setAlreadySubmit] = useState<boolean>();
   const [description, setDescription] = useState<string>();
   const [formLimit,setFormLimit] =useState<number>(0);
+  const [email,setEmail] = useState<string>("");
   const [dropdown, setDropdown] = useState<{ [key: number]: boolean }>({});
   const [answerList, setAnswerList] = useState<
     {
@@ -80,6 +81,8 @@ function Preview() {
       setFormName(result.title);
       setDescription(result.description);
       setQuestions(result.questions);
+      setEmail(localStorage.getItem("email")?? "")
+      
     
     } catch (error) {
       console.log("error", error);
@@ -88,6 +91,8 @@ function Preview() {
   useEffect(() => {
     formPublic();
   }, []);
+
+
 
   const handleInput = (inputIndex: number, value: string): void => {
     setAnswerList((prev) =>
@@ -152,7 +157,7 @@ function Preview() {
   async function submitForm() {
     const data = {
       formID: id,
-      email: "guest@gmail.com",
+      email: email? email :"Guess",
       answer: answerList.map((ans) => ({
         questionID: ans.id,
         value: ans.answer,

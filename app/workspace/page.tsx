@@ -103,6 +103,8 @@ function Workspace() {
       setEmail(result.email);
       setUserId(result.userID);
 
+      localStorage.setItem("email",result.email)
+
       // setRespone(result.responseForm);
     } catch (error) {
       console.log("error", error);
@@ -201,6 +203,7 @@ function Workspace() {
   const hadleLogout = (): void => {
     localStorage.removeItem("token");
     localStorage.setItem("username", "username");
+    localStorage.removeItem("email")
     router.push("/signin");
   };
 

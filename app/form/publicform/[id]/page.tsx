@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 
 function Preview() {
   const { id } = useParams<{ id: string }>();
+  const [email,setEmail]  = useState<string>()
   const [formLimit,setFormLimit] =useState<number>(0);
   const [archive, setIsArchive] = useState<boolean>();
   const [formName, setFormName] = useState<string | null>(null);
@@ -83,6 +84,7 @@ function Preview() {
       setQuestions(result.questions);
       setFormLimit(result.limitForm)
       setIsLimit(result.totalResponses)
+      setEmail(localStorage.getItem("email")?? "")
     } catch (error) {
       console.log("error", error);
     }
@@ -110,7 +112,7 @@ function Preview() {
     }
     const data = {
       formID: id,
-      email: "guest@gmail.com",
+      email: email? email:"Guess",
       answer: answerList.map((ans) => ({
         questionID: ans.id,
         value: ans.answer,
