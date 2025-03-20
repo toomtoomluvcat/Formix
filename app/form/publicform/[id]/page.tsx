@@ -13,7 +13,7 @@ function Preview() {
   const [formLimit,setFormLimit] =useState<number>(0);
   const [archive, setIsArchive] = useState<boolean>();
   const [formName, setFormName] = useState<string | null>(null);
-  const [isLimit, setIsLimit] = useState<number>();
+  const [totalRespone, settotalRespone] = useState<number>(100);
   const [description, setDescription] = useState<string | null>(null);
   const [erorr, setEror] = useState<string>();
   const [dropdown, setDropdown] = useState<{ [key: number]: boolean }>({});
@@ -32,7 +32,7 @@ function Preview() {
         title: string;
         type: string;
         required: boolean;
-        options?: Array<{ text: string; limitAns: number | null }>;
+        options?: Array<{ text: string; limitAns: number | null ;selectionCount:number}>;
       }[]
     | null
   >(null);
@@ -82,8 +82,8 @@ function Preview() {
       setFormName(result.title);
       setDescription(result.description);
       setQuestions(result.questions);
-      setFormLimit(result.limitForm)
-      setIsLimit(result.totalResponses)
+      setFormLimit(result.limitForm?? 100000)
+      settotalRespone(result.totalResponses)
       setEmail(localStorage.getItem("email")?? "")
     } catch (error) {
       console.log("error", error);
@@ -112,7 +112,7 @@ function Preview() {
     }
     const data = {
       formID: id,
-      email: email? email:"Guess",
+      email: email? email:"Guessmd",
       answer: answerList.map((ans) => ({
         questionID: ans.id,
         value: ans.answer,
@@ -135,6 +135,7 @@ function Preview() {
         localStorage.setItem(id, "1");
         setAlreadySubmit(true);
         setEror("");
+        setAnswerList((prev)=>prev?.map((item)=>({...item,answerList:[]})))
       }
     } catch (error) {
       console.log("error", error);
@@ -216,6 +217,7 @@ function Preview() {
                 formPublic(),
                   localStorage.removeItem(id),
                   setAlreadySubmit(false);
+                  window.location.reload();
               }}
               className="text-blue-800 underline text-[0.8em]"
             >
@@ -225,7 +227,7 @@ function Preview() {
         </div>
       ) : (
         <div>
-          {(isLimit ?? 0) > formLimit ? (
+          {((totalRespone) >= formLimit) || !archive ? (
             <div className="flex mt-[150px] md:mt-[200px] justify-between  px-[15%] items-center ">
               <div>
                 <p className="text-[25px]">EROR404</p>
@@ -248,6 +250,7 @@ function Preview() {
             </div>
           ) : (
             <div>
+            
               <div className="mt-12 max-w-[650px] mx-auto">
                 <div className="mb-8">
                   <h1 className="text-[30px] font-medium text-center">
@@ -314,6 +317,7 @@ function Preview() {
                                     <div className="flex items-center mb-2">
                                       <label className="flex items-center cursor-pointer relative">
                                         <input
+                                        disabled={option.limitAns? option.selectionCount>=option.limitAns :false}
                                           value={option.text}
                                           checked={
                                             answerList[
@@ -352,9 +356,9 @@ function Preview() {
                                       </label>
 
                                       <p className="ml-2  text-sm">
-                                        {option.text}
-                                        <span className=" text-gray-600">
-                                          {" "}
+                                        {option.text} 
+                                        <span className="ml-4 text-gray-600">
+                                        ( {option.selectionCount}/{option.limitAns} )
                                         </span>
                                       </p>
                                     </div>
@@ -387,6 +391,9 @@ function Preview() {
                                         : ""}{" "}
                                       &nbsp;&nbsp;{" "}
                                     </label>
+                                    <span className="ml-4 text-gray-600">
+                                        ( {option.selectionCount}/{option.limitAns} )
+                                        </span>
                                   </div>
                                 </div>
                               ))}
@@ -418,7 +425,7 @@ function Preview() {
                                 <div className="absolute left-0 top-full px-2 py-2 w-fit bg-white border-2 rounded-lg mt-2 shadow-lg">
                                   {item.options?.map((option, index) => (
                                     <div
-                                      className="flex hover:bg-gray-100 items-center transition-all duration-[500ms] rounded-lg pl-2 pr-6"
+                                      className="flex hover:bg-gray-100 items-center w-full transition-all duration-[500ms] rounded-lg pl-2 pr-6"
                                       key={index}
                                       onClick={() =>
                                         handleInputDropdown(
@@ -432,6 +439,11 @@ function Preview() {
                                           ? option.text
                                           : ""}
                                       </ul>
+                                      <span className="ml-4 text-[0.7em] text-nowrap text-gray-600">
+                                      {index + 1 !== item.options?.length &&option.limitAns
+                                          ? `(${option.selectionCount}/${option.limitAns} )`
+                                          : ""} 
+                                        </span>
                                       <p className="text-sm text-gray-600">
                                       </p>
                                     </div>
