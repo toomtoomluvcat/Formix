@@ -121,7 +121,7 @@ function Form() {
     const data = {
       title,
       description,
-      archive,
+      archive:archive,
       color,
       theme: "0002",
       limitForm: limitForm,
