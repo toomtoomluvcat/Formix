@@ -16,9 +16,9 @@ import DynamicPieChart from "../../component/graph/circle";
 import { Fascinate } from "next/font/google";
 
 function formrespone() {
-    const [url,seturl] = useState<string>("http://localhost:3000/publicform/")
+  const [url, seturl] = useState<string>("http://localhost:3000/publicform/");
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [showPublic,setShowPublic] = useState<boolean>(false);
+  const [showPublic, setShowPublic] = useState<boolean>(false);
   const [chart, setChart] = useState<number>(0);
   const [isSaveData, setIsSaveData] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(true);
@@ -95,7 +95,7 @@ function formrespone() {
 
   const setSetting = (): void => {
     const setting = {
-      limit: amount==0? 99999:amount,
+      limit: amount == 0 ? 99999 : amount,
       archive: isChecked,
       color: color,
     };
@@ -119,7 +119,6 @@ function formrespone() {
   }, []);
 
   const hadleSubmit = async (): Promise<void> => {
-    
     const localData = localStorage.getItem("formQuestions");
     const localTitle = localData ? JSON.parse(localData).title : null;
     const localQuestion = localData ? JSON.parse(localData).questions : null;
@@ -129,41 +128,41 @@ function formrespone() {
     setQuestions(localQuestion);
 
     const setting = localStorage.getItem("setting");
-    const color =setting
-      ? JSON.parse(setting)
+    const color = setting
+      ? JSON.parse(setting).color
       : {
           color1: "#000000",
           color3: "#C4C4C4",
           color2: "#fef2f2",
         };
-    const archive = setting ? JSON.parse(setting).archive :true
-         
-        const data = {
-          title:localTitle,
-          description:localDescription,
-          color,
-          archive:archive,
-          theme: "0002",
-          limitForm: JSON.parse(localStorage.getItem("setting") || '{"limit":0}').limit,
-          questions: {
-            create: questions?.map((q) => ({
-              questionID: q.id,
-              title: q.title,
-              type: q.type,
-              required: q.required,
-              limitForm: 999999,
-              options: q.options
-                ? {
-                    create: q.options.map((opt) => ({
-                      text: opt.labelChoice,
-                      limitAns: opt.limitAns,
-                    })),
-                  }
-                : undefined,
-            })),
-          },
-    };
+    const archive = setting ? JSON.parse(setting).archive : true;
 
+    const data = {
+      title: localTitle,
+      description: localDescription,
+      color,
+      archive: archive,
+      theme: "0002",
+      limitForm: JSON.parse(localStorage.getItem("setting") || '{"limit":0}')
+        .limit,
+      questions: {
+        create: questions?.map((q) => ({
+          questionID: q.id,
+          title: q.title,
+          type: q.type,
+          required: q.required,
+          limitForm: 999999,
+          options: q.options
+            ? {
+                create: q.options.map((opt) => ({
+                  text: opt.labelChoice,
+                  limitAns: opt.limitAns,
+                })),
+              }
+            : undefined,
+        })),
+      },
+    };
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -173,14 +172,14 @@ function formrespone() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-auth-token": token, 
+        "x-auth-token": token,
       },
       body: JSON.stringify(data),
     });
     setShowPublic(true);
     const responseData = await res.json();
-    seturl(window.location.origin+"/form/publicform/"+responseData.form.id);
-    
+    seturl(window.location.origin + "/form/publicform/" + responseData.form.id);
+
     setShowPublic(true);
   };
 
@@ -467,12 +466,15 @@ function formrespone() {
               </p>
               <div className="py-[8px] flex gap-x-[5px]">
                 <input
-                value={url}
-                onChange={()=>{return}}
+                  value={url}
+                  onChange={() => {
+                    return;
+                  }}
                   className="grow rounded-[7px] px-[15px] text-[13px] bg-[#f6f6f6]"
                   type="text"
                 />
-                <Link href="/workspace"
+                <Link
+                  href="/workspace"
                   type="button"
                   className="border-2 border-black py-[10px] w-full text-center  rounded-[7px] text-[10px]"
                 >
@@ -480,7 +482,9 @@ function formrespone() {
                 </Link>
                 <button
                   type="button"
-                  onClick={()=>{ navigator.clipboard.writeText(url);}}
+                  onClick={() => {
+                    navigator.clipboard.writeText(url);
+                  }}
                   className="bg-black w-full   rounded-[7px] text-white text-[10px]"
                 >
                   Copy URL
@@ -524,7 +528,7 @@ function formrespone() {
                   ></div>
                   <div
                     className={`absolute left-1 top-1 flex h-[12px] translate-y-[0px] w-[12px] items-center justify-center rounded-full bg-white transition-all duration-300 ease-in-out ${
-                      ! isChecked ? "translate-x-[21px]" : ""
+                      !isChecked ? "translate-x-[21px]" : ""
                     }`}
                   ></div>
                 </div>
