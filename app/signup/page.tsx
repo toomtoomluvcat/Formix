@@ -220,15 +220,7 @@ function Signup() {
                     SignIn
                   </Link>
                 </span>
-                <span className="mx-[4px]">
-                  Or 
-                  <Link
-                    href={"/resetpassword"}
-                    className="mx-[4px] font-medium hover:text-[#3E3E3E] transition-all duration-[500ms]"
-                  >
-                    forgot password 
-                  </Link>
-                </span>
+              
               </div>
             </div>
           </div>

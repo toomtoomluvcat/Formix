@@ -23,7 +23,9 @@ function Signin() {
     email: email,
     password: password,
   };
-  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     setError("");
     try {
@@ -34,26 +36,27 @@ function Signin() {
         },
         body: JSON.stringify(data),
       });
-  
+
       const responseData = await res.json();
       console.log("API Response:", responseData);
-  
+
       if (!res.ok) {
-        const errorMessage = responseData.errors?.[0]?.msg || `HTTP error! Status: ${res.status}`;
+        const errorMessage =
+          responseData.errors?.[0]?.msg || `HTTP error! Status: ${res.status}`;
         throw new Error(errorMessage);
       }
-  
+
       if (!responseData.token) {
         throw new Error("Invalid response: No token received");
       }
-  
+
       localStorage.setItem("token", responseData.token);
       localStorage.setItem("expDate", responseData.expDate);
-  
+
       router.push("/workspace");
     } catch (err) {
       console.error("Fetch Error:", err);
-  
+
       if (err instanceof Error) {
         setError(err.message);
       } else {
@@ -96,7 +99,12 @@ function Signin() {
               placeholder="Email "
               className="bg-[#F5F5F5] w-full  rounded-[15px] px-[15px] py-[10px]"
             />
-            <form  onSubmit={(e:React.FormEvent<HTMLFormElement>) => handleSubmit(e)}  className="w-full">
+            <form
+              onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
+                handleSubmit(e)
+              }
+              className="w-full"
+            >
               <div className="relative  mt-[7px]">
                 <input
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -142,14 +150,13 @@ function Signin() {
               </div>
 
               <button
-               
                 type="submit"
                 className="border-2 mt-6 text-white bg-black hover:bg-[#262626] transition-all duration-[500ms] rounded-[15px] py-[10px] w-full"
               >
                 Continue
               </button>
-              <div className="w-full mt-2 mb-[100px]">
-                <p className="text-center text-[12px]">
+              <div className="w-full mt-2 mb-[100px] text-center text-[12px]">
+                <span className="">
                   Don't Have an Account Yet?{" "}
                   <Link
                     href={"/signup"}
@@ -157,7 +164,16 @@ function Signin() {
                   >
                     SignUp
                   </Link>{" "}
-                </p>
+                </span>
+                <span className="mx-[4px]">
+                  Or
+                  <Link
+                    href={"/resetpassword"}
+                    className="mx-[4px] font-medium hover:text-[#3E3E3E] transition-all duration-[500ms]"
+                  >
+                    forgot password
+                  </Link>
+                </span>
               </div>
             </form>
           </div>
