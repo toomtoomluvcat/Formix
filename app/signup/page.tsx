@@ -12,7 +12,9 @@ function Signup() {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [errMsg,setErrMsg] = useState<{errors:{msg:string}}| null | undefined>(null);
+  const [errMsg, setErrMsg] = useState<
+    { errors: { msg: string } } | null | undefined
+  >(null);
   const router = useRouter();
   const data = {
     email: email,
@@ -21,17 +23,16 @@ function Signup() {
   };
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const expDate:number |null = Number(localStorage.getItem("expDate"))
-    console.log('expDate', expDate)
-    if (Date.now() > expDate? expDate:0){
-      localStorage.removeItem("token")
+    const expDate: number | null = Number(localStorage.getItem("expDate"));
+    console.log("expDate", expDate);
+    if (Date.now() > expDate ? expDate : 0) {
+      localStorage.removeItem("token");
     }
-    
+
     if (token) {
       router.push("/workspace");
       return;
     }
-    
   }, []);
   const handleSubmit = async (): Promise<void> => {
     // if (!email || !password || !confirmPassword) {
@@ -59,13 +60,15 @@ function Signup() {
         },
         body: JSON.stringify(data),
       });
-    
+
       const responseData = await res.json();
 
       if (!res.ok) {
-        throw new Error(responseData.errors?.[0]?.msg || `HTTP error! Status: ${res.status}`);
+        throw new Error(
+          responseData.errors?.[0]?.msg || `HTTP error! Status: ${res.status}`
+        );
       }
-    
+
       setErrMsg(null);
       setError("");
       router.push("/signin");
@@ -76,7 +79,7 @@ function Signup() {
         setError("Something went wrong");
       }
     }
-  }
+  };
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);
   };
@@ -207,16 +210,25 @@ function Signup() {
               >
                 Continue
               </button>
-              <div className="w-full mt-2 mb-[100px]">
-                <p className="text-center text-[12px]">
+              <div className="w-full mt-2 mb-[100px] text-center text-[12px]">
+                <span className="">
                   Do you already have an account?
                   <Link
                     href={"/signin"}
                     className="font-medium hover:text-[#3E3E3E] transition-all duration-[500ms]"
                   >
                     SignIn
-                  </Link>{" "}
-                </p>
+                  </Link>
+                </span>
+                <span className="mx-[4px]">
+                  Or 
+                  <Link
+                    href={"/resetpassword"}
+                    className="mx-[4px] font-medium hover:text-[#3E3E3E] transition-all duration-[500ms]"
+                  >
+                    forgot password 
+                  </Link>
+                </span>
               </div>
             </div>
           </div>
