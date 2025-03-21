@@ -136,7 +136,7 @@ function formrespone() {
           color3: "#C4C4C4",
           color2: "#fef2f2",
         };
-    const archive = setting ? JSON.parse(setting) :true
+    const archive = setting ? JSON.parse(setting).archive :true
          
         const data = {
           title:localTitle,
